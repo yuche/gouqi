@@ -1,0 +1,11 @@
+{
+  "extends": ["tslint:latest", "tslint-react"],
+  "rules": {
+    "jsx-alignment": true,
+    "jsx-self-close": true,
+    "quotemark": [true, "single", "avoid-escape"],
+    "semicolon": [true, "never"],
+    "object-literal-key-quotes": [false, "as-needed"],
+    "trailing-comma": [true, {"multiline": "never", "singleline": "never"}]
+  }
+}

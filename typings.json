@@ -1,0 +1,13 @@
+{
+  "name": "gouqi",
+  "dependencies": {
+    "lodash": "registry:npm/lodash#4.0.0+20160723033700",
+    "react": "registry:npm/react#15.0.1+20160601175240"
+  },
+  "globalDependencies": {
+    "axios": "registry:dt/axios#0.9.1+20160629101425",
+    "react-native": "registry:dt/react-native#0.29.0+20160830141535",
+    "react-redux": "registry:dt/react-redux#4.4.0+20160908183346",
+    "redux": "registry:dt/redux#3.5.2+20160703092728"
+  }
+}

@@ -1,0 +1,27 @@
+{
+    "compilerOptions": {
+        "target": "es5",
+        "jsx": "preserve",
+        "allowSyntheticDefaultImports": true,
+        "noImplicitAny": true,
+        "experimentalDecorators": true,
+        "preserveConstEnums": true,
+        "outDir": "lib",
+        "rootDir": "src",
+        "sourceMap": true
+    },
+    "filesGlob": [
+        "typings/index.d.ts",
+        "typings/globals/**/*.d.ts",
+        "src/**/*.ts",
+        "src/**/*.tsx"
+    ],
+    "exclude": [
+        "typings/main",
+        "typings/main.d.ts",
+        "typings/browser",
+        "typings/browser.d.ts",
+        "node_modules"
+    ],
+    "compileOnSave": false
+}

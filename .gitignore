@@ -3,6 +3,7 @@
 .DS_Store
 
 lib/
+typings/
 
 # Xcode
 #
