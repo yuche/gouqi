@@ -16,7 +16,7 @@ const request: Axios.AxiosInstance = axios.create({
   }
 })
 
-export function setCookie(cookie: string[]): Axios.AxiosInstance {
+export function setCookie(cookie: string): Axios.AxiosInstance {
   // tslint:disable-next-line
   request.defaults.headers.common['Cookie'] = cookie
   return request

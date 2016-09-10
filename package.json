@@ -31,13 +31,14 @@
     "nyc": "^8.1.0",
     "react-dom": "^15.3.1",
     "react-native-mock": "^0.2.6",
-    "tslint": "^3.15.1",
+    "tslint": "^3.15.0-dev.0",
     "tslint-react": "^1.0.0",
     "typescript": "^2.1.0-dev.20160909"
   },
   "ava": {
     "files": [
       "tests/**/*.js",
+      "!tests/services/crypto.js",
       "!tests/setup.js"
     ],
     "require": [
