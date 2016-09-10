@@ -22,6 +22,15 @@ export function setCookie(cookie: string): Axios.AxiosInstance {
   return request
 }
 
+export function getUserID() {
+  // tslint:disable-next-line
+  const cookie = request.defaults.headers.common['Cookie']
+  if (!cookie) {
+    return null
+  }
+  return /\d+/.exec(cookie)[0]
+}
+
 interface IloginBody {
   password: string,
   rememberLogin: string,

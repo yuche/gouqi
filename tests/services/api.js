@@ -18,6 +18,7 @@ test('email login works', async (t) => {
 })
 
 test('should login algorithm works', async (t) => {
-  const { data } = await login('13812345678', 'fuckgfw')
-  t.truthy(data)
+  const { data, headers } = await login('18502080838', 'if(country)noEsc')
+  setCookie(headers['set-cookie'])
+  t.is(data.code, 200)
 })
