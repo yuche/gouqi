@@ -38,7 +38,6 @@
   "ava": {
     "files": [
       "tests/**/*.js",
-      "!tests/services/crypto.js",
       "!tests/setup.js"
     ],
     "require": [

@@ -19,8 +19,6 @@
     "exclude": [
         "typings/main",
         "typings/main.d.ts",
-        "typings/browser",
-        "typings/browser.d.ts",
         "node_modules"
     ],
     "compileOnSave": false
