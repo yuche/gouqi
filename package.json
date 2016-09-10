@@ -43,7 +43,8 @@
     "require": [
       "babel-register",
       "babel-polyfill",
-      "react-native-mock/mock"
+      "react-native-mock/mock",
+      "./tests/setup"
     ],
     "babel": "inherit"
   }

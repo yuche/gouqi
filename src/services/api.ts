@@ -45,4 +45,3 @@ export async function login (username: string, password: string): Promise<Axios.
   const encBody = crypto.aesRsaEncrypt(JSON.stringify(body))
   return await request.post(url, stringify(encBody))
 }
-console.log(request)
