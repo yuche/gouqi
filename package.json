@@ -3,7 +3,10 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "start": "node node_modules/react-native/local-cli/cli.js start"
+    "start": "node node_modules/react-native/local-cli/cli.js start",
+    "test": "ava",
+    "test:watch": "ava --watch",
+    "coverage": "nyc ava && nyc report --reporter=html && open coverage/index.html"
   },
   "dependencies": {
     "axios": "^0.14.0",
@@ -24,11 +27,24 @@
     "eslint-plugin-promise": "^2.0.1",
     "eslint-plugin-react": "^6.2.0",
     "eslint-plugin-standard": "^2.0.0",
+    "mockery": "^1.7.0",
     "nyc": "^8.1.0",
     "react-dom": "^15.3.1",
     "react-native-mock": "^0.2.6",
     "tslint": "^3.15.1",
     "tslint-react": "^1.0.0",
     "typescript": "^2.1.0-dev.20160909"
+  },
+  "ava": {
+    "files": [
+      "tests/**/*.js",
+      "!tests/setup.js"
+    ],
+    "require": [
+      "babel-register",
+      "babel-polyfill",
+      "react-native-mock/mock"
+    ],
+    "babel": "inherit"
   }
 }

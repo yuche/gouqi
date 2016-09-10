@@ -16,6 +16,12 @@ const request: Axios.AxiosInstance = axios.create({
   }
 })
 
+export function setCookie(cookie: string[]): Axios.AxiosInstance {
+  // tslint:disable-next-line
+  request.defaults.headers.common['Cookie'] = cookie
+  return request
+}
+
 interface IloginBody {
   password: string,
   rememberLogin: string,
@@ -23,7 +29,7 @@ interface IloginBody {
   username?: string
 }
 
-async function login (username: string, password: string) {
+export async function login (username: string, password: string): Promise<Axios.AxiosXHR<{}>> {
   const patten = /^0\d{2,3}\d{7,8}$|^1[34578]\d{9}$/
   let url = '/weapi/login/'
   let body: IloginBody = {
@@ -39,3 +45,4 @@ async function login (username: string, password: string) {
   const encBody = crypto.aesRsaEncrypt(JSON.stringify(body))
   return await request.post(url, stringify(encBody))
 }
+console.log(request)
