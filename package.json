@@ -4,8 +4,9 @@
   "private": true,
   "scripts": {
     "start": "node node_modules/react-native/local-cli/cli.js start",
-    "test": "ava",
-    "test:watch": "ava --watch",
+    "quickbuild": "tsc",
+    "test:quick": "ava --verbose",
+    "test:watch": "ava --watch --verbose",
     "coverage": "nyc ava && nyc report --reporter=html && open coverage/index.html"
   },
   "dependencies": {
@@ -47,5 +48,13 @@
       "./tests/setup"
     ],
     "babel": "inherit"
+  },
+  "nyc": {
+    "include": [
+      "lib/**/*.js"
+    ],
+    "exclude": [
+      "lib/**/*.js.map"
+    ]
   }
 }

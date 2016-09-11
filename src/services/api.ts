@@ -16,22 +16,22 @@ const request: Axios.AxiosInstance = axios.create({
   }
 })
 
-export function setCookie(cookie: string): Axios.AxiosInstance {
+export function setCookie (cookie: string[]): Axios.AxiosInstance {
   // tslint:disable-next-line
   request.defaults.headers.common['Cookie'] = cookie
   return request
 }
 
-export function getUserID() {
+export function getUserID () {
   // tslint:disable-next-line
   const cookie = request.defaults.headers.common['Cookie']
   if (!cookie) {
     return null
   }
-  return /\d+/.exec(cookie)[0]
+  return /\d+/.exec(cookie[3])[0]
 }
 
-interface IloginBody {
+interface ILoginBody {
   password: string,
   rememberLogin: string,
   phone?: string,
@@ -41,7 +41,7 @@ interface IloginBody {
 export async function login (username: string, password: string): Promise<Axios.AxiosXHR<{}>> {
   const patten = /^0\d{2,3}\d{7,8}$|^1[34578]\d{9}$/
   let url = '/weapi/login/'
-  let body: IloginBody = {
+  let body: ILoginBody = {
     password: crypto.MD5(password),
     rememberLogin: 'true'
   }
@@ -54,3 +54,43 @@ export async function login (username: string, password: string): Promise<Axios.
   const encBody = crypto.aesRsaEncrypt(JSON.stringify(body))
   return await request.post(url, stringify(encBody))
 }
+
+export async function userProfile (userId = getUserID()): Promise<Axios.AxiosXHR<{}>> {
+  return await request.get('/api/user/detail/' + userId, stringify({ userId }))
+}
+
+interface IPaginationBody {
+  offset: number,
+  limit: number
+}
+
+interface IPlayListBody extends IPaginationBody {
+  uid: string
+}
+
+export async function userPlayList (body: IPlayListBody): Promise<Axios.AxiosXHR<{}>> {
+  return await request.post('/api/user/playlist/', stringify(body))
+}
+
+export async function playListDetail (id: string): Promise<Axios.AxiosXHR<{}>> {
+  return await request.get('/api/playlist/detail', stringify({ id }))
+}
+
+const enum SearchType {
+  song = 1,
+  singer = 100,
+  album = 10,
+  songList = 1000,
+  user = 1002
+}
+
+interface ISearchBody extends IPaginationBody {
+  s: string,
+  type: SearchType,
+  total: string
+}
+
+export async function search (body: ISearchBody): Promise<Axios.AxiosXHR<{}>> {
+  return await request.post('/api/search/get/web', stringify(body))
+}
+

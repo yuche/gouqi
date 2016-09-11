@@ -1,10 +1,15 @@
 import {
   login,
-  setCookie
+  setCookie,
+  getUserID
 } from '../../lib/services/api.js'
 
 import crypto from 'crypto'
 import test from 'ava'
+
+test('getUserID return null', (t) => {
+  t.is(getUserID(), null)
+})
 
 test('setCookie can change header', (t) => {
   const randomStr = crypto.randomBytes(20).toString('hex')

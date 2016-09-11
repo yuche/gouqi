@@ -2,13 +2,15 @@
     "compilerOptions": {
         "target": "es2015",
         "jsx": "preserve",
+        "module": "commonjs",
+        "declaration": true,
         "allowSyntheticDefaultImports": true,
         "noImplicitAny": true,
         "experimentalDecorators": true,
         "preserveConstEnums": true,
         "outDir": "lib",
         "rootDir": "src",
-        "sourceMap": true
+        "inlineSourceMap": true
     },
     "filesGlob": [
         "typings/index.d.ts",
