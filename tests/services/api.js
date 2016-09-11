@@ -17,18 +17,17 @@ const Pagination = {
   limit: 10
 }
 
-test.skip('should login algorithm works', async (t) => {
+test('should login algorithm works', async (t) => {
   const { data, headers } = await login('18502080838', 'if(country)noEsc')
   setCookie(headers['set-cookie'])
-  console.log(data)
   t.is(data.code, 200)
 })
 
-test('getUserID return null', (t) => {
+test.skip('getUserID return null', (t) => {
   t.is(getUserID(), null)
 })
 
-test('setCookie can change header', (t) => {
+test.before('setCookie can change header', (t) => {
   const randomStr = crypto.randomBytes(20).toString('hex')
   const request = setCookie(randomStr)
   t.deepEqual(request.defaults.headers.common['Cookie'], randomStr)
@@ -102,9 +101,10 @@ test('search for users', async (t) => {
   t.is(data.code, 200)
 })
 
-test('can access personal FM', async (t) => {
-  const { data } = await personalFM()
-  t.is(data.code, 200)
+test.after('can access personal FM', async (t) => {
+  const fuck = await personalFM()
+  console.log()
+  t.is(fuck.data.code, 200)
 })
 
 // test('can access user profile', async (t) => {

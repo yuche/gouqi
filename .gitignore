@@ -6,6 +6,7 @@ lib/
 typings/
 coverage/
 .nyc_output
+.vscode
 
 # Xcode
 #

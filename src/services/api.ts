@@ -16,7 +16,7 @@ const request: Axios.AxiosInstance = axios.create({
   }
 })
 
-export function setCookie (cookie: string[]): Axios.AxiosInstance {
+export function setCookie (cookie: string): Axios.AxiosInstance {
   // tslint:disable-next-line
   request.defaults.headers.common['Cookie'] = cookie
   return request
@@ -94,13 +94,13 @@ export const enum SearchType {
   user = 1002
 }
 
-export interface ISearchParams extends IPaginationParams {
+export interface ISearchBody extends IPaginationParams {
   s: string,
   type: SearchType | string,
   total: string
 }
 
-export async function search (body: ISearchParams): Promise<Axios.AxiosXHR<{}>> {
+export async function search (body: ISearchBody): Promise<Axios.AxiosXHR<{}>> {
   return await request.post('/api/search/get/web', stringify(body))
 }
 
