@@ -5,9 +5,10 @@
   "scripts": {
     "start": "node node_modules/react-native/local-cli/cli.js start",
     "quickbuild": "tsc",
-    "test:quick": "ava --verbose",
+    "test": "ava --verbose",
     "test:watch": "ava --watch --verbose",
-    "coverage": "nyc ava && nyc report --reporter=html && open coverage/index.html"
+    "coverage": "nyc ava --verbose && nyc report --reporter=html",
+    "coverage:check": "open coverage/index.html"
   },
   "dependencies": {
     "axios": "^0.14.0",

@@ -59,10 +59,10 @@ var Crypto = {
     MD5: function (text: string): string {
         return crypto.createHash('md5').update(text).digest('hex');
     },
-    aesRsaEncrypt: function (text: string) {
+    encryptedRequest: function (text: Object) {
         var secKey = createSecretKey(16);
         return {
-            params: aesEncrypt(aesEncrypt(text, nonce), secKey),
+            params: aesEncrypt(aesEncrypt(JSON.stringify(text), nonce), secKey),
             encSecKey: rsaEncrypt(secKey, pubKey, modulus)
         }
     }

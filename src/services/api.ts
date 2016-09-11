@@ -51,32 +51,42 @@ export async function login (username: string, password: string): Promise<Axios.
   } else {
     body.username = username
   }
-  const encBody = crypto.aesRsaEncrypt(JSON.stringify(body))
+  const encBody = crypto.encryptedRequest(body)
   return await request.post(url, stringify(encBody))
 }
 
-export async function userProfile (userId = getUserID()): Promise<Axios.AxiosXHR<{}>> {
-  return await request.get('/api/user/detail/' + userId, stringify({ userId }))
-}
+// use userPlayList() to get userProfile for now
+// export async function userProfile (userId = getUserID()): Promise<Axios.AxiosXHR<{}>> {
+//   if (!userId) {
+//     return null
+//   }
+//   return await request.get('/api/user/detail/' + userId, {
+//     params: {
+//       userId
+//     }
+//   })
+// }
 
-interface IPaginationBody {
+export interface IPaginationParams {
   offset: number,
   limit: number
 }
 
-interface IPlayListBody extends IPaginationBody {
+export interface IPlayListParams extends IPaginationParams {
   uid: string
 }
 
-export async function userPlayList (body: IPlayListBody): Promise<Axios.AxiosXHR<{}>> {
-  return await request.post('/api/user/playlist/', stringify(body))
+export async function userPlayList (params: IPlayListParams): Promise<Axios.AxiosXHR<{}>> {
+  return await request.get('/api/user/playlist/', { params })
 }
 
 export async function playListDetail (id: string): Promise<Axios.AxiosXHR<{}>> {
-  return await request.get('/api/playlist/detail', stringify({ id }))
+  return await request.get('/api/playlist/detail', {
+    params: { id }
+  })
 }
 
-const enum SearchType {
+export const enum SearchType {
   song = 1,
   singer = 100,
   album = 10,
@@ -84,13 +94,16 @@ const enum SearchType {
   user = 1002
 }
 
-interface ISearchBody extends IPaginationBody {
+export interface ISearchParams extends IPaginationParams {
   s: string,
-  type: SearchType,
+  type: SearchType | string,
   total: string
 }
 
-export async function search (body: ISearchBody): Promise<Axios.AxiosXHR<{}>> {
+export async function search (body: ISearchParams): Promise<Axios.AxiosXHR<{}>> {
   return await request.post('/api/search/get/web', stringify(body))
 }
 
+export async function personalFM (): Promise<Axios.AxiosXHR<{}>> {
+  return await request.get('/api/radio/get')
+}
