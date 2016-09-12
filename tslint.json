@@ -5,6 +5,7 @@
     "jsx-self-close": true,
     "quotemark": [true, "single", "avoid-escape"],
     "semicolon": [true, "never"],
+    "no-string-literal": false,
     "object-literal-key-quotes": [false, "as-needed"],
     "trailing-comma": [true, {"multiline": "never", "singleline": "never"}]
   }

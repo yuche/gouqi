@@ -6,7 +6,8 @@ import {
   playListDetail,
   personalFM,
   search,
-  SearchType
+  SearchType,
+  recommnedPlayList
 } from '../../lib/services/api.js'
 
 import crypto from 'crypto'
@@ -23,14 +24,14 @@ test('should login algorithm works', async (t) => {
   t.is(data.code, 200)
 })
 
-test.skip('getUserID return null', (t) => {
+test('getUserID return null', (t) => {
   t.is(getUserID(), null)
 })
 
-test.before('setCookie can change header', (t) => {
-  const randomStr = crypto.randomBytes(20).toString('hex')
-  const request = setCookie(randomStr)
-  t.deepEqual(request.defaults.headers.common['Cookie'], randomStr)
+test('setCookie can change header', (t) => {
+  const randomArr = crypto.randomBytes(20).toString('hex').split('')
+  const request = setCookie(randomArr)
+  t.deepEqual(request.defaults.headers.common['Cookie'], randomArr.join(''))
 })
 
 test('email login works', async (t) => {
@@ -56,7 +57,7 @@ test('search for songs', async (t) => {
     ...Pagination,
     s: '香',
     type: SearchType.song,
-    total: 'true'
+    total: true
   })
   t.is(data.code, 200)
 })
@@ -66,7 +67,7 @@ test('search for singers', async (t) => {
     ...Pagination,
     s: '港',
     type: SearchType.singer,
-    total: 'true'
+    total: true
   })
   t.is(data.code, 200)
 })
@@ -76,7 +77,7 @@ test('search for albums', async (t) => {
     ...Pagination,
     s: '记',
     type: SearchType.album,
-    total: 'true'
+    total: true
   })
   t.is(data.code, 200)
 })
@@ -86,7 +87,7 @@ test('search for song lists', async (t) => {
     ...Pagination,
     s: '者',
     type: SearchType.songList,
-    total: 'true'
+    total: true
   })
   t.is(data.code, 200)
 })
@@ -96,15 +97,31 @@ test('search for users', async (t) => {
     ...Pagination,
     s: '快',
     type: SearchType.user,
-    total: 'true'
+    total: true
   })
   t.is(data.code, 200)
 })
 
-test.after('can access personal FM', async (t) => {
-  const fuck = await personalFM()
-  console.log()
-  t.is(fuck.data.code, 200)
+test('can access personal FM', async (t) => {
+  const { data } = await personalFM()
+  t.is(data.code, 200)
+})
+
+test.before('can not access recommend play lists', async (t) => {
+  const res = await recommnedPlayList({
+    ...Pagination,
+    total: true
+  })
+  t.falsy(res)
+})
+
+test.after('can access recommend play lists', async (t) => {
+  const res = await recommnedPlayList({
+    ...Pagination,
+    total: true
+  })
+  console.log(res)
+  t.pass()
 })
 
 // test('can access user profile', async (t) => {

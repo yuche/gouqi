@@ -1,5 +1,6 @@
 import crypto from './crypto'
 import axios from 'axios'
+import Cookie from 'cookie'
 import { stringify } from 'querystring'
 
 const request: Axios.AxiosInstance = axios.create({
@@ -16,14 +17,16 @@ const request: Axios.AxiosInstance = axios.create({
   }
 })
 
-export function setCookie (cookie: string): Axios.AxiosInstance {
-  // tslint:disable-next-line
-  request.defaults.headers.common['Cookie'] = cookie
+export function setCookie (cookie: string[]): Axios.AxiosInstance {
+  request.defaults.headers.common['Cookie'] = cookie.join('')
   return request
 }
 
+export function getCookie (): string {
+  return request.defaults.headers.common['Cookie']
+}
+
 export function getUserID () {
-  // tslint:disable-next-line
   const cookie = request.defaults.headers.common['Cookie']
   if (!cookie) {
     return null
@@ -69,7 +72,8 @@ export async function login (username: string, password: string): Promise<Axios.
 
 export interface IPaginationParams {
   offset: number,
-  limit: number
+  limit: number,
+  total?: boolean | string
 }
 
 export interface IPlayListParams extends IPaginationParams {
@@ -96,8 +100,7 @@ export const enum SearchType {
 
 export interface ISearchBody extends IPaginationParams {
   s: string,
-  type: SearchType | string,
-  total: string
+  type: SearchType | string
 }
 
 export async function search (body: ISearchBody): Promise<Axios.AxiosXHR<{}>> {
@@ -106,4 +109,17 @@ export async function search (body: ISearchBody): Promise<Axios.AxiosXHR<{}>> {
 
 export async function personalFM (): Promise<Axios.AxiosXHR<{}>> {
   return await request.get('/api/radio/get')
+}
+
+export async function recommnedPlayList (body: IPaginationParams): Promise<Axios.AxiosXHR<{}>> {
+  if (!getCookie()) {
+    return null
+  }
+  const csrf = Cookie.parse(getCookie())['HttpOnly__csrf']
+  return await request
+    .post('/weapi/v1/discovery/recommend/songs?csrf_token=' + csrf,
+      stringify( crypto.encryptedRequest(
+        Object.assign({}, body, { 'csrf_token': csrf })
+      ) )
+    )
 }
