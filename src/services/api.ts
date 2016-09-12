@@ -1,10 +1,11 @@
 import crypto from './crypto'
-import axios from 'axios'
-import Cookie from 'cookie'
 import { stringify } from 'querystring'
+import rq from 'request-promise'
+export const API_BASE_URL = 'http://music.163.com'
 
-const request: Axios.AxiosInstance = axios.create({
-  baseURL: 'http://music.163.com',
+const request = rq.defaults({
+  baseUrl: API_BASE_URL,
+  gzip: true,
   headers: {
     'Accept': '*/*',
     'Accept-Encoding': 'gzip,deflate,sdch',
@@ -14,24 +15,21 @@ const request: Axios.AxiosInstance = axios.create({
     'Host': 'music.163.com',
     'Referer': 'http://music.163.com/',
     'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64; rv:39.0) Gecko/20100101 Firefox/39.0'
-  }
+  },
+  jar: true,
+  proxy: 'http://localhost:8888',
+  resolveWithFullResponse: true,
+  useQuerystring: true
 })
 
-export function setCookie (cookie: string[]): Axios.AxiosInstance {
-  request.defaults.headers.common['Cookie'] = cookie.join('')
-  return request
+export function getCookie (): Object[] {
+  return request.jar().getCookies(API_BASE_URL)
 }
 
-export function getCookie (): string {
-  return request.defaults.headers.common['Cookie']
-}
-
-export function getUserID () {
-  const cookie = request.defaults.headers.common['Cookie']
-  if (!cookie) {
-    return null
-  }
-  return /\d+/.exec(cookie[3])[0]
+export function getUserID (): Object[] {
+  const jar = request.jar()
+  const cookie = jar.getCookies(API_BASE_URL)
+  return cookie
 }
 
 interface ILoginBody {
@@ -41,7 +39,8 @@ interface ILoginBody {
   username?: string
 }
 
-export async function login (username: string, password: string): Promise<Axios.AxiosXHR<{}>> {
+
+export async function login (username: string, password: string) {
   const patten = /^0\d{2,3}\d{7,8}$|^1[34578]\d{9}$/
   let url = '/weapi/login/'
   let body: ILoginBody = {
@@ -55,7 +54,9 @@ export async function login (username: string, password: string): Promise<Axios.
     body.username = username
   }
   const encBody = crypto.encryptedRequest(body)
-  return await request.post(url, stringify(encBody))
+  return await request.post(url, {
+    body: stringify(encBody)
+  })
 }
 
 // use userPlayList() to get userProfile for now
@@ -80,13 +81,13 @@ export interface IPlayListParams extends IPaginationParams {
   uid: string
 }
 
-export async function userPlayList (params: IPlayListParams): Promise<Axios.AxiosXHR<{}>> {
-  return await request.get('/api/user/playlist/', { params })
+export async function userPlayList (qs: IPlayListParams) {
+  return await request.get('/api/user/playlist/', { qs })
 }
 
-export async function playListDetail (id: string): Promise<Axios.AxiosXHR<{}>> {
+export async function playListDetail (id: string) {
   return await request.get('/api/playlist/detail', {
-    params: { id }
+    qs: { id }
   })
 }
 
@@ -103,23 +104,23 @@ export interface ISearchBody extends IPaginationParams {
   type: SearchType | string
 }
 
-export async function search (body: ISearchBody): Promise<Axios.AxiosXHR<{}>> {
-  return await request.post('/api/search/get/web', stringify(body))
+export async function search (body: ISearchBody) {
+  return await request.post('/api/search/get/web', { body: stringify(body) })
 }
 
-export async function personalFM (): Promise<Axios.AxiosXHR<{}>> {
+export async function personalFM () {
   return await request.get('/api/radio/get')
 }
 
-export async function recommnedPlayList (body: IPaginationParams): Promise<Axios.AxiosXHR<{}>> {
-  if (!getCookie()) {
-    return null
-  }
-  const csrf = Cookie.parse(getCookie())['HttpOnly__csrf']
-  return await request
-    .post('/weapi/v1/discovery/recommend/songs?csrf_token=' + csrf,
-      stringify( crypto.encryptedRequest(
-        Object.assign({}, body, { 'csrf_token': csrf })
-      ) )
-    )
-}
+// export async function recommnedPlayList (body: IPaginationParams) {
+//   if (!getCookie()) {
+//     return null
+//   }
+//   const csrf = getCookie()[0]['HttpOnly__csrf']
+//   return await request
+//     .post('/weapi/v1/discovery/recommend/songs?csrf_token=' + csrf,
+//       stringify( crypto.encryptedRequest(
+//         Object.assign({}, body, { 'csrf_token': csrf })
+//       ) )
+//     )
+// }
