@@ -1,5 +1,6 @@
 import crypto from './crypto'
 import { stringify } from 'querystring'
+import Cookie from 'cookie';
 import rq from 'request-promise'
 export const API_BASE_URL = 'http://music.163.com'
 
@@ -18,12 +19,19 @@ const request = rq.defaults({
   },
   jar: true,
   proxy: 'http://localhost:8888',
-  resolveWithFullResponse: true,
   useQuerystring: true
 })
 
-export function getCookie (): Object[] {
-  return request.jar().getCookies(API_BASE_URL)
+export function getCookie () {
+  return request.jar().getCookieString(API_BASE_URL)
+}
+
+export function setCookie (cookies: string[]): void {
+  request.jar().setCookie(request.cookie(
+    stringify(
+      Cookie.parse(cookies.join(''))
+    )
+  ), API_BASE_URL)
 }
 
 export function getUserID (): Object[] {
@@ -55,7 +63,8 @@ export async function login (username: string, password: string) {
   }
   const encBody = crypto.encryptedRequest(body)
   return await request.post(url, {
-    body: stringify(encBody)
+    body: stringify(encBody),
+    resolveWithFullResponse: true
   })
 }
 

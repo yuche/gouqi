@@ -5,12 +5,14 @@ import {
   playListDetail,
   personalFM,
   search,
+  setCookie,
   SearchType,
   getCookie
 } from '../../lib/services/api.js'
 
 import crypto from 'crypto'
 import test from 'ava'
+import Cookie from 'tough-cookie'
 
 const Pagination = {
   offset: 0,
@@ -18,10 +20,10 @@ const Pagination = {
 }
 
 test.only('should login algorithm works', async (t) => {
-  const fuck = await login('18502080838', 'if(country)noEsc')
-  console.log(fuck)
-  console.log(getCookie())
-  t.is(fuck.body.code, 200)
+  const { body, headers } = await login('18502080838', 'if(country)noEsc')
+  setCookie(headers['set-cookie'])
+  console.log('cookie is' + getCookie())
+  t.is(body.code, 200)
 })
 
 // test('getUserID return null', (t) => {
