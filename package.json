@@ -34,6 +34,7 @@
     "eslint-plugin-react": "^6.2.0",
     "eslint-plugin-standard": "^2.0.0",
     "mockery": "^1.7.0",
+    "mockjs": "^1.0.1-beta3",
     "nyc": "^8.1.0",
     "react-dom": "^15.3.1",
     "react-native-mock": "^0.2.6",

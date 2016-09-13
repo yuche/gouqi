@@ -1,3 +1,7 @@
+// import request_declaration from 'request' // tslint:disable-line
+// most of api from @darknessomi/musicbox
+// https://github.com/darknessomi/musicbox/blob/master/NEMbox/api.py
+
 import {
   encryptedMD5,
   encryptedRequest
@@ -36,10 +40,8 @@ export function getCookies () {
   return cookieJar.getCookieString(API_BASE_URL)
 }
 
-export function setCookies (): void {
-  cookieJar.setCookie(request.cookie(
-    ''
-  ), API_BASE_URL)
+export function setCookies (cookie: string): void {
+  cookieJar.setCookie(request.cookie(cookie), API_BASE_URL)
 }
 
 interface ILoginBody {
@@ -106,15 +108,12 @@ export async function search (body: ISearchBody) {
   return await request.post('/api/search/get/web', { body: qs.stringify(body) })
 }
 
-export async function personalFM () {
-  return await request.get('/api/radio/get')
-}
-
 export async function recommnedPlayList (body: IPaginationParams) {
-  if (!getCookies()) {
+  const cookies = getCookies()
+  if (!cookies) {
     return null
   }
-  const csrf = /csrf=(\w*);/.exec(getCookies())[1]
+  const csrf = /csrf=(\w*);/.exec(cookies)[1]
   return await request
     .post('/weapi/v1/discovery/recommend/songs?csrf_token=' + csrf, {
         body: qs.stringify(encryptedRequest(
@@ -124,3 +123,29 @@ export async function recommnedPlayList (body: IPaginationParams) {
     )
 }
 
+export async function personalFM () {
+  return await request.get('/api/radio/get')
+}
+
+export async function fmLike (
+  songId: string,
+  like = true,
+  time = 25,
+  alg = 'itembased'
+  ) {
+  return await request
+    .get(`/api/radio/like?alg=${alg}&trackId=${songId}&like=${like}&time=${time}`)
+}
+
+export async function fmTrash (
+  songid: string,
+  time = 25,
+  alg = 'RT'
+) {
+  return await request
+    .get(`/api/radio/trash/add?alg=${alg}&songId=${songid}&time=${time}`)
+}
+
+export async function newAlbums () {
+  
+}
