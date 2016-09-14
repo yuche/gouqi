@@ -132,20 +132,57 @@ export async function fmLike (
   like = true,
   time = 25,
   alg = 'itembased'
-  ) {
+) {
   return await request
     .get(`/api/radio/like?alg=${alg}&trackId=${songId}&like=${like}&time=${time}`)
 }
 
 export async function fmTrash (
-  songid: string,
+  songId: string,
   time = 25,
   alg = 'RT'
 ) {
   return await request
-    .get(`/api/radio/trash/add?alg=${alg}&songId=${songid}&time=${time}`)
+    .get(`/api/radio/trash/add?alg=${alg}&songId=${songId}&time=${time}`)
 }
 
-export async function newAlbums () {
-  
+export async function newAlbums (
+  offset: 0,
+  limit: 10
+) {
+  return await request
+    .get(`/api/album/new?area=ALL&offset=${offset}&total=true&limit=${limit}`)
+}
+
+export async function topPlayList (
+  category = '全部',
+  order = 'hot',
+  offset = 0,
+  total = true,
+  limit = 10
+) {
+  return await request
+    .get(`/api/playlist/list?cat=${category}&order=${order}&offset=${offset}&total=${offset}&limit=${limit}`)
+}
+
+export async function topArtists (
+  offset: 0,
+  limit: 10
+) {
+  return await request
+    .get(`/api/artist/top?offset=${offset}&total=false&limit=${limit}`)
+}
+
+export async function artistInfo (
+  artistId: string
+) {
+  return await request
+    .get(`/api/artist/${artistId}`)
+}
+
+export async function albumInfo (
+  albumId: string
+) {
+  return await request
+    .get(`/api/album/${albumId}`)
 }
