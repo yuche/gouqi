@@ -1,6 +1,5 @@
 import {
   login,
-  getUserID,
   userPlayList,
   playListDetail,
   personalFM,
@@ -8,13 +7,23 @@ import {
   setCookies,
   SearchType,
   getCookies,
-  recommnedPlayList
+  recommnedPlayList,
+  fmLike,
+  fmTrash,
+  newAlbums,
+  topPlayList,
+  topArtists,
+  artistInfo,
+  albumInfo,
+  djChannels,
+  channelDetails,
+  singleSongDetails,
+  batchSongDetails,
+  batchSongDetailsNew,
+  ChannelsType
 } from '../../lib/services/api.js'
 
 import test from 'ava'
-import {
-  Random
-} from 'mockjs'
 const fs = require('fs')
 const path = require('path')
 
@@ -147,8 +156,51 @@ test.after('can access recommend play lists', async (t) => {
   t.is(code, 200)
 })
 
-// test('can access user profile', async (t) => {
-//   const fuck = await userProfile()
-//   console.log(getUserID())
-//   t.pass()
-// })
+test('fm like', async (t) => {
+  const { code } = await fmLike('123456')
+  t.is(code, 200)
+})
+
+test('fm trash', async (t) => {
+  const { code } = await fmTrash('123456')
+  t.is(code, 200)
+})
+
+test('new albums', macroReturnCode, newAlbums)
+
+test('top play list', macroReturnCode, topPlayList)
+
+test('top artist', macroReturnCode, topArtists)
+
+test('artist info', macroReturnCode, artistInfo, 200, '123456')
+
+test('album info', macroReturnCode, albumInfo, 200, '123456')
+
+test('dj channels today hotest',
+  macroReturnCode, djChannels, ChannelsType.today)
+
+test('dj channels week hotest',
+  macroReturnCode, djChannels, ChannelsType.week)
+
+test('dj channels history hotest',
+  macroReturnCode, djChannels, ChannelsType.history)
+
+test('dj channels recent hotest',
+  macroReturnCode, djChannels, ChannelsType.recent)
+
+test('dj channels details', channelDetails, 200, '123567')
+
+test('single song details', singleSongDetails, 200, '123456')
+
+test('batch song details', batchSongDetails, 200, [
+  '123456',
+  '654321'
+])
+
+test.after('batch song details new api', batchSongDetailsNew, 200, {
+  songIds: [
+    '123456',
+    '654321'
+  ]
+})
+

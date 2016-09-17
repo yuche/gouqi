@@ -134,7 +134,7 @@ export async function personalFM () {
 export async function fmLike (
   songId: string,
   like = true,
-  time = 25,
+  time = '25',
   alg = 'itembased'
 ) {
   return await request
@@ -143,7 +143,7 @@ export async function fmLike (
 
 export async function fmTrash (
   songId: string,
-  time = 25,
+  time = '25',
   alg = 'RT'
 ) {
   return await request
@@ -151,8 +151,8 @@ export async function fmTrash (
 }
 
 export async function newAlbums (
-  offset: 0,
-  limit: 10
+  offset = '0',
+  limit = '10'
 ) {
   return await request
     .get(`/api/album/new?area=ALL&offset=${offset}&total=true&limit=${limit}`)
@@ -161,17 +161,17 @@ export async function newAlbums (
 export async function topPlayList (
   category = '全部',
   order = 'hot',
-  offset = 0,
+  offset = '0',
   total = true,
-  limit = 10
+  limit = '10'
 ) {
   return await request
     .get(`/api/playlist/list?cat=${category}&order=${order}&offset=${offset}&total=${offset}&limit=${limit}`)
 }
 
 export async function topArtists (
-  offset: 0,
-  limit: 10
+  offset = '0',
+  limit = '10'
 ) {
   return await request
     .get(`/api/artist/top?offset=${offset}&total=false&limit=${limit}`)
@@ -200,25 +200,25 @@ export const enum ChannelsType {
 
 export async function djChannels (
   stype: ChannelsType,
-  offset = 0,
-  limit = 10
+  offset = '0',
+  limit = '10'
 ) {
   return await request
-    .post(`/discover/djradio?type=${stype}&offset=${offset}&limit=${limit}`)
+    .get(`/discover/djradio?type=${stype}&offset=${offset}&limit=${limit}`)
 }
 
 export async function channelDetails (channelId: string) {
-  return await request.post(`/api/dj/program/detail?id=${channelId}`)
+  return await request.get(`/api/dj/program/detail?id=${channelId}`)
 }
 
 export async function singleSongDetails (songId: string) {
   return await request
-    .post(`/api/song/detail/?id=${songId}&ids=[${songId}]`)
+    .get(`/api/song/detail/?id=${songId}&ids=[${songId}]`)
 }
 
 export async function batchSongDetails (songIds: string[]) {
   return await request
-    .post(`/api/song/detail?ids=[${songIds.join()}]`)
+    .get(`/api/song/detail?ids=[${songIds.join()}]`)
 }
 
 export async function batchSongDetailsNew (
