@@ -44,6 +44,11 @@ export function setCookies (cookie: string): void {
   cookieJar.setCookie(request.cookie(cookie), API_BASE_URL)
 }
 
+export function getCsrfFromCookies (): string | null {
+  const cookies = getCookies()
+  return cookies ? /csrf=(\w*);/.exec(cookies)[1] : null
+}
+
 interface ILoginBody {
   password: string,
   rememberLogin: string,
@@ -109,11 +114,10 @@ export async function search (body: ISearchBody) {
 }
 
 export async function recommnedPlayList (body: IPaginationParams) {
-  const cookies = getCookies()
-  if (!cookies) {
+  const csrf = getCsrfFromCookies()
+  if (!csrf) {
     return null
   }
-  const csrf = /csrf=(\w*);/.exec(cookies)[1]
   return await request
     .post('/weapi/v1/discovery/recommend/songs?csrf_token=' + csrf, {
         body: qs.stringify(encryptedRequest(
@@ -185,4 +189,54 @@ export async function albumInfo (
 ) {
   return await request
     .get(`/api/album/${albumId}`)
+}
+
+export const enum ChannelsType {
+  today = 0, // 今日最热
+  week = 10,
+  history = 20,
+  recent = 30
+}
+
+export async function djChannels (
+  stype: ChannelsType,
+  offset = 0,
+  limit = 10
+) {
+  return await request
+    .post(`/discover/djradio?type=${stype}&offset=${offset}&limit=${limit}`)
+}
+
+export async function channelDetails (channelId: string) {
+  return await request.post(`/api/dj/program/detail?id=${channelId}`)
+}
+
+export async function singleSongDetails (songId: string) {
+  return await request
+    .post(`/api/song/detail/?id=${songId}&ids=[${songId}]`)
+}
+
+export async function batchSongDetails (songIds: string[]) {
+  return await request
+    .post(`/api/song/detail?ids=[${songIds.join()}]`)
+}
+
+export async function batchSongDetailsNew (
+  songIds: string[],
+  bitrate = '320000'
+) {
+  const csrf = getCsrfFromCookies()
+  if (!csrf) {
+    return null
+  }
+  return await request
+    .post(`/weapi/song/enhance/player/url?csrf_token=${csrf}`, {
+      body: qs.stringify(
+        encryptedRequest({
+          br: bitrate,
+          ids: songIds,
+          'csrf_token': csrf
+        })
+      )
+    })
 }

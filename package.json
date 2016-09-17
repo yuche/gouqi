@@ -5,6 +5,7 @@
   "scripts": {
     "start": "node node_modules/react-native/local-cli/cli.js start",
     "quickbuild": "tsc",
+    "dev": "tsc -w",
     "test": "ava --verbose",
     "test:watch": "ava --watch --verbose",
     "coverage": "nyc ava --verbose && nyc report --reporter=html",

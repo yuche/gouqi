@@ -11,7 +11,6 @@ import {
   recommnedPlayList
 } from '../../lib/services/api.js'
 
-import crypto from 'crypto'
 import test from 'ava'
 import {
   Random
@@ -22,6 +21,16 @@ const path = require('path')
 const Pagination = {
   offset: 0,
   limit: 10
+}
+
+async function macroReturnCode (
+  t,
+  asyncFunction,
+  expectedCode = 200,
+  ...args
+) {
+  const { code } = await asyncFunction(...args)
+  t.is(code, expectedCode)
 }
 
 test.before('can not access recommend play lists', async (t) => {
