@@ -29,8 +29,8 @@ const request = rq.defaults({
   jar: cookieJar,
   proxy: 'http://localhost:8888',
   useQuerystring: true,
-  transform(body) {
-    return typeof body === 'object'
+  transform(body: string) {
+    return body.startsWith('<!DOCTYPE html>')
       ? body
       : JSON.parse(body)
   }
@@ -55,7 +55,6 @@ interface ILoginBody {
   phone?: string,
   username?: string
 }
-
 
 export async function login (username: string, password: string) {
   const patten = /^0\d{2,3}\d{7,8}$|^1[34578]\d{9}$/
@@ -199,12 +198,14 @@ export const enum ChannelsType {
 }
 
 export async function djChannels (
-  stype: ChannelsType,
+  stype: ChannelsType | string,
   offset = '0',
   limit = '10'
 ) {
-  return await request
+  const body: string = await request
     .get(`/discover/djradio?type=${stype}&offset=${offset}&limit=${limit}`)
+  const matchChannels = [...body.match(/program\?id=\d+/g)]
+  return [...new Set(matchChannels)].map(c => c.slice(11))
 }
 
 export async function channelDetails (channelId: string) {

@@ -24,6 +24,7 @@ import {
 } from '../../lib/services/api.js'
 
 import test from 'ava'
+const { sample } = require('lodash')
 const fs = require('fs')
 const path = require('path')
 
@@ -31,6 +32,12 @@ const Pagination = {
   offset: 0,
   limit: 10
 }
+
+const testAccounts = [
+  '18077162384',
+  '18502080838',
+  '15078171902'
+]
 
 async function macroReturnCode (
   t,
@@ -41,6 +48,23 @@ async function macroReturnCode (
   const { code } = await asyncFunction(...args)
   t.is(code, expectedCode)
 }
+
+function isNumeric (value) {
+    return /^\d+$/.test(value)
+}
+
+async function macroDjChannelType (
+  t,
+  stype
+) {
+  const channels = await djChannels(stype)
+  t.true(channels.every(c => isNumeric(c)))
+}
+
+test.before('batch song details new api return null', async (t) => {
+  const body = await batchSongDetailsNew(['123456', '123454'])
+  t.falsy(body)
+})
 
 test.before('can not access recommend play lists', async (t) => {
   const body = await recommnedPlayList({
@@ -70,14 +94,14 @@ test.before('set cookies', async (t) => {
   t.pass()
 })
 
-test('email login works', async (t) => {
-  const { code } = await login('18502080838', 'tooyoung')
+test.only('email login works', async (t) => {
+  const { code } = await login('华莱士', 'verytall')
   t.is(code, 502) // 502 = wrong password
 })
 
 test('cellphone login works', async (t) => {
-  const { code } = await login('18502080838', 'exciting')
-  t.is(code, 502)
+  const { code } = await login(sample(testAccounts), 'exciting')
+  t.is(code, 502) // 502 = wrong password
 })
 
 test('can access user play list', async (t) => {
@@ -156,15 +180,9 @@ test.after('can access recommend play lists', async (t) => {
   t.is(code, 200)
 })
 
-test('fm like', async (t) => {
-  const { code } = await fmLike('123456')
-  t.is(code, 200)
-})
+test('fm like', macroReturnCode, fmLike, 200, '123456')
 
-test('fm trash', async (t) => {
-  const { code } = await fmTrash('123456')
-  t.is(code, 200)
-})
+test('fm Trash', macroReturnCode, fmTrash, 200, '123456')
 
 test('new albums', macroReturnCode, newAlbums)
 
@@ -172,35 +190,35 @@ test('top play list', macroReturnCode, topPlayList)
 
 test('top artist', macroReturnCode, topArtists)
 
-test('artist info', macroReturnCode, artistInfo, 200, '123456')
+test('artist info', macroReturnCode, artistInfo, 200, '9621')
 
-test('album info', macroReturnCode, albumInfo, 200, '123456')
+test('album info', macroReturnCode, albumInfo, 200, '34751985')
 
-test('dj channels today hotest',
-  macroReturnCode, djChannels, ChannelsType.today)
+test('dj channels today hotest', macroDjChannelType, ChannelsType.today)
 
-test('dj channels week hotest',
-  macroReturnCode, djChannels, ChannelsType.week)
+test('dj channels week hotest', macroDjChannelType, ChannelsType.week)
 
-test('dj channels history hotest',
-  macroReturnCode, djChannels, ChannelsType.history)
+test('dj channels history hotest', macroDjChannelType, ChannelsType.history)
 
-test('dj channels recent hotest',
-  macroReturnCode, djChannels, ChannelsType.recent)
+test('dj channels recent hotest', macroDjChannelType, ChannelsType.recent)
 
-test('dj channels details', channelDetails, 200, '123567')
+test('dj channels details', channelDetails, 200, '793766444')
 
-test('single song details', singleSongDetails, 200, '123456')
+test('single song details', singleSongDetails, 200, '29713754')
 
-test('batch song details', batchSongDetails, 200, [
-  '123456',
-  '654321'
-])
+test('batch song details', async (t) => {
+  const { code } = await batchSongDetails([
+    '29713754',
+    '299604'
+  ])
+  t.is(code, 200)
+})
 
-test.after('batch song details new api', batchSongDetailsNew, 200, {
-  songIds: [
-    '123456',
-    '654321'
-  ]
+test.after('batch song details new api', async (t) => {
+  const { code } = await batchSongDetailsNew([
+    '29713754',
+    '299604'
+  ])
+  t.is(code, 200)
 })
 
