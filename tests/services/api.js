@@ -61,6 +61,16 @@ async function macroDjChannelType (
   t.true(channels.every(c => isNumeric(c)))
 }
 
+async function macroSearch (s, type) {
+  const { code } = await search({
+    ...Pagination,
+    s,
+    type,
+    total: true
+  })
+  t.is(code, 200)
+}
+
 test.before('batch song details new api return null', async (t) => {
   const body = await batchSongDetailsNew(['123456', '123454'])
   t.falsy(body)
@@ -94,90 +104,32 @@ test.before('set cookies', async (t) => {
   t.pass()
 })
 
-test.only('email login works', async (t) => {
-  const { code } = await login('华莱士', 'verytall')
-  t.is(code, 502) // 502 = wrong password
+test('email login works', macroReturnCode, login, 502, '华莱士', 'verytall')
+
+test('cellphone login works', macroReturnCode, login, 502, sample(testAccounts), 'exciting')
+
+test('can access user play list', macroReturnCode, userPlayList, 200, {
+  ...Pagination,
+  uid: '123242395
 })
 
-test('cellphone login works', async (t) => {
-  const { code } = await login(sample(testAccounts), 'exciting')
-  t.is(code, 502) // 502 = wrong password
-})
+test('can access play list details', macroReturnCode, playListDetail, 200, '370310078')
 
-test('can access user play list', async (t) => {
-  const { code } = await userPlayList({
-    ...Pagination,
-    uid: '123242395'
-  })
-  t.is(code, 200)
-})
+test('search for songs', macroSearch, '香', SearchType.song)
 
-test('can access play list details', async (t) => {
-  const { code } = await playListDetail('370310078')
-  t.is(code, 200)
-})
+test('search for singers', macroSearch, '港', SearchType.singer)
 
-test('search for songs', async (t) => {
-  const { code } = await search({
-    ...Pagination,
-    s: '香',
-    type: SearchType.song,
-    total: true
-  })
-  t.is(code, 200)
-})
+test('search for albums', macroSearch, '记', SearchType.album)
 
-test('search for singers', async (t) => {
-  const { code } = await search({
-    ...Pagination,
-    s: '港',
-    type: SearchType.singer,
-    total: true
-  })
-  t.is(code, 200)
-})
+test('search for songList', macroSearch, '者', SearchType.songList)
 
-test('search for albums', async (t) => {
-  const { code } = await search({
-    ...Pagination,
-    s: '记',
-    type: SearchType.album,
-    total: true
-  })
-  t.is(code, 200)
-})
+test('search for users', macroSearch, '快', SearchType.user)
 
-test('search for song lists', async (t) => {
-  const { code } = await search({
-    ...Pagination,
-    s: '者',
-    type: SearchType.songList,
-    total: true
-  })
-  t.is(code, 200)
-})
+test('can access personal FM', macroReturnCode, personalFM)
 
-test('search for users', async (t) => {
-  const { code } = await search({
-    ...Pagination,
-    s: '快',
-    type: SearchType.user,
-    total: true
-  })
-  t.is(code, 200)
-})
-
-test('can access personal FM', async (t) => {
-  const { code } = await personalFM()
-  t.is(code, 200)
-})
-
-test.after('can access recommend play lists', async (t) => {
-  const { code } = await recommnedPlayList({
-    ...Pagination,
-    total: true
-  })
-  t.is(code, 200)
+test.after('can access recommend play lists', macroReturnCode, recommnedPlayList, 200, {
+  ...Pagination,
+  total: true
 })
 
 test('fm like', macroReturnCode, fmLike, 200, '123456')
