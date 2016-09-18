@@ -50,18 +50,18 @@ async function macroReturnCode (
 }
 
 function isNumeric (value) {
-    return /^\d+$/.test(value)
+  return /^\d+$/.test(value)
 }
 
 async function macroDjChannelType (
   t,
-  stype
+  type
 ) {
-  const channels = await djChannels(stype)
+  const channels = await djChannels(type)
   t.true(channels.every(c => isNumeric(c)))
 }
 
-async function macroSearch (s, type) {
+async function macroSearch (t, s, type) {
   const { code } = await search({
     ...Pagination,
     s,
@@ -110,7 +110,7 @@ test('cellphone login works', macroReturnCode, login, 502, sample(testAccounts),
 
 test('can access user play list', macroReturnCode, userPlayList, 200, {
   ...Pagination,
-  uid: '123242395
+  uid: '123242395'
 })
 
 test('can access play list details', macroReturnCode, playListDetail, 200, '370310078')
@@ -173,4 +173,3 @@ test.after('batch song details new api', async (t) => {
   ])
   t.is(code, 200)
 })
-
