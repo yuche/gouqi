@@ -49,6 +49,12 @@ export function getCsrfFromCookies (): string | null {
   return cookies ? /csrf=(\w*);/.exec(cookies)[1] : null
 }
 
+function getUserId (): string | null {
+  const cookies = getCookies()
+  const uids = /\d+/.exec(cookies.split(';')[3])
+  return uids ? uids[0] : null
+}
+
 interface ILoginBody {
   password: string,
   rememberLogin: string,
@@ -239,5 +245,52 @@ export async function batchSongDetailsNew (
           'csrf_token': csrf
         })
       )
+    })
+}
+
+export async function opMuiscToPlaylist (
+  tracks: string,
+  pid: string,
+  op: 'add' | 'del'
+) {
+  return await request
+    .post(`/api/playlist/manipulate/tracks`, {
+      body: qs.stringify({
+        tracks,
+        trackIds: `[${tracks}]`,
+        pid,
+        op
+      })
+    })
+}
+
+export async function setMusicFavorite (
+  trackId: string,
+  like: boolean | string,
+  time = '0'
+) {
+  return await request
+    .post(`/api/song/like`, {
+      body: qs.stringify({
+        trackId,
+        like,
+        time
+      })
+    })
+}
+
+export async function createPlaylist (
+  name: string
+) {
+  const uid = getUserId()
+  if (!uid) {
+    return null
+  }
+  return await request
+    .post(`/api/playlist/create`, {
+      body: qs.stringify({
+        name,
+        uid
+      })
     })
 }

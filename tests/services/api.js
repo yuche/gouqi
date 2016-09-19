@@ -20,7 +20,10 @@ import {
   singleSongDetails,
   batchSongDetails,
   batchSongDetailsNew,
-  ChannelsType
+  ChannelsType,
+  opMuiscToPlaylist,
+  setMusicFavorite,
+  createPlaylist
 } from '../../lib/services/api.js'
 
 import test from 'ava'
@@ -173,3 +176,14 @@ test.after('batch song details new api', async (t) => {
   ])
   t.is(code, 200)
 })
+
+test('add a song to playlist', async (t) => {
+  const { code } = await opMuiscToPlaylist('29713754', '462066110', 'add')
+  t.true(code === 200 || code === 502)
+})
+
+test('set music farvorite', macroReturnCode, setMusicFavorite, 200, '29713754', true)
+
+test('set music unfarvorite', macroReturnCode, setMusicFavorite, 200, '29713754', false)
+
+test.only('create a play list', macroReturnCode, createPlaylist, 200, 'test')
