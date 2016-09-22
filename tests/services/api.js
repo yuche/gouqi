@@ -1,30 +1,4 @@
-import {
-  login,
-  userPlayList,
-  playListDetail,
-  personalFM,
-  search,
-  setCookies,
-  SearchType,
-  getCookies,
-  recommnedPlayList,
-  fmLike,
-  fmTrash,
-  newAlbums,
-  topPlayList,
-  topArtists,
-  artistInfo,
-  albumInfo,
-  djChannels,
-  channelDetails,
-  singleSongDetails,
-  batchSongDetails,
-  batchSongDetailsNew,
-  ChannelsType,
-  opMuiscToPlaylist,
-  setMusicFavorite,
-  createPlaylist
-} from '../../lib/services/api.js'
+import * as api from '../../lib/services/api.js'
 
 import test from 'ava'
 const { sample } = require('lodash')
@@ -60,27 +34,17 @@ async function macroDjChannelType (
   t,
   type
 ) {
-  const channels = await djChannels(type)
+  const channels = await api.djChannels(type)
   t.true(channels.every(c => isNumeric(c)))
 }
 
-async function macroSearch (t, s, type) {
-  const { code } = await search({
-    ...Pagination,
-    s,
-    type,
-    total: true
-  })
-  t.is(code, 200)
-}
-
 test.before('batch song details new api return null', async (t) => {
-  const body = await batchSongDetailsNew(['123456', '123454'])
+  const body = await api.batchSongDetailsNew(['123456', '123454'])
   t.falsy(body)
 })
 
 test.before('can not access recommend play lists', async (t) => {
-  const body = await recommnedPlayList({
+  const body = await api.recommendPlayList({
     ...Pagination,
     total: true
   })
@@ -95,74 +59,68 @@ test.before('set cookies', async (t) => {
     tenDaysAgo.setDate(tenDaysAgo.getDate() - 10)
     if (mtime > tenDaysAgo) {
       const cookieStr = fs.readFileSync(cookiePath, 'UTF-8')
-      cookieStr.split(';').forEach(setCookies)
+      cookieStr.split(';').forEach(api.setCookies)
     } else {
-      await login('18502080838', 'if(country)noEsc')
-      fs.writeFileSync(cookiePath, getCookies())
+      await api.login('18502080838', 'if(country)noEsc')
+      fs.writeFileSync(cookiePath, api.getCookies())
     }
   } else {
-    await login('18502080838', 'if(country)noEsc')
-    fs.writeFileSync(cookiePath, getCookies())
+    await api.login('18502080838', 'if(country)noEsc')
+    fs.writeFileSync(cookiePath, api.getCookies())
   }
   t.pass()
 })
 
-test('email login works', macroReturnCode, login, 502, '华莱士', 'verytall')
+test('email login works', macroReturnCode, api.login, 502, '华莱士', 'verytall')
 
-test('cellphone login works', macroReturnCode, login, 502, sample(testAccounts), 'exciting')
+test('cellphone login works', macroReturnCode, api.login, 502, sample(testAccounts), 'exciting')
 
-test('can access user play list', macroReturnCode, userPlayList, 200, {
-  ...Pagination,
-  uid: '123242395'
-})
+test('can access user play list', macroReturnCode, api.userPlayList, 200, '123242395')
 
-test('can access play list details', macroReturnCode, playListDetail, 200, '370310078')
+test('can access play list details', macroReturnCode, api.playListDetail, 200, '370310078')
 
-test('search for songs', macroSearch, '香', SearchType.song)
+test('search for songs', macroReturnCode, api.search, 200, '香', api.SearchType.song)
 
-test('search for singers', macroSearch, '港', SearchType.singer)
+test('search for singers', macroReturnCode, api.search, 200, '港', api.SearchType.singer)
 
-test('search for albums', macroSearch, '记', SearchType.album)
+test('search for albums', macroReturnCode, api.search, 200, '记', api.SearchType.album)
 
-test('search for songList', macroSearch, '者', SearchType.songList)
+test('search for songList', macroReturnCode, api.search, 200, '者', api.SearchType.songList)
 
-test('search for users', macroSearch, '快', SearchType.user)
+test('search for users', macroReturnCode, api.search, 200, '快', api.SearchType.user)
 
-test('can access personal FM', macroReturnCode, personalFM)
+test('can access personal FM', macroReturnCode, api.personalFM)
 
-test.after('can access recommend play lists', macroReturnCode, recommnedPlayList, 200, {
-  ...Pagination,
-  total: true
-})
+test.after('can access recommend play lists', macroReturnCode, api.recommendPlayList)
 
-test('fm like', macroReturnCode, fmLike, 200, '123456')
+test('fm like', macroReturnCode, api.fmLike, 200, '123456')
 
-test('fm Trash', macroReturnCode, fmTrash, 200, '123456')
+test('fm Trash', macroReturnCode, api.fmTrash, 200, '123456')
 
-test('new albums', macroReturnCode, newAlbums)
+test('new albums', macroReturnCode, api.newAlbums)
 
-test('top play list', macroReturnCode, topPlayList)
+test('top play list', macroReturnCode, api.topPlayList)
 
-test('top artist', macroReturnCode, topArtists)
+test('top artist', macroReturnCode, api.topArtists)
 
-test('artist info', macroReturnCode, artistInfo, 200, '9621')
+test('artist info', macroReturnCode, api.artistInfo, 200, '9621')
 
-test('album info', macroReturnCode, albumInfo, 200, '34751985')
+test('album info', macroReturnCode, api.albumInfo, 200, '34751985')
 
-test('dj channels today hotest', macroDjChannelType, ChannelsType.today)
+test('dj channels today hotest', macroDjChannelType, api.ChannelsType.today)
 
-test('dj channels week hotest', macroDjChannelType, ChannelsType.week)
+test('dj channels week hotest', macroDjChannelType, api.ChannelsType.week)
 
-test('dj channels history hotest', macroDjChannelType, ChannelsType.history)
+test('dj channels history hotest', macroDjChannelType, api.ChannelsType.history)
 
-test('dj channels recent hotest', macroDjChannelType, ChannelsType.recent)
+test('dj channels recent hotest', macroDjChannelType, api.ChannelsType.recent)
 
-test('dj channels details', channelDetails, 200, '793766444')
+test('dj channels details', macroReturnCode, api.channelDetails, 200, '793766444')
 
-test('single song details', singleSongDetails, 200, '29713754')
+test('single song details', macroReturnCode, api.singleSongDetails, 200, '29713754')
 
 test('batch song details', async (t) => {
-  const { code } = await batchSongDetails([
+  const { code } = await api.batchSongDetails([
     '29713754',
     '299604'
   ])
@@ -170,7 +128,7 @@ test('batch song details', async (t) => {
 })
 
 test.after('batch song details new api', async (t) => {
-  const { code } = await batchSongDetailsNew([
+  const { code } = await api.batchSongDetailsNew([
     '29713754',
     '299604'
   ])
@@ -178,12 +136,20 @@ test.after('batch song details new api', async (t) => {
 })
 
 test('add a song to playlist', async (t) => {
-  const { code } = await opMuiscToPlaylist('29713754', '462066110', 'add')
+  const { code } = await api.opMuiscToPlaylist('29713754', '462066110', 'add')
   t.true(code === 200 || code === 502)
 })
 
-test('set music farvorite', macroReturnCode, setMusicFavorite, 200, '29713754', true)
+test('set music farvorite', macroReturnCode, api.setMusicFavorite, 200, '29713754', true)
 
-test('set music unfarvorite', macroReturnCode, setMusicFavorite, 200, '29713754', false)
+test('set music unfarvorite', macroReturnCode, api.setMusicFavorite, 200, '29713754', false)
 
-test.only('create a play list', macroReturnCode, createPlaylist, 200, 'test')
+test('create play list', macroReturnCode, api.createPlaylist, 200, '大新闻')
+
+// test('update play list', macroReturnCode, api.updatePlaylist, 200, '469543495', 'fuckyou')
+
+test('delete play list', macroReturnCode, api.deletePlaylist, 200, '469524737')
+
+test.only('subscribe play list', macroReturnCode, api.subscribePlaylist, 200, '460655470')
+
+test.only('create a play list', macroReturnCode, api.createPlaylist, 200, 'test')

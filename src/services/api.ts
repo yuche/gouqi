@@ -1,4 +1,3 @@
-// import request_declaration from 'request' // tslint:disable-line
 // most of api from @darknessomi/musicbox
 // https://github.com/darknessomi/musicbox/blob/master/NEMbox/api.py
 
@@ -75,30 +74,23 @@ export async function login (username: string, password: string) {
   } else {
     body.username = username
   }
-  const encBody = encryptedRequest(body)
   return await request.post(url, {
-    body: qs.stringify(encBody)
+    body: encryptedRequest(body)
   })
 }
 
-export interface IPaginationParams {
-  offset: number,
-  limit: number,
-  total?: boolean
-}
-
-export interface IPlayListParams extends IPaginationParams {
-  uid: string
-}
-
-export async function userPlayList (qs: IPlayListParams) {
-  return await request.get('/api/user/playlist/', { qs })
+export async function userPlayList (
+  uid = getUserId(),
+  offset = '0',
+  limit = '100',
+  total = true
+) {
+  return await request.get('/api/user/playlist/'
+  + `?uid=${uid}&offset=${offset}&limit=${limit}&total=${total}`)
 }
 
 export async function playListDetail (id: string) {
-  return await request.get('/api/playlist/detail', {
-    qs: { id }
-  })
+  return await request.get(`/api/playlist/detail?id=${id}`)
 }
 
 export const enum SearchType {
@@ -109,25 +101,33 @@ export const enum SearchType {
   user = 1002
 }
 
-export interface ISearchBody extends IPaginationParams {
+export async function search (
   s: string,
-  type: SearchType | string
+  type: SearchType | string,
+  offset = '0',
+  limit = '20',
+  total = 'true'
+) {
+  return await request.post('/api/search/get/web', { body: qs.stringify({
+    s, type, offset, limit, total
+  }) })
 }
 
-export async function search (body: ISearchBody) {
-  return await request.post('/api/search/get/web', { body: qs.stringify(body) })
-}
-
-export async function recommnedPlayList (body: IPaginationParams) {
+export async function recommendPlayList (
+  offset = '0',
+  limit = '20',
+  total = 'true'
+) {
   const csrf = getCsrfFromCookies()
   if (!csrf) {
     return null
   }
   return await request
     .post('/weapi/v1/discovery/recommend/songs?csrf_token=' + csrf, {
-        body: qs.stringify(encryptedRequest(
-          Object.assign({}, body, { 'csrf_token': csrf })
-        ))
+        body: encryptedRequest({
+          offset, limit, total,
+          'csrf-token': csrf
+        })
       }
     )
 }
@@ -204,12 +204,12 @@ export const enum ChannelsType {
 }
 
 export async function djChannels (
-  stype: ChannelsType | string,
+  type: ChannelsType | string,
   offset = '0',
   limit = '10'
 ) {
   const body: string = await request
-    .get(`/discover/djradio?type=${stype}&offset=${offset}&limit=${limit}`)
+    .get(`/discover/djradio?type=${type}&offset=${offset}&limit=${limit}`)
   const matchChannels = [...body.match(/program\?id=\d+/g)]
   return [...new Set(matchChannels)].map(c => c.slice(11))
 }
@@ -238,13 +238,11 @@ export async function batchSongDetailsNew (
   }
   return await request
     .post(`/weapi/song/enhance/player/url?csrf_token=${csrf}`, {
-      body: qs.stringify(
-        encryptedRequest({
-          br: bitrate,
-          ids: songIds,
-          'csrf_token': csrf
-        })
-      )
+      body: encryptedRequest({
+        br: bitrate,
+        ids: songIds,
+        'csrf_token': csrf
+      })
     })
 }
 
@@ -264,7 +262,7 @@ export async function opMuiscToPlaylist (
     })
 }
 
-export async function setMusicFavorite (
+  export async function setMusicFavorite (
   trackId: string,
   like: boolean | string,
   time = '0'
@@ -283,14 +281,65 @@ export async function createPlaylist (
   name: string
 ) {
   const uid = getUserId()
+  const csrf = getCsrfFromCookies()
   if (!uid) {
     return null
   }
   return await request
-    .post(`/api/playlist/create`, {
-      body: qs.stringify({
+    .post(`/weapi/playlist/create?csrf_token=${csrf}`, {
+      body: encryptedRequest({
         name,
         uid
       })
     })
 }
+
+export async function deletePlaylist (
+  pid: string
+) {
+  const csrf = getCsrfFromCookies()
+  if (!csrf) {
+    return null
+  }
+  return await request
+    .post(`/weapi/playlist/delete?csrf_token=${csrf}`, {
+      body: encryptedRequest({
+        id: pid,
+        pid
+      })
+    })
+}
+
+export async function subscribePlaylist (pid: string, subscribe = true) {
+  const csrf = getCsrfFromCookies()
+  if (!csrf) {
+    return null
+  }
+  const prefix = subscribe ? '' : 'un'
+  return await request
+    .post(`/weapi/playlist/${prefix}subscribe/?csrf_token=${csrf}`, {
+      body: encryptedRequest({
+        id: pid,
+        pid
+      })
+    })
+}
+
+// export async function updatePlaylist (
+//   pid: string,
+//   name: string
+// ) {
+//   const csrf = getCsrfFromCookies()
+//   if (!csrf) {
+//     return null
+//   }
+//   return await request
+//     .post(`/weapi/playlist/delete?csrf_token=${csrf}`, {
+//       body: qs.stringify(
+//         encryptedRequest({
+//         id: pid,
+//         name
+//       })
+//       )
+//     })
+// }
