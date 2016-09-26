@@ -6,6 +6,8 @@ import {
   View
 } from 'react-native'
 
+require('./lib/routers/index.jsx')
+
 class gouqi extends Component {
   render () {
     return (
