@@ -1,4 +1,4 @@
-import React from 'react'
+import * as React from 'react'
 import {
   StyleSheet,
   Text,
@@ -8,7 +8,7 @@ import {
 } from 'react-native'
 import { Actions as router } from 'react-native-router-flux'
 
-export default class RecommendPage extends React.Component<any, any> {
+export default class RecommendScene extends React.Component<any, any> {
   public render () {
     return (
       <View style={styles.container}>

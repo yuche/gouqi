@@ -1,3 +1,6 @@
+import {
+  assign
+} from '../utils'
 import * as React from 'react'
 import {
   Text,
@@ -5,13 +8,13 @@ import {
   View
 } from 'react-native'
 
-interface IState {
+export interface IState {
   username: string,
   password: string
 }
 
-class Login extends React.Component<any, any> {
-  constructor(props: any) {
+class Login extends React.Component<{}, IState> {
+  constructor(props: {}) {
     super(props)
     this.state = {
       username: '',
@@ -19,12 +22,12 @@ class Login extends React.Component<any, any> {
     }
   }
 
-  handleUsernameChange(text: string) {
-    this.setState({username: text})
+  handleUsernameChange(username: string) {
+    this.setState(assign(this.state, { username }))
   }
 
-  handlePasswordChange(text: string) {
-    this.setState({password: text})
+  handlePasswordChange(password: string) {
+    this.setState(assign(this.state, { password }))
   }
 
   render() {

@@ -2,6 +2,8 @@
 #
 .DS_Store
 
+# Custom
+$
 lib/
 typings/
 coverage/

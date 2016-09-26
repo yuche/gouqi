@@ -4,8 +4,8 @@
  * from https://github.com/stkevintan/Cube/blob/master/src/model/Crypto.js
  */
 const bigInt = require('big-integer')
-import crypto from 'crypto'
-import qs from 'querystring'
+import * as crypto from 'crypto'
+import * as qs from 'querystring'
 
 function addPadding (s: string, size: number) {
     while (s.length < size) s = "0" + s;

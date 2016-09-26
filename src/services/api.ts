@@ -5,8 +5,8 @@ import {
   encryptedMD5,
   encryptedRequest
 } from './crypto'
-import qs from 'querystring'
-import rq from 'request-promise'
+import * as qs from 'querystring'
+import * as rq from 'request-promise'
 
 export const API_BASE_URL = 'http://music.163.com'
 
@@ -44,8 +44,8 @@ export function setCookies (cookie: string): void {
 }
 
 export function getCsrfFromCookies (): string | null {
-  const cookies = getCookies()
-  return cookies ? /csrf=(\w*);/.exec(cookies)[1] : null
+  const csrfReg = /csrf=(\w*);/.exec(getCookies())
+  return csrfReg ? csrfReg[1] : null
 }
 
 function getUserId (): string | null {

@@ -9,7 +9,7 @@
         "moduleResolution": "node",
         "experimentalDecorators": true,
         "noImplicitAny": true,
-        "noEmitOnError": true,
+        // "noEmitOnError": true,
         "outDir": "lib",
         "strictNullChecks": true,
         "noImplicitThis": true,
