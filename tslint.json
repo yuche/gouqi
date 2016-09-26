@@ -1,6 +1,8 @@
 {
   "extends": ["tslint:latest", "tslint-react"],
   "rules": {
+    "member-access": false,
+    "object-literal-sort-keys": false,
     "jsx-alignment": true,
     "jsx-self-close": true,
     "quotemark": [true, "single", "avoid-escape"],
