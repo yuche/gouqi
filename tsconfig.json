@@ -7,21 +7,17 @@
         "noImplicitAny": true,
         "experimentalDecorators": true,
         "preserveConstEnums": true,
+        "moduleResolution": "node",
+        "module": "commonjs",
         "outDir": "lib",
-        "rootDir": "src",
         "inlineSourceMap": true
     },
-    "filesGlob": [
-        "typings/index.d.ts",
-        "typings/globals/**/*.d.ts",
-        "src/**/*.ts",
-        "src/**/*.tsx"
-    ],
-    "exclude": [
-        "typings/main",
-        "typings/main.d.ts",
-        "lib",
-        "node_modules"
-    ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "typings",
+    "tests",
+    "lib"
+  ],
     "compileOnSave": false
 }
