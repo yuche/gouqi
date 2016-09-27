@@ -1,7 +1,7 @@
 {
     "compilerOptions": {
         "target": "es2015",
-        "jsx": "preserve",
+        "jsx": "react",
         "declaration": true,
         // "module": "commonjs",
         "removeComments": true,
@@ -15,6 +15,10 @@
         "noImplicitThis": true,
         "inlineSourceMap": true
     },
+    "filesGlob": [
+        "src/**/*.ts",
+        "src/**/*.tsx"
+    ],
   "exclude": [
     "node_modules",
     "dist",

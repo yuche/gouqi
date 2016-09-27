@@ -22,21 +22,25 @@ class Login extends React.Component<{}, IState> {
     }
   }
 
-  handleUsernameChange(username: string) {
+  handleUsernameChange = (username: string)  => {
     this.setState(assign(this.state, { username }))
   }
 
-  handlePasswordChange(password: string) {
+  handlePasswordChange = (password: string) => {
     this.setState(assign(this.state, { password }))
   }
 
   render() {
     return (
-      <View style={{padding: 10}}>
+      <View style={{margin: 128}}>
         <TextInput
+          editable={true}
+          style={{height: 40, borderColor: 'gray', borderWidth: 1}}
           onChangeText={this.handleUsernameChange}
         />
         <TextInput
+          editable={true}
+          style={{height: 40, borderColor: 'gray', borderWidth: 1}}
           onChangeText={this.handlePasswordChange}
         />
         <Text>登录</Text>

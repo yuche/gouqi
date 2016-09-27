@@ -18,7 +18,6 @@ class NavRouter extends React.Component<any, any> {
             title='Recommended'
           />
           <Scene
-            initial
             key='login'
             component={Login}
             title='Login'

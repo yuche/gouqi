@@ -1,49 +1,15 @@
-import React, { Component } from 'react' // eslint-disable-line no-unused-vars
+require('react-native-browser-builtins')
+
+import * as Api from './lib/services/api'
+
+Api.newAlbums().then(res => {
+  console.log(res)
+})
+
 import {
-  AppRegistry,
-  StyleSheet,
-  Text,
-  View
+  AppRegistry
 } from 'react-native'
 
-require('./lib/routers/index.jsx')
-
-class gouqi extends Component {
-  render () {
-    return (
-      <View style={styles.container}>
-        <Text style={styles.welcome}>
-          Welcome to React Native!
-        </Text>
-        <Text style={styles.instructions}>
-          To get started, edit index.ios.js
-        </Text>
-        <Text style={styles.instructions}>
-          Press Cmd+R to reload,{'\n'}
-          Cmd+D or shake for dev menu
-        </Text>
-      </View>
-    )
-  }
-}
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF'
-  },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5
-  }
-})
+import gouqi from './lib/routers/'
 
 AppRegistry.registerComponent('gouqi', () => gouqi)
