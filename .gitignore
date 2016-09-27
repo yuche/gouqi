@@ -9,6 +9,7 @@ typings/
 coverage/
 .nyc_output
 .vscode
+t.js
 
 # Xcode
 #
