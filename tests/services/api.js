@@ -22,8 +22,9 @@ async function macroReturnCode (
   expectedCode = 200,
   ...args
 ) {
-  const { code } = await asyncFunction(...args)
-  t.is(code, expectedCode)
+  const res = await asyncFunction(...args)
+  console.log(res)
+  t.is(res.data.code, expectedCode)
 }
 
 function isNumeric (value) {
@@ -140,7 +141,7 @@ test('add a song to playlist', async (t) => {
   t.true(code === 200 || code === 502)
 })
 
-test('set music farvorite', macroReturnCode, api.setMusicFavorite, 200, '29713754', true)
+test.only('set music farvorite', macroReturnCode, api.setMusicFavorite, 200, '29713754', true)
 
 test('set music unfarvorite', macroReturnCode, api.setMusicFavorite, 200, '29713754', false)
 
@@ -150,6 +151,6 @@ test('create play list', macroReturnCode, api.createPlaylist, 200, '大新闻')
 
 test('delete play list', macroReturnCode, api.deletePlaylist, 200, '469524737')
 
-test.only('subscribe play list', macroReturnCode, api.subscribePlaylist, 200, '460655470')
+test('subscribe play list', macroReturnCode, api.subscribePlaylist, 200, '460655470')
 
-test.only('create a play list', macroReturnCode, api.createPlaylist, 200, 'test')
+test('create a play list', macroReturnCode, api.createPlaylist, 200, 'test')

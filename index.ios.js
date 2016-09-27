@@ -1,4 +1,5 @@
-require('react-native-browser-builtins')
+window.Buffer = require('buffer/').Buffer
+
 
 import * as Api from './lib/services/api'
 

@@ -12,6 +12,8 @@
     "coverage:check": "open coverage/index.html"
   },
   "dependencies": {
+    "@3846masa/axios-cookiejar-support": "0.0.3",
+    "@types/axios": "^0.9.32",
     "@types/node": "^6.0.41",
     "@types/react": "^0.14.37",
     "@types/react-native": "^0.29.35",
@@ -19,9 +21,9 @@
     "@types/redux": "^3.5.30",
     "@types/redux-actions": "^0.8.30",
     "@types/redux-saga": "^0.9.30",
-    "@types/request": "0.0.31",
-    "@types/request-promise": "^3.0.32",
+    "axios": "^0.14.0",
     "big-integer": "^1.6.15",
+    "buffer": "^5.0.0",
     "lodash": "^4.15.0",
     "react": "^15.3.2",
     "react-native": "0.33.0",
@@ -30,7 +32,7 @@
     "redux": "^3.6.0",
     "redux-actions": "^0.12.0",
     "redux-saga": "^0.11.1",
-    "request-promise": "^4.1.1"
+    "tough-cookie-no-native": "github:yuche/tough-cookie-no-native"
   },
   "devDependencies": {
     "ava": "^0.16.0",

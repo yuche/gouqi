@@ -4,7 +4,8 @@
  * from https://github.com/stkevintan/Cube/blob/master/src/model/Crypto.js
  */
 const bigInt = require('big-integer')
-import * as crypto from 'crypto'
+const md5 = require('blueimp-md5')
+const crypto = require('browserify-aes')
 import * as qs from 'querystring'
 
 function addPadding (s: string, size: number) {
@@ -49,7 +50,7 @@ const nonce = '0CoJUm6Qyw8W8jud';
 const pubKey = '010001';
 
 export function encryptedMD5 (text: string): string {
-    return crypto.createHash('md5').update(text).digest('hex');
+    return md5(text)
 }
 export function encryptedRequest (text: Object) {
     const secKey = createSecretKey(16);

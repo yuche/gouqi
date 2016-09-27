@@ -6,15 +6,18 @@ import {
   encryptedRequest
 } from './crypto'
 import * as qs from 'querystring'
-import * as rq from 'request-promise'
+import * as axios from 'axios'
+import * as tough from 'tough-cookie-no-native'
+
+const axiosCookieJarSupport = require('@3846masa/axios-cookiejar-support')
+axiosCookieJarSupport(axios)
 
 export const API_BASE_URL = 'http://music.163.com'
 
-const cookieJar = rq.jar()
+const cookieJar = new tough.CookieJar()
 
-const request = rq.defaults({
-  baseUrl: API_BASE_URL,
-  gzip: true,
+const request = axios.create({
+  baseURL: API_BASE_URL,
   headers: {
     'Accept': '*/*',
     'Accept-Encoding': 'gzip,deflate,sdch',
@@ -26,21 +29,24 @@ const request = rq.defaults({
     'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64; rv:39.0) Gecko/20100101 Firefox/39.0'
   },
   jar: cookieJar,
-  proxy: 'http://localhost:8888',
-  useQuerystring: true,
-  transform(body: string) {
-    return body.startsWith('<!DOCTYPE html>')
-      ? body
-      : JSON.parse(body)
-  }
+  withCredentials: true
+  // transformResponse(body: any) {
+  //   return body.startsWith('<!DOCTYPE html>')
+  //     ? body
+  //     : body
+  // },
+  // proxy: {
+  //   host: '10.10.9.206',
+  //   port: 8889
+  // }
 })
 
 export function getCookies () {
-  return cookieJar.getCookieString(API_BASE_URL)
+  return cookieJar.getCookieStringSync(API_BASE_URL)
 }
 
 export function setCookies (cookie: string): void {
-  cookieJar.setCookie(request.cookie(cookie), API_BASE_URL)
+  cookieJar.setCookieSync(cookie, API_BASE_URL)
 }
 
 export function getCsrfFromCookies (): string | null {
@@ -74,9 +80,7 @@ export async function login (username: string, password: string) {
   } else {
     body.username = username
   }
-  return await request.post(url, {
-    body: encryptedRequest(body)
-  })
+  return await request.post(url, encryptedRequest(body))
 }
 
 export async function userPlayList (
@@ -108,9 +112,9 @@ export async function search (
   limit = '20',
   total = 'true'
 ) {
-  return await request.post('/api/search/get/web', { body: qs.stringify({
+  return await request.post('/api/search/get/web', qs.stringify({
     s, type, offset, limit, total
-  }) })
+  }))
 }
 
 export async function recommendPlayList (
@@ -123,12 +127,10 @@ export async function recommendPlayList (
     return null
   }
   return await request
-    .post('/weapi/v1/discovery/recommend/songs?csrf_token=' + csrf, {
-        body: encryptedRequest({
-          offset, limit, total,
-          'csrf-token': csrf
-        })
-      }
+    .post('/weapi/v1/discovery/recommend/songs?csrf_token=' + csrf, encryptedRequest({
+        offset, limit, total,
+        'csrf-token': csrf
+      })
     )
 }
 
@@ -237,13 +239,11 @@ export async function batchSongDetailsNew (
     return null
   }
   return await request
-    .post(`/weapi/song/enhance/player/url?csrf_token=${csrf}`, {
-      body: encryptedRequest({
-        br: bitrate,
-        ids: songIds,
-        'csrf_token': csrf
-      })
-    })
+    .post(`/weapi/song/enhance/player/url?csrf_token=${csrf}`, encryptedRequest({
+      br: bitrate,
+      ids: songIds,
+      'csrf_token': csrf
+    }))
 }
 
 export async function opMuiscToPlaylist (
@@ -252,29 +252,25 @@ export async function opMuiscToPlaylist (
   op: 'add' | 'del'
 ) {
   return await request
-    .post(`/api/playlist/manipulate/tracks`, {
-      body: qs.stringify({
-        tracks,
-        trackIds: `[${tracks}]`,
-        pid,
-        op
-      })
-    })
+    .post(`/api/playlist/manipulate/tracks`, qs.stringify({
+      tracks,
+      trackIds: `[${tracks}]`,
+      pid,
+      op
+    }))
 }
 
-  export async function setMusicFavorite (
+export async function setMusicFavorite (
   trackId: string,
   like: boolean | string,
   time = '0'
 ) {
   return await request
-    .post(`/api/song/like`, {
-      body: qs.stringify({
-        trackId,
-        like,
-        time
-      })
-    })
+    .post(`/api/song/like`, qs.stringify({
+      trackId,
+      like,
+      time
+    }))
 }
 
 export async function createPlaylist (
@@ -286,12 +282,10 @@ export async function createPlaylist (
     return null
   }
   return await request
-    .post(`/weapi/playlist/create?csrf_token=${csrf}`, {
-      body: encryptedRequest({
-        name,
-        uid
-      })
-    })
+    .post(`/weapi/playlist/create?csrf_token=${csrf}`, encryptedRequest({
+      name,
+      uid
+    }))
 }
 
 export async function deletePlaylist (
@@ -302,12 +296,10 @@ export async function deletePlaylist (
     return null
   }
   return await request
-    .post(`/weapi/playlist/delete?csrf_token=${csrf}`, {
-      body: encryptedRequest({
-        id: pid,
-        pid
-      })
-    })
+    .post(`/weapi/playlist/delete?csrf_token=${csrf}`, encryptedRequest({
+      id: pid,
+      pid
+    }))
 }
 
 export async function subscribePlaylist (pid: string, subscribe = true) {
@@ -317,12 +309,10 @@ export async function subscribePlaylist (pid: string, subscribe = true) {
   }
   const prefix = subscribe ? '' : 'un'
   return await request
-    .post(`/weapi/playlist/${prefix}subscribe/?csrf_token=${csrf}`, {
-      body: encryptedRequest({
-        id: pid,
-        pid
-      })
-    })
+    .post(`/weapi/playlist/${prefix}subscribe/?csrf_token=${csrf}`, encryptedRequest({
+      id: pid,
+      pid
+    }))
 }
 
 // export async function updatePlaylist (
