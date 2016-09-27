@@ -5,8 +5,8 @@
  */
 const bigInt = require('big-integer')
 const md5 = require('blueimp-md5')
-const crypto = require('browserify-aes')
-import * as qs from 'querystring'
+const CryptoJS = require("crypto-js")
+const qs = require('qs')
 
 function addPadding (s: string, size: number) {
     while (s.length < size) s = "0" + s;
@@ -14,8 +14,10 @@ function addPadding (s: string, size: number) {
 }
 
 function aesEncrypt(text: string, secKey: string): string {
-    var cipher = crypto.createCipheriv('AES-128-CBC', secKey, '0102030405060708');
-    return cipher.update(text, 'utf8', 'base64') + cipher.final('base64');
+    return CryptoJS.AES.encrypt(text,
+        CryptoJS.enc.Utf8.parse(secKey),
+        {iv: CryptoJS.enc.Utf8.parse('0102030405060708')}
+    )
 }
 
 /**

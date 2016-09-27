@@ -39,16 +39,12 @@
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string></string>
 	<key>NSAppTransportSecurity</key>
+	<!-- TODO add NSExceptionDomains -->
 	<!--See http://ste.vn/2015/06/10/configuring-app-transport-security-ios-9-osx-10-11/ -->
 	<dict>
-		<key>NSExceptionDomains</key>
-		<dict>
-			<key>localhost</key>
-			<dict>
-				<key>NSTemporaryExceptionAllowsInsecureHTTPLoads</key>
+		<!--Include to allow all connections (DANGER)-->
+		<key>NSAllowsArbitraryLoads</key>
 				<true/>
-			</dict>
-		</dict>
 	</dict>
 </dict>
 </plist>

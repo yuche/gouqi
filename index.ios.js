@@ -1,12 +1,3 @@
-window.Buffer = require('buffer/').Buffer
-
-
-import * as Api from './lib/services/api'
-
-Api.newAlbums().then(res => {
-  console.log(res)
-})
-
 import {
   AppRegistry
 } from 'react-native'

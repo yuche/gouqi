@@ -1,6 +1,7 @@
 import {
   assign
 } from '../utils'
+import * as api from '../services/api'
 import * as React from 'react'
 import {
   Text,
@@ -20,6 +21,11 @@ class Login extends React.Component<{}, IState> {
       username: '',
       password: ''
     }
+  }
+
+  componentDidMount() {
+    api.newAlbums().then(e => console.log(e)).catch(e => console.log(e))
+
   }
 
   handleUsernameChange = (username: string)  => {

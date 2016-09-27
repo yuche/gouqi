@@ -5,9 +5,10 @@ import {
   encryptedMD5,
   encryptedRequest
 } from './crypto'
-import * as qs from 'querystring'
 import * as axios from 'axios'
 import * as tough from 'tough-cookie-no-native'
+
+const qs = require('qs')
 
 const axiosCookieJarSupport = require('@3846masa/axios-cookiejar-support')
 axiosCookieJarSupport(axios)
