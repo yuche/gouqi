@@ -5,52 +5,11 @@ import {
   encryptedMD5,
   encryptedRequest
 } from './crypto'
-import * as axios from 'axios'
-import * as tough from 'tough-cookie-no-native'
-import * as qs from 'qs'
-
-const axiosCookieJarSupport = require('@3846masa/axios-cookiejar-support')
-axiosCookieJarSupport(axios)
-
-export const API_BASE_URL = 'http://music.163.com'
-
-const cookieJar = new tough.CookieJar()
-
-const request = axios.create({
-  baseURL: API_BASE_URL,
-  headers: {
-    'Accept': '*/*',
-    'Accept-Encoding': 'gzip,deflate,sdch',
-    'Accept-Language': 'zh-CN,en-US;q=0.7,en;q=0.3',
-    'Connection': 'keep-alive',
-    'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-    'Host': 'music.163.com',
-    'Referer': 'http://music.163.com/',
-    'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64; rv:39.0) Gecko/20100101 Firefox/39.0'
-  },
-  jar: cookieJar,
-  withCredentials: true,
-  transformResponse(data: any) {
-    return JSON.parse(data)
-  }
-  // proxy: {
-  //   host: '10.10.9.206',
-  //   port: 8889
-  // }
-})
-
-export function getCookies () {
-  return cookieJar.getCookieStringSync(API_BASE_URL)
-}
-
-export function setCookies (cookie: string): void {
-  cookieJar.setCookieSync(cookie, API_BASE_URL)
-}
-
-export function getCsrfFromCookies (): string | null {
-  const csrfReg = /csrf=(\w*);/.exec(getCookies())
-  return csrfReg ? csrfReg[1] : null
-}
+import {
+  getCookies,
+  getCsrfFromCookies,
+  request
+} from './request'
 
 function getUserId (): string | null {
   const cookies = getCookies()
@@ -110,9 +69,9 @@ export async function search (
   limit = '20',
   total = 'true'
 ) {
-  return await request.post('/api/search/get/web', qs.stringify({
+  return await request.post('/api/search/get/web', {
     s, type, offset, limit, total
-  }))
+  })
 }
 
 export async function recommendPlayList (
@@ -207,8 +166,8 @@ export async function djChannels (
   type: ChannelsType | string,
   offset = '0',
   limit = '10'
-) {
-  const body: Axios.AxiosXHR<{}> = await request
+): Promise<string[]> {
+  const body = await request
     .get(`/discover/djradio?type=${type}&offset=${offset}&limit=${limit}`)
   const matchChannels = [...body.match(/program\?id=\d+/g)]
   return [...new Set(matchChannels)].map(c => c.slice(11))
@@ -250,12 +209,12 @@ export async function opMuiscToPlaylist (
   op: 'add' | 'del'
 ) {
   return await request
-    .post(`/api/playlist/manipulate/tracks`, qs.stringify({
+    .post(`/api/playlist/manipulate/tracks`, {
       tracks,
       trackIds: `[${tracks}]`,
       pid,
       op
-    }))
+    })
 }
 
 export async function setMusicFavorite (
@@ -264,11 +223,11 @@ export async function setMusicFavorite (
   time = '0'
 ) {
   return await request
-    .post(`/api/song/like`, qs.stringify({
+    .post(`/api/song/like`, {
       trackId,
       like,
       time
-    }))
+    })
 }
 
 export async function createPlaylist (

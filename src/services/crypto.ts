@@ -60,5 +60,5 @@ export function encryptedRequest (text: Object) {
         params: aesEncrypt(aesEncrypt(JSON.stringify(text), nonce), secKey),
         encSecKey: rsaEncrypt(secKey, pubKey, modulus)
     }
-    return qs.stringify(encBody) 
+    return encBody
 }

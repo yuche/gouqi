@@ -1,4 +1,5 @@
 import * as api from '../../lib/services/api.js'
+import * as CookieJar from '../../lib/services/request.js'
 
 import test from 'ava'
 const { sample } = require('lodash')
@@ -22,9 +23,8 @@ async function macroReturnCode (
   expectedCode = 200,
   ...args
 ) {
-  const res = await asyncFunction(...args)
-  console.log(res.data)
-  t.is(res.data.code, expectedCode)
+  const { code } = await asyncFunction(...args)
+  t.is(code, expectedCode)
 }
 
 function isNumeric (value) {
@@ -60,14 +60,14 @@ test.before('set cookies', async (t) => {
     tenDaysAgo.setDate(tenDaysAgo.getDate() - 10)
     if (mtime > tenDaysAgo) {
       const cookieStr = fs.readFileSync(cookiePath, 'UTF-8')
-      cookieStr.split(';').forEach(api.setCookies)
+      cookieStr.split(';').forEach(CookieJar.setCookies)
     } else {
       await api.login('18502080838', 'if(country)noEsc')
-      fs.writeFileSync(cookiePath, api.getCookies())
+      fs.writeFileSync(cookiePath, CookieJar.getCookies())
     }
   } else {
     await api.login('18502080838', 'if(country)noEsc')
-    fs.writeFileSync(cookiePath, api.getCookies())
+    fs.writeFileSync(cookiePath, CookieJar.getCookies())
   }
   t.pass()
 })
@@ -141,7 +141,7 @@ test('add a song to playlist', async (t) => {
   t.true(code === 200 || code === 502)
 })
 
-test.only('set music farvorite', macroReturnCode, api.setMusicFavorite, 200, '29713754', true)
+test('set music farvorite', macroReturnCode, api.setMusicFavorite, 200, '29713754', true)
 
 test('set music unfarvorite', macroReturnCode, api.setMusicFavorite, 200, '29713754', false)
 
@@ -149,8 +149,6 @@ test('create play list', macroReturnCode, api.createPlaylist, 200, '大新闻')
 
 // test('update play list', macroReturnCode, api.updatePlaylist, 200, '469543495', 'fuckyou')
 
-test('delete play list', macroReturnCode, api.deletePlaylist, 200, '469524737')
+// test('delete play list', macroReturnCode, api.deletePlaylist, 200, '469524737')
 
-test('subscribe play list', macroReturnCode, api.subscribePlaylist, 200, '460655470')
-
-test('create a play list', macroReturnCode, api.createPlaylist, 200, 'test')
+// test('subscribe play list', macroReturnCode, api.subscribePlaylist, 200, '460655470')
