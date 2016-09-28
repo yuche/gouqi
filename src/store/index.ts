@@ -6,7 +6,7 @@ import rootReducer from '../reducers'
 import createSagaMiddleware from 'redux-saga'
 import sagas from '../sagas'
 
-export default function configureStore(initialState: {}) {
+export default function configureStore(initialState: any) {
   const store = createStore(
     rootReducer,
     initialState
