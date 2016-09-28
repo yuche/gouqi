@@ -1,26 +1,34 @@
 import {
   assign
 } from '../utils'
-import * as api from '../services/api'
 import * as React from 'react'
 import {
   Text,
   TextInput,
   View
 } from 'react-native'
+import { connect } from 'react-redux'
 
 export interface IState {
   username: string,
   password: string
 }
 
-class Login extends React.Component<{}, IState> {
-  constructor(props: {}) {
+export interface IProps {
+  isLoading: boolean
+}
+
+class Login extends React.Component<{isLoading: boolean}, IState> {
+  constructor(props: {isLoading: boolean}) {
     super(props)
     this.state = {
       username: '',
       password: ''
     }
+  }
+
+  componentDidMount() {
+    console.log(this.props)
   }
 
   handleUsernameChange = (username: string)  => {
@@ -50,4 +58,6 @@ class Login extends React.Component<{}, IState> {
   }
 }
 
-export default Login
+export default connect(
+  (state: any) => ({ isLoading: state.login.isLoading})
+)(Login)
