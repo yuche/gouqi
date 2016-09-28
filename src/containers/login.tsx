@@ -23,11 +23,6 @@ class Login extends React.Component<{}, IState> {
     }
   }
 
-  componentDidMount() {
-    api.newAlbums().then(e => console.log(e)).catch(e => console.log(e))
-
-  }
-
   handleUsernameChange = (username: string)  => {
     this.setState(assign(this.state, { username }))
   }

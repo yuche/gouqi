@@ -2,7 +2,7 @@
     "compilerOptions": {
         "target": "es2015",
         "jsx": "react",
-        "declaration": true,
+        // "declaration": true,
         // "module": "commonjs",
         "removeComments": true,
         "preserveConstEnums": true,
