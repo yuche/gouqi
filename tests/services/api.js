@@ -23,7 +23,7 @@ async function macroReturnCode (
   ...args
 ) {
   const res = await asyncFunction(...args)
-  console.log(res)
+  console.log(res.data)
   t.is(res.data.code, expectedCode)
 }
 

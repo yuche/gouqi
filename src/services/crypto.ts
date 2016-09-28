@@ -17,7 +17,7 @@ function aesEncrypt(text: string, secKey: string): string {
     return CryptoJS.AES.encrypt(text,
         CryptoJS.enc.Utf8.parse(secKey),
         {iv: CryptoJS.enc.Utf8.parse('0102030405060708')}
-    )
+    ).toString()
 }
 
 /**

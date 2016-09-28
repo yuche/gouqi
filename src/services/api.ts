@@ -7,8 +7,7 @@ import {
 } from './crypto'
 import * as axios from 'axios'
 import * as tough from 'tough-cookie-no-native'
-
-const qs = require('qs')
+import * as qs from 'qs'
 
 const axiosCookieJarSupport = require('@3846masa/axios-cookiejar-support')
 axiosCookieJarSupport(axios)
@@ -30,12 +29,10 @@ const request = axios.create({
     'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64; rv:39.0) Gecko/20100101 Firefox/39.0'
   },
   jar: cookieJar,
-  withCredentials: true
-  // transformResponse(body: any) {
-  //   return body.startsWith('<!DOCTYPE html>')
-  //     ? body
-  //     : body
-  // },
+  withCredentials: true,
+  transformResponse(data: any) {
+    return JSON.parse(data)
+  }
   // proxy: {
   //   host: '10.10.9.206',
   //   port: 8889
@@ -211,7 +208,7 @@ export async function djChannels (
   offset = '0',
   limit = '10'
 ) {
-  const body: string = await request
+  const body: Axios.AxiosXHR<{}> = await request
     .get(`/discover/djradio?type=${type}&offset=${offset}&limit=${limit}`)
   const matchChannels = [...body.match(/program\?id=\d+/g)]
   return [...new Set(matchChannels)].map(c => c.slice(11))
