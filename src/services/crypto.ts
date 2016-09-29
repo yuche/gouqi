@@ -6,10 +6,11 @@
 const bigInt = require('big-integer')
 const md5 = require('blueimp-md5')
 const CryptoJS = require("crypto-js")
+const { Buffer } = require('buffer')
 const qs = require('qs')
 
 function addPadding (s: string, size: number) {
-    while (s.length < size) s = "0" + s;
+    while (s.length < size) s = '0' + s;
     return s;
 }
 
@@ -28,13 +29,15 @@ function aesEncrypt(text: string, secKey: string): string {
  * @returns {string} - encrypted data: reverseText^pubKey%modulus
  */
 function rsaEncrypt(text: string, exponent: string, modulus: string) {
-    var rText = '', radix = 16;
-    for (var i = text.length - 1; i >= 0; i--) rText += text[i];//reverse text
-    var biText = bigInt(new Buffer(rText).toString('hex'), radix),
-        biEx = bigInt(exponent, radix),
-        biMod = bigInt(modulus, radix),
-        biRet = biText.modPow(biEx, biMod);
-    return addPadding(biRet.toString(radix), 256);
+    const radix = 16;
+    const biText = bigInt(new Buffer(
+        text.split('').reverse().join('')
+    ).toString('hex'), radix)
+    const rest = biText.modPow(
+        bigInt(exponent, radix),
+        bigInt(modulus, radix)
+    )
+    return addPadding(rest.toString(radix), 256);
 }
 
 function createSecretKey(size: number) {

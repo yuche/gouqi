@@ -1,34 +1,32 @@
-import {
-  assign
-} from '../utils'
+import { assign } from '../utils'
 import * as React from 'react'
 import {
   Text,
   TextInput,
   View
 } from 'react-native'
-import { connect } from 'react-redux'
+import { connect, Dispatch } from 'react-redux'
+import * as Actions from '../actions'
+import {
+  IUserInfo
+} from '../interfaces'
 
-export interface IState {
-  username: string,
-  password: string
+export interface IattemptLogin {
+  (userInfo: IUserInfo): Redux.Action
 }
 
 export interface IProps {
-  isLoading: boolean
+  isLoading: boolean,
+  attemptLogin: IattemptLogin
 }
 
-class Login extends React.Component<{isLoading: boolean}, IState> {
-  constructor(props: {isLoading: boolean}) {
+class Login extends React.Component<IProps, IUserInfo> {
+  constructor(props: IProps) {
     super(props)
     this.state = {
       username: '',
       password: ''
     }
-  }
-
-  componentDidMount() {
-    console.log(this.props)
   }
 
   handleUsernameChange = (username: string)  => {
@@ -39,6 +37,10 @@ class Login extends React.Component<{isLoading: boolean}, IState> {
     this.setState(assign(this.state, { password }))
   }
 
+  handleUserLogin = () => {
+    this.props.attemptLogin(this.state)
+  }
+
   render() {
     return (
       <View style={{margin: 128}}>
@@ -47,17 +49,28 @@ class Login extends React.Component<{isLoading: boolean}, IState> {
           style={{height: 40, borderColor: 'gray', borderWidth: 1}}
           onChangeText={this.handleUsernameChange}
         />
+
         <TextInput
           editable={true}
           style={{height: 40, borderColor: 'gray', borderWidth: 1}}
           onChangeText={this.handlePasswordChange}
         />
-        <Text>登录</Text>
+
+        <Text
+          onPress={this.handleUserLogin}
+        >
+          登录
+        </Text>
       </View>
     )
   }
 }
 
 export default connect(
-  (state: any) => ({ isLoading: state.login.isLoading})
+  (state: any) => ({ isLoading: state.login.isLoading}),
+  (dispatch: Dispatch<Redux.Action>) => ({
+    attemptLogin(userInfo: IUserInfo) {
+      return dispatch(Actions.userLogin(userInfo))
+    }
+  })
 )(Login)
