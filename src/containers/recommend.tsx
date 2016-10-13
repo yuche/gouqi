@@ -25,6 +25,9 @@ export default class RecommendScene extends React.Component<any, any> {
         <Text onPress={router.login}>
           Go to Login Page
         </Text>
+        <Text onPress={router.playlist}>
+          Go to Login Page
+        </Text>
       </View>
     )
   }

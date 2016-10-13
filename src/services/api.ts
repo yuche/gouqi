@@ -123,11 +123,11 @@ export async function newAlbums (
 }
 
 export async function topPlayList (
+  limit = '10',
+  offset = '0',
   category = '全部',
   order = 'hot',
-  offset = '0',
   total = true,
-  limit = '10'
 ) {
   return await request
     .get(`/api/playlist/list?cat=${category}&order=${order}&offset=${offset}&total=${offset}&limit=${limit}`)

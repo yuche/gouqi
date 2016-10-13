@@ -10,7 +10,7 @@ import * as Actions from '../actions'
 import {
   IUserInfo
 } from '../interfaces'
-const Video = require('react-native-video').default
+import * as api from '../services/api'
 
 export interface IattemptLogin {
   (userInfo: IUserInfo): Redux.Action
@@ -28,6 +28,10 @@ class Login extends React.Component<IProps, IUserInfo> {
       username: '',
       password: ''
     }
+  }
+
+  componentDidMount() {
+    api.topPlayList().then(res => console.log(res))
   }
 
   handleUsernameChange = (username: string)  => {
@@ -67,11 +71,6 @@ class Login extends React.Component<IProps, IUserInfo> {
         >
           登录fuckfuck
         </Text>
-        <Video
-          repeat={true}
-          source={{uri: 'http://77l5rz.com1.z0.glb.clouddn.com/chenai.mp3'}}
-          key='fuckfuck'
-        />
       </View>
     )
   }

@@ -100,7 +100,7 @@ test('fm Trash', macroReturnCode, api.fmTrash, 200, '123456')
 
 test('new albums', macroReturnCode, api.newAlbums)
 
-test('top play list', macroReturnCode, api.topPlayList)
+test.only('top play list', macroReturnCode, api.topPlayList)
 
 test('top artist', macroReturnCode, api.topArtists)
 
