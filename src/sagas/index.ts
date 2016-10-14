@@ -1,4 +1,4 @@
-import { take, put, call, fork } from 'redux-saga/effects'
+import { take, put, call, fork, select } from 'redux-saga/effects'
 import {
   Alert,
   AsyncStorage
@@ -10,13 +10,13 @@ import {
 } from 'react-native-router-flux'
 import {
   IFSA,
-  IUserInfo
+  IUserInfo,
+  IPlaylistsProps
 } from '../interfaces'
 
 export function* loginFlow () {
   while (true) {
     const action: IFSA<IUserInfo> = yield take('user/login')
-
 
     yield put({
       type: 'user/login/start'
@@ -39,6 +39,42 @@ export function* loginFlow () {
   }
 }
 
+export function* syncPlaylists () {
+  while (true) {
+    yield take('playlists/sync')
+
+    yield put({
+      type: 'playlists/sync/start'
+    })
+
+    const { more, offset, playlists }: IPlaylistsProps = yield select(state => state.playlist)
+    if (more) {
+      const offsetState = offset + 20
+      const result: api.ItopPlayListResult = yield call(
+        api.topPlayList, '20', offsetState.toString()
+      )
+
+      yield put({
+        type: 'playlists/sync/save',
+        payload: playlists.concat(result.playlists)
+      })
+
+      yield put({
+        type: 'playlists/meta',
+        meta: {
+          more: result.more,
+          offset: offsetState
+        }
+      })
+    }
+
+    yield put({
+      type: 'playlists/sync/end'
+    })
+  }
+}
+
 export default function* root() {
   yield fork(loginFlow)
+  yield fork(syncPlaylists)
 }

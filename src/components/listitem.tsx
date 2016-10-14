@@ -10,43 +10,54 @@ import {
   ViewStyle
 } from 'react-native'
 
-function ListItem (
+interface IListItem {
   picURI: string,
   containerStyle?: ViewStyle,
   wrapperStyle?: ViewStyle,
   picStyle?: ImageStyle,
-  title?: string,
+  title: string,
   titleStyle?: TextStyle,
   subTitle?: string,
   subTitleStyle?: TextStyle,
-  roundPic = false,
+  roundPic?: boolean,
   onPress?: any
-) {
+}
+
+const ListItem = ({
+  picURI,
+  containerStyle,
+  wrapperStyle,
+  picStyle,
+  title,
+  titleStyle,
+  subTitle,
+  subTitleStyle,
+  roundPic = false,
+  onPress
+}: IListItem) => {
   const subTitleComp = (
     <Text style={[styles.subTitle, subTitleStyle && subTitleStyle]}>
       { subTitle }
     </Text>
   )
-  return (
-    <TouchableHighlight
-      style={[styles.container, containerStyle && containerStyle]}
-      onPress={onPress}
-    >
-      <View style={[styles.wrapper, containerStyle && wrapperStyle]}>
-        <Image
-          resizeMode='contain'
-          source={{uri: picURI}}
-          style={[styles.pic, roundPic && { borderRadius : 17}, picStyle && picStyle]}
-        />
-        <View style={styles.titleContainer}>
-          <Text style={[styles.title, titleStyle && titleStyle]}>
-            { title }
-          </Text>
-          {subTitle && subTitleComp}
-        </View>
+  return <TouchableHighlight
+    style={[styles.container, containerStyle && containerStyle]}
+    onPress={onPress}
+  >
+    <View style={[styles.wrapper, containerStyle && wrapperStyle]}>
+      <Image
+        resizeMode='contain'
+        source={{uri: picURI}}
+        style={[styles.pic, roundPic && { borderRadius : 17}, picStyle && picStyle]}
+      />
+      <View style={styles.titleContainer}>
+        <Text style={[styles.title, titleStyle && titleStyle]}>
+          { title }
+        </Text>
+        {subTitle && subTitleComp}
       </View>
-    </TouchableHighlight>
-  )
+    </View>
+  </TouchableHighlight>
 }
 
 const styles = StyleSheet.create({
@@ -67,13 +78,15 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   } as ViewStyle,
   title: {
-    fontSize: 15,
-    fontWeight: '300'
+    fontSize: 14,
+    fontWeight: '100',
+    marginLeft: 10
   } as TextStyle,
   subTitle: {
     fontSize: 12,
     marginTop: 1,
-    fontWeight: '300',
+    fontWeight: '100',
+    marginLeft: 10,
     color: '#ccc'
   } as TextStyle
 })

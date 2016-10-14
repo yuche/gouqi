@@ -122,13 +122,29 @@ export async function newAlbums (
     .get(`/api/album/new?area=ALL&offset=${offset}&total=true&limit=${limit}`)
 }
 
+export interface IPlaylists {
+  coverImgUrl: string,
+  creator: any,
+  subscribedCount: number,
+  name: string,
+  playCount: number,
+  id: number
+}
+
+export interface ItopPlayListResult {
+  code: number,
+  more: boolean,
+  total: number,
+  playlists: IPlaylists[]
+}
+
 export async function topPlayList (
   limit = '10',
   offset = '0',
   category = '全部',
   order = 'hot',
   total = true,
-) {
+): Promise<ItopPlayListResult> {
   return await request
     .get(`/api/playlist/list?cat=${category}&order=${order}&offset=${offset}&total=${offset}&limit=${limit}`)
 }

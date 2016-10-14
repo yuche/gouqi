@@ -1,3 +1,5 @@
+import * as api from '../services/api'
+
 export interface IUserInfo {
   username: string,
   password: string
@@ -11,4 +13,11 @@ export interface IFSA<T> {
   type: string,
   payload: T,
   error?: boolean
+}
+
+export interface IPlaylistsProps {
+  isLoading: boolean,
+  playlists: api.IPlaylists[],
+  offset: number,
+  more: boolean
 }

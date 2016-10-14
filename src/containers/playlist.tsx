@@ -1,51 +1,59 @@
 import * as React from 'react'
 import {
-  Text,
-  View,
-  ScrollView
+  ListView,
 } from 'react-native'
-// import ListItem from '../components/listitem'
+import { connect, Dispatch } from 'react-redux'
 import * as api from '../services/api'
-// import ListItem from '../components/listitem'
+import ListItem from '../components/listitem'
+import List from '../components/list'
+import { IPlaylistsProps } from '../interfaces'
+import * as Actions from '../actions'
 
-const { List, ListItem } = require('react-native-elements')
 
-class PlayList extends React.Component<{
-  playlists: any[]
-}, any> {
-  constructor (props: any) {
+interface IProps extends IPlaylistsProps {
+  syncPlaylists: Redux.Action
+}
+
+class PlayList extends React.Component<IProps, any> {
+  constructor (props: IProps) {
     super(props)
-    this.state = {
-      playlists: []
-    }
   }
 
-  componentDidMount () {
-    api.topPlayList('20').then(res => {
-      console.log(res)
-      this.setState({
-        playlists: res.playlists
-      })
-    })
+  componentDidMount() {
+    console.log(this.props)
+    this.props.dispatch(Actions.syncPlaylists())
   }
 
-  renderPlayList () {
-    return this.state.playlists.map(p => {
+  renderPlayList = () => {
+    const { playlists } = this.props
+    return playlists.map((p) => {
       return (
-        <ListItem avatar={{uri: p.coverImgUrl}} title={p.name} key={p.id} subtitle={p.subscribedCount + '人收藏'}/>
+        <ListItem
+          title={p.name}
+          picURI={p.coverImgUrl}
+          subTitle={p.subscribedCount + ' 人收藏'}
+          key={p.id}
+        />
       )
     })
   }
 
   render() {
     return (
-      <ScrollView>
-        <List>
-          {this.renderPlayList()}
-        </List>
-      </ScrollView>
+      <List>
+        <ListView
+          
+        />
+      </List>
     )
   }
 }
 
-export default PlayList
+export default connect(
+  ({ playlist: {
+    isLoading, playlists, offset, more
+  } }: { playlist: IPlaylistsProps }) => ({
+    isLoading, playlists, offset, more
+  })
+)(PlayList)
+
