@@ -17,7 +17,7 @@ export interface IFSA<T> {
 
 export interface IPlaylistsProps {
   isLoading: boolean,
-  playlists: api.IPlaylists[],
+  playlists: api.IPlaylist[],
   offset: number,
   more: boolean
 }

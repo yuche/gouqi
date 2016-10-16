@@ -11,7 +11,7 @@ import {
   request
 } from './request'
 
-function getUserId (): string | null {
+function getUserId(): string | null {
   const cookies = getCookies()
   const uids = /\d+/.exec(cookies.split(';')[3])
   return uids ? uids[0] : null
@@ -24,7 +24,7 @@ interface ILoginBody {
   username?: string
 }
 
-export async function login (username: string, password: string) {
+export async function login(username: string, password: string) {
   const patten = /^0\d{2,3}\d{7,8}$|^1[34578]\d{9}$/
   let url = '/weapi/login/'
   let body: ILoginBody = {
@@ -40,17 +40,17 @@ export async function login (username: string, password: string) {
   return await request.post(url, encryptedRequest(body))
 }
 
-export async function userPlayList (
+export async function userPlayList(
   uid = getUserId(),
   offset = '0',
   limit = '100',
   total = true
 ) {
   return await request.get('/api/user/playlist/'
-  + `?uid=${uid}&offset=${offset}&limit=${limit}&total=${total}`)
+    + `?uid=${uid}&offset=${offset}&limit=${limit}&total=${total}`)
 }
 
-export async function playListDetail (id: string) {
+export async function playListDetail(id: string) {
   return await request.get(`/api/playlist/detail?id=${id}`)
 }
 
@@ -62,7 +62,7 @@ export const enum SearchType {
   user = 1002
 }
 
-export async function search (
+export async function search(
   s: string,
   type: SearchType | string,
   offset = '0',
@@ -74,7 +74,7 @@ export async function search (
   })
 }
 
-export async function recommendPlayList (
+export async function recommendPlayList(
   offset = '0',
   limit = '20',
   total = 'true'
@@ -85,17 +85,17 @@ export async function recommendPlayList (
   }
   return await request
     .post('/weapi/v1/discovery/recommend/songs?csrf_token=' + csrf, encryptedRequest({
-        offset, limit, total,
-        'csrf-token': csrf
-      })
+      offset, limit, total,
+      'csrf-token': csrf
+    })
     )
 }
 
-export async function personalFM () {
+export async function personalFM() {
   return await request.get('/api/radio/get')
 }
 
-export async function fmLike (
+export async function fmLike(
   songId: string,
   like = true,
   time = '25',
@@ -105,7 +105,7 @@ export async function fmLike (
     .get(`/api/radio/like?alg=${alg}&trackId=${songId}&like=${like}&time=${time}`)
 }
 
-export async function fmTrash (
+export async function fmTrash(
   songId: string,
   time = '25',
   alg = 'RT'
@@ -114,7 +114,7 @@ export async function fmTrash (
     .get(`/api/radio/trash/add?alg=${alg}&songId=${songId}&time=${time}`)
 }
 
-export async function newAlbums (
+export async function newAlbums(
   offset = '0',
   limit = '10'
 ) {
@@ -122,7 +122,7 @@ export async function newAlbums (
     .get(`/api/album/new?area=ALL&offset=${offset}&total=true&limit=${limit}`)
 }
 
-export interface IPlaylists {
+export interface IPlaylist {
   coverImgUrl: string,
   creator: any,
   subscribedCount: number,
@@ -135,10 +135,10 @@ export interface ItopPlayListResult {
   code: number,
   more: boolean,
   total: number,
-  playlists: IPlaylists[]
+  playlists: IPlaylist[]
 }
 
-export async function topPlayList (
+export async function topPlayList(
   limit = '10',
   offset = '0',
   category = '全部',
@@ -149,7 +149,7 @@ export async function topPlayList (
     .get(`/api/playlist/list?cat=${category}&order=${order}&offset=${offset}&total=${offset}&limit=${limit}`)
 }
 
-export async function topArtists (
+export async function topArtists(
   offset = '0',
   limit = '10'
 ) {
@@ -157,14 +157,14 @@ export async function topArtists (
     .get(`/api/artist/top?offset=${offset}&total=false&limit=${limit}`)
 }
 
-export async function artistInfo (
+export async function artistInfo(
   artistId: string
 ) {
   return await request
     .get(`/api/artist/${artistId}`)
 }
 
-export async function albumInfo (
+export async function albumInfo(
   albumId: string
 ) {
   return await request
@@ -178,7 +178,7 @@ export const enum ChannelsType {
   recent = 30
 }
 
-export async function djChannels (
+export async function djChannels(
   type: ChannelsType | string,
   offset = '0',
   limit = '10'
@@ -189,21 +189,21 @@ export async function djChannels (
   return [...new Set(matchChannels)].map(c => c.slice(11))
 }
 
-export async function channelDetails (channelId: string) {
+export async function channelDetails(channelId: string) {
   return await request.get(`/api/dj/program/detail?id=${channelId}`)
 }
 
-export async function singleSongDetails (songId: string) {
+export async function singleSongDetails(songId: string) {
   return await request
     .get(`/api/song/detail/?id=${songId}&ids=[${songId}]`)
 }
 
-export async function batchSongDetails (songIds: string[]) {
+export async function batchSongDetails(songIds: string[]) {
   return await request
     .get(`/api/song/detail?ids=[${songIds.join()}]`)
 }
 
-export async function batchSongDetailsNew (
+export async function batchSongDetailsNew(
   songIds: string[],
   bitrate = '320000'
 ) {
@@ -219,7 +219,7 @@ export async function batchSongDetailsNew (
     }))
 }
 
-export async function opMuiscToPlaylist (
+export async function opMuiscToPlaylist(
   tracks: string,
   pid: string,
   op: 'add' | 'del'
@@ -233,7 +233,7 @@ export async function opMuiscToPlaylist (
     })
 }
 
-export async function setMusicFavorite (
+export async function setMusicFavorite(
   trackId: string,
   like: boolean | string,
   time = '0'
@@ -246,7 +246,7 @@ export async function setMusicFavorite (
     })
 }
 
-export async function createPlaylist (
+export async function createPlaylist(
   name: string
 ) {
   const uid = getUserId()
@@ -261,7 +261,7 @@ export async function createPlaylist (
     }))
 }
 
-export async function deletePlaylist (
+export async function deletePlaylist(
   pid: string
 ) {
   const csrf = getCsrfFromCookies()
@@ -275,7 +275,7 @@ export async function deletePlaylist (
     }))
 }
 
-export async function subscribePlaylist (pid: string, subscribe = true) {
+export async function subscribePlaylist(pid: string, subscribe = true) {
   const csrf = getCsrfFromCookies()
   if (!csrf) {
     return null

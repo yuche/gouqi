@@ -21,14 +21,9 @@ export default handleActions({
     })
   },
 
-  'playlists/sync/save' (state, action) {
+  'playlists/sync/save' (state, { payload, meta }) {
     return assign(state, {
-      playlists: action.payload
-    })
-  },
-
-  'playlists/meta' (state, { meta }) {
-    return assign(state, {
+      playlists: payload,
       offset: meta.offset,
       more: meta.more
     })

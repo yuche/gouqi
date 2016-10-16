@@ -1,4 +1,4 @@
-import { take, put, call, fork, select } from 'redux-saga/effects'
+import { apply, take, put, call, fork, select } from 'redux-saga/effects'
 import {
   Alert,
   AsyncStorage
@@ -13,6 +13,13 @@ import {
   IUserInfo,
   IPlaylistsProps
 } from '../interfaces'
+
+function* fetchSagas (apiFn: any, ...args: any[]) {
+  yield put({
+    type: 'ui/fetch/start'
+  })
+  yield call(apiFn, args)
+}
 
 export function* loginFlow () {
   while (true) {
@@ -30,7 +37,7 @@ export function* loginFlow () {
     })
 
     if (userInfo.code === 200) {
-      yield fork(AsyncStorage.setItem('Cookies', getCookies()))
+      yield AsyncStorage.setItem('Cookies', getCookies()
       Router.pop()
     } else {
       Alert.alert('错误', '错误的帐号或密码')
@@ -47,20 +54,21 @@ export function* syncPlaylists () {
       type: 'playlists/sync/start'
     })
 
-    const { more, offset, playlists }: IPlaylistsProps = yield select(state => state.playlist)
+    const { more, offset, playlists }: IPlaylistsProps = yield select((state: any) => state.playlist)
+
     if (more) {
-      const offsetState = offset + 20
+      const offsetState = offset + 15
       const result: api.ItopPlayListResult = yield call(
-        api.topPlayList, '20', offsetState.toString()
+        api.topPlayList, '15', offsetState.toString()
       )
 
       yield put({
         type: 'playlists/sync/save',
-        payload: playlists.concat(result.playlists)
-      })
-
-      yield put({
-        type: 'playlists/meta',
+        payload: playlists.concat(result.playlists.map(p => {
+          let pl = p
+          pl.coverImgUrl += '?param=100y100'
+          return pl
+        })),
         meta: {
           more: result.more,
           offset: offsetState
@@ -75,6 +83,8 @@ export function* syncPlaylists () {
 }
 
 export default function* root() {
-  yield fork(loginFlow)
-  yield fork(syncPlaylists)
+  yield [
+    fork(loginFlow),
+    fork(syncPlaylists)
+  ]
 }
