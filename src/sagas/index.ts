@@ -13,6 +13,9 @@ import {
   IUserInfo,
   IPlaylistsProps
 } from '../interfaces'
+import {
+  assign
+} from '../utils'
 
 function* fetchSagas (apiFn: any, ...args: any[]) {
   yield put({
@@ -37,7 +40,7 @@ export function* loginFlow () {
     })
 
     if (userInfo.code === 200) {
-      yield AsyncStorage.setItem('Cookies', getCookies()
+      yield AsyncStorage.setItem('Cookies', getCookies())
       Router.pop()
     } else {
       Alert.alert('错误', '错误的帐号或密码')
@@ -65,9 +68,9 @@ export function* syncPlaylists () {
       yield put({
         type: 'playlists/sync/save',
         payload: playlists.concat(result.playlists.map(p => {
-          let pl = p
-          pl.coverImgUrl += '?param=100y100'
-          return pl
+          return Object.assign({}, p, {
+            coverImgUrl: p.coverImgUrl + '?param=100y100'
+          })
         })),
         meta: {
           more: result.more,

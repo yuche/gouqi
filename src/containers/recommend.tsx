@@ -8,6 +8,7 @@ import {
 } from 'react-native'
 import { Actions as router } from 'react-native-router-flux'
 
+
 export default class RecommendScene extends React.Component<any, any> {
   public render () {
     return (

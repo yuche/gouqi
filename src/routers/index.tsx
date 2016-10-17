@@ -4,8 +4,7 @@ import {
   Scene
 } from 'react-native-router-flux'
 import Login from '../containers/login'
-import RecommendScene from '../containers/recommend'
-import PlayList from '../containers/playlist'
+import Home from '../containers/home'
 
 class NavRouter extends React.Component<any, any> {
   render() {
@@ -14,21 +13,17 @@ class NavRouter extends React.Component<any, any> {
         <Scene key='root'>
           <Scene
             initial
-            key='recommendScene'
-            component={RecommendScene}
-            title='Recommended'
+            key='home'
+            component={Home}
+            title='home'
+            hideNavBar={true}
           />
 
           <Scene
             key='login'
             component={Login}
             title='Login'
-          />
-
-          <Scene
-            key='playlist'
-            component={PlayList}
-            title='playlist'
+            hideNavBar={false}
           />
         </Scene>
       </Router>
