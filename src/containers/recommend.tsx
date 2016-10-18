@@ -8,11 +8,24 @@ import {
 } from 'react-native'
 import { Actions as router } from 'react-native-router-flux'
 
+import Toast from '../components/toast'
+
 
 export default class RecommendScene extends React.Component<any, any> {
-  public render () {
+
+  refs: {
+    toast: Toast
+  }
+
+  showToast = () => {
+    // console.log(this.refs)
+    this.refs.toast.show('fuck', 2000)
+  }
+
+  render () {
     return (
       <View style={styles.container}>
+        <Toast ref='toast'/>
         <Text style={styles.welcome}>
           Welcome to React Native!
         </Text>
@@ -26,7 +39,7 @@ export default class RecommendScene extends React.Component<any, any> {
         <Text onPress={router.login}>
           Go to Login Page
         </Text>
-        <Text onPress={router.playlist}>
+        <Text onPress={this.showToast}>
           Go to fck Page
         </Text>
       </View>

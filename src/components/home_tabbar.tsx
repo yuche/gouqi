@@ -7,7 +7,6 @@ import {
   Text,
   Animated
 } from 'react-native'
-
 import {
   Actions
 } from 'react-native-router-flux'
@@ -15,6 +14,8 @@ import {
 
 const Icon = require('react-native-vector-icons/Ionicons')
 
+const activeTextColor = 'navy'
+const inactiveTextColor = 'black'
 
 class TabBar extends React.Component<any, any> {
   constructor(props: any) {
@@ -23,17 +24,14 @@ class TabBar extends React.Component<any, any> {
 
   renderTab (
     name: string,
-    page: number,
-    isTabActive: boolean,
-    onPressHandler: Function
+    page: number
   ) {
-    const activeTextColor = 'navy'
-    const inactiveTextColor = 'black'
+    const isTabActive = this.props.activeTab === page
     const textColor = isTabActive ? activeTextColor : inactiveTextColor
     const fontWeight = isTabActive ? 'bold' : 'normal'
     return <TouchableOpacity
       key={name}
-      onPress={() => onPressHandler(page)}
+      onPress={() => this.props.goToPage(page)}
       style={[styles.tab]}
     >
       <View>
@@ -61,16 +59,12 @@ class TabBar extends React.Component<any, any> {
 
     return (
       <View style={[styles.tabs]}>
-        {this.props.tabs.map((name: any, page: any) => {
-          const isTabActive = this.props.activeTab === page
-          const renderTab = this.props.renderTab || this.renderTab
-          return renderTab(name, page, isTabActive, this.props.goToPage)
-        })}
+        {this.props.tabs.map((name: string, page: number) => this.renderTab(name, page))}
         <Animated.View style={[tabUnderlineStyle, { left }, this.props.underlineStyle]} />
 
         <TouchableOpacity
           key='icon'
-          onPress={() => Actions.login()}
+          onPress={Actions.login}
           style={[styles.icon]}
         >
           <View>

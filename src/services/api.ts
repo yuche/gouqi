@@ -65,8 +65,8 @@ export const enum SearchType {
 export async function search(
   s: string,
   type: SearchType | string,
-  offset = '0',
   limit = '20',
+  offset = '0',
   total = 'true'
 ) {
   return await request.post('/api/search/get/web', {
