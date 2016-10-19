@@ -18,8 +18,8 @@ export default class RecommendScene extends React.Component<any, any> {
   }
 
   showToast = () => {
-    // console.log(this.refs)
-    this.refs.toast.show('fuck', 2000)
+    this.refs.toast.show('fucj')
+    // this.refs.toast.show('fuck', 2000)
   }
 
   render () {
