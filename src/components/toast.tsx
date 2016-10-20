@@ -21,23 +21,16 @@ const { height, width } = Dimensions.get('window')
 interface IProps {
   entry?: 'top' | 'bottom',
   position?: 'top' | 'center' | 'bottom',
-  animationDuration?: number,
-  timeout?: number
+  duration?: number,
+  timeout?: number,
+  type?: styleType,
 }
 
 type styleType = 'success' | 'info' | 'warning' | 'error'
 
 interface IState {
-  position: Animated.Value,
   isShow: boolean,
-  isAnimateClose: boolean,
-  isAnimateOpen: boolean,
-  height: number,
-  width: number,
-  containerHeight: number,
-  containerWidth: number,
   text: string,
-  type: styleType,
   slideAnim: Animated.Value
 }
 
@@ -46,101 +39,110 @@ class Toast extends React.Component<IProps, IState> {
   public static defaultProps: IProps = {
     entry: 'top',
     position: 'top',
-    animationDuration: 400,
-    timeout: 2000
+    duration: 300,
+    timeout: 2300,
+    type: 'info'
   }
+  private timer: NodeJS.Timer
+  private height = height
+  private width = width
 
   constructor (props: IProps) {
     super(props)
     this.state = {
-      position: new Animated.Value(0),
-      slideAnim: new Animated.Value(-50),
+      slideAnim: new Animated.Value(-this.height),
       isShow: false,
-      isAnimateClose: false,
-      isAnimateOpen: false,
-      height,
-      width,
-      containerHeight: height,
-      containerWidth: width,
-      text: 'this is a test text',
-      type: 'success'
+      text: 'this is a test text'
     }
   }
 
   componentWillUnmount() {
+    this.clearTimer()
   }
 
-  renderIcon () {
-    switch (this.state.type) {
+  show (text: string) {
+    this.clearTimer()
+
+    if (this.state.isShow) {
+      this.setState(assign(this.state, {
+        isShow: false
+      }))
+      this.state.slideAnim.setValue(-this.height)
+    }
+    this.setState(assign(this.state, {
+      isShow: true
+    }))
+
+    const { duration, timeout } = this.props
+
+    this.animation().start()
+
+    this.timer = setTimeout(() => {
+      this.animation(-this.height).start(() => {
+        this.setState(assign(this.state, {
+          isShow: false
+        }))
+      })
+    }, timeout - duration)
+  }
+
+  render () {
+    const visible = this.state.isShow
+    const transform = {transform: [{translateY: this.state.slideAnim}]}
+
+    return !visible ?
+      <View /> :
+      <View
+        style={styles.container}
+      >
+        <Animated.View
+          onLayout={this.onViewLayout}
+          style={[typeStyleFilter(this.props.type), styles.wrapper, transform]}
+        >
+          <View style={{position: 'absolute', left: 15}}>
+            <Icon size={17} color={'white'} name={this.iconNameFilter()}/>
+          </View>
+          <Text style={[{ color: 'white' }]}>Bounce me!</Text>
+        </Animated.View>
+      </View>
+  }
+
+  private iconNameFilter () {
+    switch (this.props.type) {
       case 'success':
-        return <Icon size={17} color={'white'} name='check-circle'/>
+        return 'check-circle'
       case 'info':
-        return <Icon name='ios-information-circle-outline'/>
+        return 'info-circle'
       case 'warning':
-        return <Icon name='ios-warning-outline'/>
+        return 'exclamation-circle'
       case 'error':
-        return <Icon name='ios-close-circle-outline'/>
+        return 'times-circle'
       default:
         return null
     }
   }
 
-  show (text: string) {
-    Animated.timing(this.state.slideAnim, { toValue : 0, duration: 200 }).start()
-  }
-
-  hide = () => {
-    Animated.timing(this.state.slideAnim, { toValue : 80, duration: 200 }).start()
-  }
-
-  render () {
-    const visible = this.state.isShow
-    const size = {
-      height: this.state.containerHeight,
-      width: this.state.containerWidth
-    } as ViewStyle
-    const offsetX = (this.state.containerWidth - this.state.width) / 2
-    const transform = {transform: [{translateY: this.state.slideAnim}]}
-    return visible ?
-      <View /> :
-      (
-      <View
-        onLayout={this.onContainerLayout}
-        style={styles.container}
-      >
-        <Animated.View
-          onLayout={this.onViewLayout}
-          style={[typeStyleFilter(this.state.type), transform, {    justifyContent: 'center', alignItems: 'center',
-height: 50 }]}
-        >
-          <View style={{position: 'absolute', left: 15}}>
-                    {this.renderIcon()}
-          </View>
-          <Text>Bounce me!</Text>
-        </Animated.View>
-      </View>
-    )
-  }
-
-  private onContainerLayout = (event: LayoutChangeEvent) => {
-    let containerHeight = event.nativeEvent.layout.height
-    let containerWidth = event.nativeEvent.layout.width
-
-    if (
-      containerHeight === this.state.containerHeight &&
-      containerWidth === this.state.containerWidth
-    ) {
-      return
+  private clearTimer () {
+    if (this.timer) {
+      clearTimeout(this.timer)
     }
+  }
 
-    
+  private animation (toValue = 0) {
+    const { duration } = this.props
+    return Animated.timing(this.state.slideAnim, {
+      duration,
+      toValue
+    })
   }
 
   private onViewLayout = (event: LayoutChangeEvent) => {
-    this.setState(assign(this.state, {
-      height: event.nativeEvent.layout.height,
-      width: event.nativeEvent.layout.width
-    }))
+    this.height = event.nativeEvent.layout.height
+    this.width = event.nativeEvent.layout.width
+    // this.setState(assign(this.state, {
+    //   height: event.nativeEvent.layout.height,
+    //   width: event.nativeEvent.layout.width
+    // }))
   }
 }
 
@@ -151,6 +153,11 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0
+  } as ViewStyle,
+  wrapper: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: 60
   } as ViewStyle,
   success: {
     backgroundColor: 'rgba(81, 163, 81, 0.9)'
@@ -172,7 +179,7 @@ const styles = StyleSheet.create({
  * I can't get "styles[this.state.type]" through
  * TypeScript validation
  */
-function typeStyleFilter (stype: styleType) {
+function typeStyleFilter (stype?: styleType) {
   switch (stype) {
     case 'success':
       return styles.success
@@ -183,7 +190,7 @@ function typeStyleFilter (stype: styleType) {
     case 'error':
       return styles.error
     default:
-      return {}
+      return styles.success
   }
 }
 
