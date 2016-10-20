@@ -6,14 +6,12 @@ import {
   Animated,
   Dimensions,
   Text,
-  TouchableOpacity,
-  LayoutChangeEvent,
-  Easing
+  LayoutChangeEvent
 } from 'react-native'
 import {
   assign
 } from '../utils'
-
+// tslint:disable-next-line
 const Icon = require('react-native-vector-icons/FontAwesome')
 
 const { height, width } = Dimensions.get('window')
@@ -60,7 +58,7 @@ class Toast extends React.Component<IProps, IState> {
     this.clearTimer()
   }
 
-  show (text: string) {
+  public show (text: string) {
     this.clearTimer()
 
     if (this.state.isShow) {
@@ -139,10 +137,6 @@ class Toast extends React.Component<IProps, IState> {
   private onViewLayout = (event: LayoutChangeEvent) => {
     this.height = event.nativeEvent.layout.height
     this.width = event.nativeEvent.layout.width
-    // this.setState(assign(this.state, {
-    //   height: event.nativeEvent.layout.height,
-    //   width: event.nativeEvent.layout.width
-    // }))
   }
 }
 
