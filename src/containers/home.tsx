@@ -7,7 +7,6 @@ import {
   View,
   Text
 } from 'react-native'
-
 import TabBar from '../components/home_tabbar'
 const ScrollableTabView = require('react-native-scrollable-tab-view')
 

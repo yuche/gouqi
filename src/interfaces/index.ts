@@ -21,3 +21,8 @@ export interface IPlaylistsProps {
   offset: number,
   more: boolean
 }
+
+export interface IToastPayload {
+  kind: 'success' | 'info' | 'warning' | 'error',
+  text: string
+}

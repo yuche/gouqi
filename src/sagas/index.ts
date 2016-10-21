@@ -8,44 +8,57 @@ import { getCookies } from '../services/request'
 import {
   Actions as Router
 } from 'react-native-router-flux'
+import {  Action } from 'redux-actions'
 import {
-  IFSA,
   IUserInfo,
   IPlaylistsProps
 } from '../interfaces'
 import {
   assign
 } from '../utils'
+import {
+  toastAction
+} from '../actions'
 
-function* fetchSagas (apiFn: any, ...args: any[]) {
-  yield put({
-    type: 'ui/fetch/start'
-  })
-  yield call(apiFn, args)
-}
 
 export function* loginFlow () {
   while (true) {
-    const action: IFSA<IUserInfo> = yield take('user/login')
+    const { payload = {
+      username: '',
+      password: ''
+    } }: Action<IUserInfo> = yield take('user/login')
+    const { username, password } = payload
 
-    yield put({
-      type: 'user/login/start'
-    })
+    if (username && password) {
+      yield put({
+        type: 'user/login/start'
+      })
 
-    const { username, password } = action.payload
-    const userInfo = yield call(api.login, username.trim(), password.trim())
+      const userInfo = yield call(api.login, username.trim(), password.trim())
 
-    yield put({
-      type: 'user/login/end'
-    })
+      yield put({
+        type: 'user/login/end'
+      })
 
-    if (userInfo.code === 200) {
-      yield AsyncStorage.setItem('Cookies', getCookies())
-      Router.pop()
+      if (userInfo.code === 200) {
+        yield put(toastAction({
+          kind: 'success',
+          text: '已成功登录'
+        }))
+        yield AsyncStorage.setItem('Cookies', getCookies())
+        Router.pop()
+      } else {
+        yield put(toastAction({
+          kind: 'warning',
+          text: '帐号或密码错误'
+        }))
+      }
     } else {
-      Alert.alert('错误', '错误的帐号或密码')
+      yield put(toastAction({
+        kind: 'warning',
+        text: '帐号或密码不能为空'
+      }))
     }
-
   }
 }
 

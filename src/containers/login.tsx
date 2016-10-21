@@ -11,7 +11,6 @@ import {
   IUserInfo
 } from '../interfaces'
 import * as api from '../services/api'
-
 export interface IattemptLogin {
   (userInfo: IUserInfo): Redux.Action
 }

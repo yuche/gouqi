@@ -18,7 +18,7 @@ export default class RecommendScene extends React.Component<any, any> {
   }
 
   showToast = () => {
-    this.refs.toast.show('fucj')
+    this.refs.toast.warning('错误的帐号或密码')
     // this.refs.toast.show('fuck', 2000)
   }
 
