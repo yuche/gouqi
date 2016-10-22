@@ -5,10 +5,7 @@ import {
 } from 'react-native'
 import * as api from '../services/api'
 import { getCookies } from '../services/request'
-import {
-  Actions as Router
-} from 'react-native-router-flux'
-import {  Action } from 'redux-actions'
+import { Action } from 'redux-actions'
 import {
   IUserInfo,
   IPlaylistsProps
@@ -46,7 +43,6 @@ export function* loginFlow () {
           text: '已成功登录'
         }))
         yield AsyncStorage.setItem('Cookies', getCookies())
-        Router.pop()
       } else {
         yield put(toastAction({
           kind: 'warning',

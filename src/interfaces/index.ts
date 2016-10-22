@@ -24,5 +24,6 @@ export interface IPlaylistsProps {
 
 export interface IToastPayload {
   kind: 'success' | 'info' | 'warning' | 'error',
-  text: string
+  text: string,
+  id?: string
 }

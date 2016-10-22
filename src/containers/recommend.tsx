@@ -17,15 +17,19 @@ export default class RecommendScene extends React.Component<any, any> {
     toast: Toast
   }
 
+  private toast: Toast
+
   showToast = () => {
-    this.refs.toast.warning('错误的帐号或密码')
+    this.toast.warning('错误的帐号或密码')
     // this.refs.toast.show('fuck', 2000)
   }
+
+
 
   render () {
     return (
       <View style={styles.container}>
-        <Toast ref='toast'/>
+        <Toast ref={this.mapToast}/>
         <Text style={styles.welcome}>
           Welcome to React Native!
         </Text>
@@ -44,6 +48,10 @@ export default class RecommendScene extends React.Component<any, any> {
         </Text>
       </View>
     )
+  }
+
+  private mapToast = (view: Toast) => {
+    this.toast = view
   }
 }
 

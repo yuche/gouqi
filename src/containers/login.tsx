@@ -29,8 +29,9 @@ class Login extends React.Component<IProps, IUserInfo> {
     }
   }
 
+
   componentDidMount() {
-    api.topPlayList().then(res => console.log(res))
+    console.log(this.props)
   }
 
   handleUsernameChange = (username: string)  => {

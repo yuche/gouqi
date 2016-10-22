@@ -1,5 +1,6 @@
 import * as React from 'react'
 import {
+  TouchableWithoutFeedback,
   TouchableOpacity,
   View,
   ViewStyle,
@@ -7,31 +8,33 @@ import {
   Text,
   Animated
 } from 'react-native'
-import {
-  Actions
-} from 'react-native-router-flux'
 
-
+// tslint:disable-next-line
 const Icon = require('react-native-vector-icons/Ionicons')
 
 const activeTextColor = 'navy'
 const inactiveTextColor = 'black'
 
 class TabBar extends React.Component<any, any> {
+
   constructor(props: any) {
     super(props)
   }
 
-  renderTab (
+  goToPage (page: number)  {
+    return () => this.props.goToPage(page)
+  }
+
+  renderTab = (
     name: string,
     page: number
-  ) {
+  ) => {
     const isTabActive = this.props.activeTab === page
     const textColor = isTabActive ? activeTextColor : inactiveTextColor
     const fontWeight = isTabActive ? 'bold' : 'normal'
     return <TouchableOpacity
       key={name}
-      onPress={() => this.props.goToPage(page)}
+      onPress={this.goToPage(page)}
       style={[styles.tab]}
     >
       <View>
@@ -64,7 +67,6 @@ class TabBar extends React.Component<any, any> {
 
         <TouchableOpacity
           key='icon'
-          onPress={Actions.login}
           style={[styles.icon]}
         >
           <View>

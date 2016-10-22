@@ -8,23 +8,23 @@ import {
 
 
 class ToastContainer extends React.Component<IToastPayload, any> {
-  refs: {
-    toast: any
-  }
-
   constructor (props: IToastPayload) {
     super(props)
   }
 
-  componentWillReceiveProps({kind, text}: IToastPayload) {
-    this.refs.toast[kind](text)
+  componentWillReceiveProps({kind, text}: IToastPayload) {)
+    this.toast[kind](text)
   }
 
   render () {
-    return <Toast ref='toast'/>
+    return <Toast ref={this.mapToast}/>
+  }
+
+  private mapToast = (toast: Toast) => {
+    this.toast = toast
   }
 }
 
 export default connect(
-  ({ ui : { toast: { kind, text }} }: { ui: {toast: IToastPayload} }) => ({ kind, text })
+  ({ ui : { toast: { kind, text, id }} }: { ui: {toast: IToastPayload} }) => ({ kind, text, id })
 )(ToastContainer)

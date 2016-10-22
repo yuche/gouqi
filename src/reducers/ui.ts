@@ -14,7 +14,8 @@ export default handleActions({
     return Object.assign({}, state, {
       toast: {
         kind: payload.kind,
-        text: payload.text
+        text: payload.text,
+        id: Date.now().toString()
       }
     })
   }

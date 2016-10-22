@@ -12,6 +12,10 @@ const ScrollableTabView = require('react-native-scrollable-tab-view')
 
 
 class Home extends React.Component<any, any> {
+  constructor(props: any) {
+    super(props)
+  }
+
   render() {
     return (
       <ScrollableTabView
