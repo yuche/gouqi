@@ -35,20 +35,15 @@ class Login extends React.Component<IProps, IUserInfo> {
   }
 
   handleUsernameChange = (username: string)  => {
-    this.setState(assign(this.state, { username }))
+    this.setState({ username } as IUserInfo)
   }
 
   handlePasswordChange = (password: string) => {
-    this.setState(assign(this.state, { password }))
+    this.setState({ password } as IUserInfo)
   }
 
   handleUserLogin = () => {
     this.props.attemptLogin(this.state)
-  }
-
-  onLoadStart(e: any) {
-    console.log(e)
-    console.log('load start')
   }
 
   render() {

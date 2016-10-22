@@ -75,9 +75,9 @@ class Toast extends React.Component<IProps, IState> {
   }
 
   public hide () {
-    this.setState(assign(this.state, {
+    this.setState({
       isShow: false
-    }))
+    } as IState)
     this.state.slideAnim.setValue(-this.height)
   }
 
@@ -123,11 +123,11 @@ class Toast extends React.Component<IProps, IState> {
     if (this.state.isShow) {
       this.hide()
     }
-    this.setState(assign(this.state, {
+    this.setState({
       isShow: true,
       text,
       kind
-    }))
+    } as IState)
 
     const { duration, timeout } = this.props
 
@@ -135,9 +135,9 @@ class Toast extends React.Component<IProps, IState> {
 
     this.timer = setTimeout(() => {
       this.animation(-this.height).start(() => {
-        this.setState(assign(this.state, {
+        this.setState({
           isShow: false
-        }))
+        } as IState)
       })
     }, timeout - duration)
   }

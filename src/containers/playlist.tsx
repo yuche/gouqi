@@ -47,7 +47,7 @@ class PlayList extends React.Component<
       <ListItem
         title={playlist.name}
         picURI={playlist.coverImgUrl}
-        subTitle={playlist.subscribedCount + ' 人收藏'}
+        subTitle={playlist.subscribedCount + ' 人订阅'}
         key={playlist.id}
       />
     )
