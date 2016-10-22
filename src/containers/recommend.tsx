@@ -10,7 +10,6 @@ import { Actions as router } from 'react-native-router-flux'
 
 import Toast from '../components/toast'
 
-
 export default class RecommendScene extends React.Component<any, any> {
 
   refs: {
@@ -23,8 +22,6 @@ export default class RecommendScene extends React.Component<any, any> {
     this.toast.warning('错误的帐号或密码')
     // this.refs.toast.show('fuck', 2000)
   }
-
-
 
   render () {
     return (

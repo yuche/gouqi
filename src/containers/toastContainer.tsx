@@ -6,13 +6,14 @@ import {
   IToastPayload
 } from '../interfaces'
 
-
 class ToastContainer extends React.Component<IToastPayload, any> {
+  private toast: any
+
   constructor (props: IToastPayload) {
     super(props)
   }
 
-  componentWillReceiveProps({kind, text}: IToastPayload) {)
+  componentWillReceiveProps({ kind, text }: IToastPayload) {
     this.toast[kind](text)
   }
 
@@ -26,5 +27,5 @@ class ToastContainer extends React.Component<IToastPayload, any> {
 }
 
 export default connect(
-  ({ ui : { toast: { kind, text, id }} }: { ui: {toast: IToastPayload} }) => ({ kind, text, id })
+  ({ ui : { toast: { kind, text, id  }} }: { ui: {toast: IToastPayload} }) => ({ kind, text, id })
 )(ToastContainer)

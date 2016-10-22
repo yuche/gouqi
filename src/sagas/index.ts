@@ -1,6 +1,5 @@
-import { apply, take, put, call, fork, select } from 'redux-saga/effects'
+import { take, put, call, fork, select } from 'redux-saga/effects'
 import {
-  Alert,
   AsyncStorage
 } from 'react-native'
 import * as api from '../services/api'
@@ -11,12 +10,8 @@ import {
   IPlaylistsProps
 } from '../interfaces'
 import {
-  assign
-} from '../utils'
-import {
   toastAction
 } from '../actions'
-
 
 export function* loginFlow () {
   while (true) {
@@ -38,22 +33,13 @@ export function* loginFlow () {
       })
 
       if (userInfo.code === 200) {
-        yield put(toastAction({
-          kind: 'success',
-          text: '已成功登录'
-        }))
+        yield put(toastAction('success', '您已成功登录'))
         yield AsyncStorage.setItem('Cookies', getCookies())
       } else {
-        yield put(toastAction({
-          kind: 'warning',
-          text: '帐号或密码错误'
-        }))
+        yield put(toastAction('warning', '帐号或密码错误'))
       }
     } else {
-      yield put(toastAction({
-        kind: 'warning',
-        text: '帐号或密码不能为空'
-      }))
+      yield put(toastAction('warning', '帐号或密码不能为空'))
     }
   }
 }

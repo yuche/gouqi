@@ -40,7 +40,7 @@ class Toast extends React.Component<IProps, IState> {
     duration: 300,
     timeout: 2300
   }
-  private timer: NodeJS.Timer
+  private timer: number
   private height = height
   private width = width
 
@@ -132,7 +132,6 @@ class Toast extends React.Component<IProps, IState> {
     const { duration, timeout } = this.props
 
     this.animation().start()
-
     this.timer = setTimeout(() => {
       this.animation(-this.height).start(() => {
         this.setState({

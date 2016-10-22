@@ -15,6 +15,8 @@ export interface IFSA<T> {
   error?: boolean
 }
 
+export type styleType = 'success' | 'info' | 'warning' | 'error'
+
 export interface IPlaylistsProps {
   isLoading: boolean,
   playlists: api.IPlaylist[],
@@ -23,7 +25,7 @@ export interface IPlaylistsProps {
 }
 
 export interface IToastPayload {
-  kind: 'success' | 'info' | 'warning' | 'error',
+  kind: styleType,
   text: string,
-  id?: string
+  id: string
 }

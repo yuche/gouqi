@@ -57,7 +57,7 @@ function setCookiesFilter (response: IResponse) {
 
 function get (
   uri: string
-) {
+): Promise<any> {
   return fetch(API_BASE_URL + uri, {
     headers: Object.assign({}, defaultHeaders, {
       'Cookie': getCookies()
@@ -71,7 +71,7 @@ function get (
 function post (
   uri: string,
   body: {}
-) {
+): Promise<any>  {
   return fetch(API_BASE_URL + uri, {
     body: qs.stringify(body),
     headers: Object.assign({}, defaultHeaders, {

@@ -4,10 +4,6 @@
   version "0.0.31"
   resolved "http://registry.npm.taobao.org/@types/isomorphic-fetch/download/@types/isomorphic-fetch-0.0.31.tgz#ec120166ce22f0b134e8770f40c97cd076068fae"
 
-"@types/node@^6.0.41":
-  version "6.0.45"
-  resolved "http://registry.npm.taobao.org/@types/node/download/@types/node-6.0.45.tgz#c4842a9d653d767831e4ff495b6008cc0d579966"
-
 "@types/qs@^6.2.30":
   version "6.2.30"
   resolved "http://registry.npm.taobao.org/@types/qs/download/@types/qs-6.2.30.tgz#139e247511ee3b9be539cdd553c8fdb33c1f624e"
@@ -4919,6 +4915,13 @@ react-native-router-flux@^3.35.0:
     react-native-tabs "^1.0.9"
     react-static-container "1.0.1"
 
+react-native-scrollable-tab-view:
+  version "0.6.0"
+  resolved "http://registry.npm.taobao.org/react-native-scrollable-tab-view/download/react-native-scrollable-tab-view-0.6.0.tgz#36050cf72dae0dc00b6b8d7f9a570955d99a213b"
+  dependencies:
+    react-static-container "^1.0.1"
+    react-timer-mixin "^0.13.3"
+
 react-native-tabs@^1.0.9:
   version "1.0.9"
   resolved "http://registry.npm.taobao.org/react-native-tabs/download/react-native-tabs-1.0.9.tgz#75d3c35e8b5b6970869eab282372cb32e2a782cd"
@@ -5025,11 +5028,11 @@ react-redux@^4.4.5:
     lodash "^4.2.0"
     loose-envify "^1.1.0"
 
-react-static-container@1.0.1:
+react-static-container@^1.0.1, react-static-container@1.0.1:
   version "1.0.1"
   resolved "http://registry.npm.taobao.org/react-static-container/download/react-static-container-1.0.1.tgz#694c0dd68a896b879519afb548399cc1989c9ab0"
 
-react-timer-mixin@^0.13.2, react-timer-mixin@=0.13.3:
+react-timer-mixin@^0.13.2, react-timer-mixin@^0.13.3, react-timer-mixin@=0.13.3:
   version "0.13.3"
   resolved "http://registry.npm.taobao.org/react-timer-mixin/download/react-timer-mixin-0.13.3.tgz#0da8b9f807ec07dc3e854d082c737c65605b3d22"
 
@@ -6004,9 +6007,9 @@ typedarray@~0.0.5:
   version "0.0.6"
   resolved "http://registry.npm.taobao.org/typedarray/download/typedarray-0.0.6.tgz#867ac74e3864187b1d3d47d996a78ec5c8830777"
 
-typescript@^2.0.3:
-  version "2.0.3"
-  resolved "http://registry.npm.taobao.org/typescript/download/typescript-2.0.3.tgz#33dec9eae86b8eee327dd419ca050c853cabd514"
+typescript@next:
+  version "2.1.0-dev.20161022"
+  resolved "http://registry.npm.taobao.org/typescript/download/typescript-2.1.0-dev.20161022.tgz#efbbe17ca29f88c110f7c94e9a88d849e32e30f4"
 
 ua-parser-js@^0.7.9:
   version "0.7.10"

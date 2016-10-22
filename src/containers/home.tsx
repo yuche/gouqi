@@ -2,14 +2,11 @@ import Login from './login'
 import RecommendScene from './recommend'
 import PlayList from './playlist'
 import * as React from 'react'
-
 import {
-  View,
-  Text
+  View
 } from 'react-native'
 import TabBar from '../components/home_tabbar'
-const ScrollableTabView = require('react-native-scrollable-tab-view')
-
+const ScrollableTabView = require('react-native-scrollable-tab-view') // tslint:disable-line
 
 class Home extends React.Component<any, any> {
   constructor(props: any) {

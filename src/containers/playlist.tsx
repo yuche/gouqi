@@ -1,7 +1,6 @@
 import * as React from 'react'
 import {
   ListView,
-  ScrollView,
   Text
 } from 'react-native'
 import { connect, Dispatch } from 'react-redux'
