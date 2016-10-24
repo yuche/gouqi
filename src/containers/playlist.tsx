@@ -96,6 +96,7 @@ export default connect(
       return dispatch(Actions.syncPlaylists())
     }
   })
-)(PlayList)
+)(PlayList) as React.ComponentClass<{tabLabel: string}>
+
 
 

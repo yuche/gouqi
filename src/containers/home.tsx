@@ -19,10 +19,10 @@ class Home extends React.Component<any, any> {
         style={{marginTop: 20}}
         renderTabBar={() => <TabBar />}
       >
-        <RecommendScene tabLabel='推荐'/>
-        <Login tabLabel='登录'/>
-        <PlayList tabLabel='歌单'/>
-        <View tabLabel='电台'/>
+        <RecommendScene tabLabel='一'/>
+        <Login tabLabel='一二'/>
+        <PlayList tabLabel='一二三'/>
+        <View tabLabel='一二三四'/>
       </ScrollableTabView>
     )
   }

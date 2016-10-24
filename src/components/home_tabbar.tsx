@@ -15,11 +15,31 @@ const Icon = require('react-native-vector-icons/Ionicons')
 const activeTextColor = 'navy'
 const inactiveTextColor = 'black'
 
-class TabBar extends React.Component<any, any> {
+interface IProps {
+  activeTab: number,
+  goToPage: (page: number) => void,
+  scrollValue: Animated.Value,
+  tabs: string[],
+  underlineStyle: ViewStyle,
+  containerWidth: number
+}
+
+class TabBar extends React.Component<IProps, { underlineWidth: string }> {
 
   constructor(props: any) {
     super(props)
   }
+
+  componentDidMount() {
+    
+  }
+
+  componentWillReceiveProps({ activeTab }: IProps, ) {
+    if (activeTab !== this.props.activeTab) {
+      console.log('switch')
+    }
+  }
+
 
   goToPage (page: number)  {
     return () => this.props.goToPage(page)

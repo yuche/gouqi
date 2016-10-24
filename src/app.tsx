@@ -5,12 +5,10 @@ import configureStore from './store'
 
 const store = configureStore({})
 
-export default class App extends React.Component<any, any> {
-  render() {
-    return (
-      <Provider store={store}>
-        <Router />
-      </Provider>
-    )
-  }
-}
+const App = () => (
+  <Provider store={store}>
+    <Router />
+  </Provider>
+)
+
+export default App
