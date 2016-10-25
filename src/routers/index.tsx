@@ -3,7 +3,6 @@ import {
   Router,
   Scene
 } from 'react-native-router-flux'
-import { View } from 'react-native'
 import Login from '../containers/login'
 import Home from '../containers/home'
 class NavRouter extends React.Component<any, any> {

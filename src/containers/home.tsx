@@ -14,17 +14,22 @@ class Home extends React.Component<any, any> {
   }
 
   render() {
+    const { renderTabBar } = this
     return (
       <ScrollableTabView
         style={{marginTop: 20}}
-        renderTabBar={() => <TabBar />}
+        renderTabBar={renderTabBar()}
       >
-        <RecommendScene tabLabel='一'/>
-        <Login tabLabel='一二'/>
-        <PlayList tabLabel='一二三'/>
-        <View tabLabel='一二三四'/>
+        <RecommendScene tabLabel='推荐'/>
+        <Login tabLabel='电台'/>
+        <PlayList tabLabel='歌单'/>
+        <View tabLabel='排行榜'/>
       </ScrollableTabView>
     )
+  }
+
+  private renderTabBar = () => {
+    return () => <TabBar />
   }
 }
 

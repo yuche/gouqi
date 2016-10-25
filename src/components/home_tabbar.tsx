@@ -1,48 +1,64 @@
 import * as React from 'react'
 import {
-  TouchableWithoutFeedback,
   TouchableOpacity,
   View,
   ViewStyle,
   StyleSheet,
   Text,
-  Animated
+  Animated,
+  NativeComponent
 } from 'react-native'
-
+import {
+  Color
+} from '../styles'
 // tslint:disable-next-line
 const Icon = require('react-native-vector-icons/Ionicons')
 
-const activeTextColor = 'navy'
 const inactiveTextColor = 'black'
+
+class IScrollValue extends Animated.Value {
+  _value: number // tslint:disable-line
+}
 
 interface IProps {
   activeTab: number,
   goToPage: (page: number) => void,
-  scrollValue: Animated.Value,
+  scrollValue: IScrollValue,
   tabs: string[],
   underlineStyle: ViewStyle,
   containerWidth: number
 }
 
-class TabBar extends React.Component<IProps, { underlineWidth: string }> {
+type ITabBarProps = IProps & any
+
+interface IState {
+  leftUnderlineWidth: Animated.Value,
+  undelineWidth: Animated.Value
+}
+
+type tabMeasurement = {
+  left: number,
+  width: number
+}
+
+class TabBar extends React.Component<ITabBarProps, IState> {
+  refs: {
+    [text: string]: any
+  }
+
+  private tabMeasurements: tabMeasurement[]
 
   constructor(props: any) {
     super(props)
-  }
-
-  componentDidMount() {
-    
-  }
-
-  componentWillReceiveProps({ activeTab }: IProps, ) {
-    if (activeTab !== this.props.activeTab) {
-      console.log('switch')
+    this.tabMeasurements = []
+    this.state = {
+      leftUnderlineWidth: new Animated.Value(0),
+      undelineWidth: new Animated.Value(0)
     }
   }
 
-
-  goToPage (page: number)  {
-    return () => this.props.goToPage(page)
+  componentDidMount() {
+   this.props.scrollValue.addListener(this.updateView)
   }
 
   renderTab = (
@@ -50,7 +66,7 @@ class TabBar extends React.Component<IProps, { underlineWidth: string }> {
     page: number
   ) => {
     const isTabActive = this.props.activeTab === page
-    const textColor = isTabActive ? activeTextColor : inactiveTextColor
+    const textColor = isTabActive ? Color.main : inactiveTextColor
     const fontWeight = isTabActive ? 'bold' : 'normal'
     return <TouchableOpacity
       key={name}
@@ -58,7 +74,11 @@ class TabBar extends React.Component<IProps, { underlineWidth: string }> {
       style={[styles.tab]}
     >
       <View>
-        <Text style={[{color: textColor, fontWeight}]}>
+        <Text
+          ref={`text_${page}`} // tslint:disable-line
+          style={[{color: textColor, fontWeight}]}
+          onLayout={() => this.textOnLayout(page)} // tslint:disable-line
+        >
           {name}
         </Text>
       </View>
@@ -66,24 +86,20 @@ class TabBar extends React.Component<IProps, { underlineWidth: string }> {
   }
 
   render () {
-    const containerWidth = this.props.containerWidth
-    const numberOfTabs = this.props.tabs.length
-    const properWidth = (containerWidth - 50) / numberOfTabs
+    const { undelineWidth, leftUnderlineWidth } = this.state
     const tabUnderlineStyle = {
       position: 'absolute',
-      width: properWidth,
+      width: undelineWidth,
       height: 2,
-      backgroundColor: 'navy',
-      bottom: 0
+      backgroundColor: Color.main,
+      bottom: 0,
+      left: leftUnderlineWidth
     }
-    const left = this.props.scrollValue.interpolate({
-      inputRange: [0, 1], outputRange: [0,  properWidth ]
-    })
 
     return (
       <View style={[styles.tabs]}>
         {this.props.tabs.map((name: string, page: number) => this.renderTab(name, page))}
-        <Animated.View style={[tabUnderlineStyle, { left }, this.props.underlineStyle]} />
+        <Animated.View style={[tabUnderlineStyle, this.props.underlineStyle]} />
 
         <TouchableOpacity
           key='icon'
@@ -96,8 +112,57 @@ class TabBar extends React.Component<IProps, { underlineWidth: string }> {
       </View>
     )
   }
-}
 
+  private updateView = ({ value }: { value: number }) => {
+    const position = Math.floor(value)
+    const tabCount = this.props.tabs.length
+    const pageOffset = value % 1
+
+    // if (tabCount === 0 || value < 0 || value > tabCount - 1) {
+    //   return
+    // }
+    if (this.isMesuresDone(position) && tabCount && value >= 0 && value <= tabCount - 1) {
+      this.updateUnderline(position, pageOffset, tabCount)
+    }
+  }
+
+  private isMesuresDone (position: number) {
+    return this.tabMeasurements[position] && this.tabMeasurements[position + 1]
+  }
+
+  private updateUnderline (position: number, pageOffset: number, tabCount: number) {
+    const { width, left } = this.tabMeasurements[position]
+
+    if (position < tabCount - 1) {
+
+      let nextTabWidth = this.tabMeasurements[position + 1].width
+      let nextTabLeft = this.tabMeasurements[position + 1].left
+      nextTabWidth = (pageOffset * nextTabWidth + (1 - pageOffset) * width)
+      nextTabLeft = (pageOffset * nextTabLeft + (1 - pageOffset) * left)
+      this.state.undelineWidth.setValue(nextTabWidth)
+      this.state.leftUnderlineWidth.setValue(nextTabLeft)
+
+    } else {
+
+      this.state.undelineWidth.setValue(width)
+      this.state.leftUnderlineWidth.setValue(left)
+
+    }
+  }
+
+  private goToPage (page: number)  {
+    return () => this.props.goToPage(page)
+  }
+
+  private textOnLayout = (page: number) => {
+    const textComp: NativeComponent = this.refs[`text_${page}`]
+
+    textComp.measure((ox, oy, width, height, pageX) => {
+      this.tabMeasurements[page] = { width, left: pageX }
+      this.updateView({ value: this.props.scrollValue._value })
+    })
+  }
+}
 
 const styles = StyleSheet.create({
   tab: {
