@@ -5,7 +5,7 @@ import * as React from 'react'
 import {
   View
 } from 'react-native'
-import TabBar from '../components/home_tabbar'
+import TabBar from '../components/homeNavBar'
 const ScrollableTabView = require('react-native-scrollable-tab-view') // tslint:disable-line
 
 class Home extends React.Component<any, any> {

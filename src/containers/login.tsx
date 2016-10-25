@@ -1,4 +1,3 @@
-import { assign } from '../utils'
 import * as React from 'react'
 import {
   Text,
@@ -10,7 +9,6 @@ import * as Actions from '../actions'
 import {
   IUserInfo
 } from '../interfaces'
-import * as api from '../services/api'
 export interface IattemptLogin {
   (userInfo: IUserInfo): Redux.Action
 }
@@ -27,11 +25,6 @@ class Login extends React.Component<IProps, IUserInfo> {
       username: '',
       password: ''
     }
-  }
-
-
-  componentDidMount() {
-    console.log(this.props)
   }
 
   handleUsernameChange = (username: string)  => {
