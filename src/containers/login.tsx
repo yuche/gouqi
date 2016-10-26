@@ -2,13 +2,20 @@ import * as React from 'react'
 import {
   Text,
   TextInput,
-  View
+  ScrollView,
+  View,
+  TextInputStatic
 } from 'react-native'
 import { connect, Dispatch } from 'react-redux'
 import * as Actions from '../actions'
 import {
   IUserInfo
 } from '../interfaces'
+import {
+  Form,
+  Button
+} from '../components/base'
+
 export interface IattemptLogin {
   (userInfo: IUserInfo): Redux.Action
 }
@@ -19,6 +26,7 @@ export interface IProps {
 }
 
 class Login extends React.Component<IProps, IUserInfo> {
+  private passwordInput: TextInputStatic
   constructor(props: IProps) {
     super(props)
     this.state = {
@@ -39,27 +47,59 @@ class Login extends React.Component<IProps, IUserInfo> {
     this.props.attemptLogin(this.state)
   }
 
+  userOnClear = () => {
+    this.setState({ username: '' } as IUserInfo)
+  }
+
+  passwordOnClear = () => {
+    this.setState({ password: '' } as IUserInfo)
+  }
+
+  userInputOnSumit = () => {
+    this.passwordInput.focus()
+  }
+
+  mapPasswordInput = (ref: TextInputStatic) => {
+    this.passwordInput = ref
+  }
+
   render() {
+    const { username, password } = this.state
     return (
-      <View style={{margin: 128}}>
-        <TextInput
+      <ScrollView
+        style={{marginTop: 10}}
+        keyboardShouldPersistTaps={true}
+      >
+        <Form
+          icon='user'
+          autoFocus={true}
           editable={true}
-          style={{height: 40, borderColor: 'gray', borderWidth: 1}}
+          placeholder='手机号码或邮箱'
           onChangeText={this.handleUsernameChange}
+          value={this.state.username}
+          onClear={this.userOnClear}
+          onSubmitEditing={this.userInputOnSumit}
         />
 
-        <TextInput
+        <Form
+          inputRef={this.mapPasswordInput}
+          icon='key'
+          secureTextEntry={true}
           editable={true}
-          style={{height: 40, borderColor: 'gray', borderWidth: 1}}
+          placeholder='密码'
+          onClear={this.passwordOnClear}
           onChangeText={this.handlePasswordChange}
+          value={this.state.password}
+          onSubmitEditing={this.handleUserLogin}
         />
 
-        <Text
-          onPress={this.handleUserLogin}
+        <Button
+          onPress={this.userOnClear}
+          disabled={!username || !password}
         >
-          登录fuckfuck
-        </Text>
-      </View>
+          登录
+        </Button>
+      </ScrollView>
     )
   }
 }
