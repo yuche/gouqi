@@ -4,18 +4,21 @@ import {
   View,
   Text
 } from 'react-native'
-import Home from '../containers/home'
-import ToastContainer from '../containers/toastContainer'
+import Home from './home'
+import ToastContainer from './toastContainer'
+import Router from '../routers'
+
 
 const initialRoute: React.Route = {
   component: Home,
-  name: 'home',
+  title: 'home',
   index: 0
 }
 
 
 
-class Router extends React.Component<any, any> {
+class Navigation extends React.Component<any, any> {
+  private router: Router
 
   constructor(props: any) {
     super(props)
@@ -33,22 +36,25 @@ class Router extends React.Component<any, any> {
   }
 
   private configureScene = ({
-    sceneConfig = Navigator.SceneConfigs.FloatFromRight
+    sceneConfig = Navigator.SceneConfigs.PushFromRight
   }: React.Route) => {
     return sceneConfig
   }
 
   private renderScene = ({
     component,
-    name,
+    title,
     index,
-    props
-  }: React.Route) => {
+    id,
+    passProps
+  }: React.Route, navigator: React.NavigatorStatic) => {
+    this.router = this.router || new Router(navigator)
     if (component) {
       const Component: React.ComponentClass<any> = component
       return <Component
-        {...props}
-        route={{name, index}}
+        {...passProps}
+        route={{title, index, id}}
+        router={this.router}
       />
     }
     return <View>
@@ -57,4 +63,4 @@ class Router extends React.Component<any, any> {
   }
 }
 
-export default Router
+export default Navigation

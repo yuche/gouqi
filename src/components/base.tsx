@@ -26,7 +26,6 @@ interface IForm extends TextInputProperties {
  }
 
  interface IFormStates {
-   text: string,
    focus: boolean
  }
 
@@ -54,7 +53,7 @@ export class Form extends React.Component<IForm, IFormStates> {
     } = this.props
 
     const clearIcon = () => {
-      return value ?
+      return value && this.state.focus ?
         <Icon name='times-circle' size={14} color='#bbb' onPress={onClear}/>
         :
         null
@@ -72,6 +71,8 @@ export class Form extends React.Component<IForm, IFormStates> {
             placeholder={placeholder}
             editable={editable}
             onChangeText={onChangeText}
+            onFocus={this.onFocus}
+            onBlur={this.onBlur}
             secureTextEntry={secureTextEntry}
             value={value}
             onSubmitEditing={onSubmitEditing}
@@ -80,6 +81,14 @@ export class Form extends React.Component<IForm, IFormStates> {
         </View>
       </View>
     </View>
+  }
+
+  private onFocus = () => {
+    this.setState({ focus : true})
+  }
+
+  private onBlur = () => {
+    this.setState({ focus : false })
   }
 }
 
@@ -100,7 +109,7 @@ export const Button = ({
       onPress={onPress}
     >
       <Text
-        style={[styles.buttonText, !disabled && styles.buttonDisabled]}
+        style={[styles.buttonText, disabled && styles.buttonDisabled]}
       >
         {children}
       </Text>

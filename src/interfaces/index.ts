@@ -1,5 +1,8 @@
 import * as api from '../services/api'
-
+import {
+  Route
+} from 'react'
+import Router from '../routers'
 export interface IUserInfo {
   username: string,
   password: string
@@ -28,4 +31,9 @@ export interface IToastPayload {
   kind: styleType,
   text: string,
   id: string
+}
+
+export interface IRouterProps {
+  route?: Route,
+  router?: Router
 }

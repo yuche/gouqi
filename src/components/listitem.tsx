@@ -48,7 +48,7 @@ const ListItem = ({
       <Image
         resizeMode='contain'
         source={{uri: picURI}}
-        style={[styles.pic, roundPic && { borderRadius : 17}, picStyle && picStyle]}
+        style={[styles.pic, roundPic && { borderRadius : 17 }, picStyle && picStyle]}
       />
       <View style={styles.titleContainer}>
         <Text style={[styles.title, titleStyle && titleStyle]}>

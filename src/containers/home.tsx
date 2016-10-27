@@ -20,7 +20,7 @@ class Home extends React.Component<any, any> {
         style={{marginTop: 20}}
         renderTabBar={renderTabBar()}
       >
-        <RecommendScene tabLabel='推荐'/>
+        <RecommendScene tabLabel='推荐' {...this.props}/>
         <Login tabLabel='电台'/>
         <PlayList tabLabel='歌单'/>
         <View tabLabel='排行榜'/>

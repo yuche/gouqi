@@ -9,18 +9,20 @@ import {
 import { connect, Dispatch } from 'react-redux'
 import * as Actions from '../actions'
 import {
-  IUserInfo
+  IUserInfo,
+  IRouterProps
 } from '../interfaces'
 import {
   Form,
   Button
 } from '../components/base'
+import NavBar from '../components/navbar'
 
 export interface IattemptLogin {
   (userInfo: IUserInfo): Redux.Action
 }
 
-export interface IProps {
+export interface IProps extends IRouterProps {
   isLoading: boolean,
   attemptLogin: IattemptLogin
 }
@@ -33,6 +35,7 @@ class Login extends React.Component<IProps, IUserInfo> {
       username: '',
       password: ''
     }
+    console.log(props)
   }
 
   handleUsernameChange = (username: string)  => {
@@ -65,41 +68,44 @@ class Login extends React.Component<IProps, IUserInfo> {
 
   render() {
     const { username, password } = this.state
+    const { route, router } = this.props
     return (
-      <ScrollView
-        style={{marginTop: 10}}
-        keyboardShouldPersistTaps={true}
-      >
-        <Form
-          icon='user'
-          autoFocus={true}
-          editable={true}
-          placeholder='手机号码或邮箱'
-          onChangeText={this.handleUsernameChange}
-          value={this.state.username}
-          onClear={this.userOnClear}
-          onSubmitEditing={this.userInputOnSumit}
-        />
-
-        <Form
-          inputRef={this.mapPasswordInput}
-          icon='key'
-          secureTextEntry={true}
-          editable={true}
-          placeholder='密码'
-          onClear={this.passwordOnClear}
-          onChangeText={this.handlePasswordChange}
-          value={this.state.password}
-          onSubmitEditing={this.handleUserLogin}
-        />
-
-        <Button
-          onPress={this.userOnClear}
-          disabled={!username || !password}
+      <NavBar route={route} router={router}>
+        <ScrollView
+          style={{marginTop: 10}}
+          keyboardShouldPersistTaps={true}
         >
-          登录
-        </Button>
-      </ScrollView>
+          <Form
+            icon='user'
+            autoFocus={true}
+            editable={true}
+            placeholder='手机号码或邮箱'
+            onChangeText={this.handleUsernameChange}
+            value={username}
+            onClear={this.userOnClear}
+            onSubmitEditing={this.userInputOnSumit}
+          />
+
+          <Form
+            inputRef={this.mapPasswordInput}
+            icon='key'
+            secureTextEntry={true}
+            editable={true}
+            placeholder='密码'
+            onClear={this.passwordOnClear}
+            onChangeText={this.handlePasswordChange}
+            value={password}
+            onSubmitEditing={this.handleUserLogin}
+          />
+
+          <Button
+            onPress={this.userOnClear}
+            disabled={!username || !password}
+          >
+            登录
+          </Button>
+        </ScrollView>
+      </NavBar>
     )
   }
 }

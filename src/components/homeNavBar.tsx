@@ -76,7 +76,7 @@ class TabBar extends React.Component<ITabBarProps, IState> {
       <View>
         <Text
           ref={`text_${page}`} // tslint:disable-line
-          style={[{color: textColor, fontWeight}]}
+          style={[{color: textColor, fontWeight, fontSize: 14}]}
           onLayout={() => this.textOnLayout(page)} // tslint:disable-line
         >
           {name}
@@ -106,7 +106,7 @@ class TabBar extends React.Component<ITabBarProps, IState> {
           style={[styles.icon]}
         >
           <View>
-            <Icon name='ios-search' size={16}/>
+            <Icon name='ios-search' size={15}/>
           </View>
         </TouchableOpacity>
       </View>
@@ -168,14 +168,13 @@ const styles = StyleSheet.create({
   tab: {
     flex: 1,
     alignItems: 'center',
-    justifyContent: 'center',
-    paddingBottom: 10
+    justifyContent: 'center'
   } as ViewStyle,
   tabs: {
     height: 40,
     flexDirection: 'row',
     // justifyContent: 'space-around',
-    borderWidth: 1,
+    borderWidth: StyleSheet.hairlineWidth,
     borderTopWidth: 0,
     borderLeftWidth: 0,
     borderRightWidth: 0,
@@ -185,8 +184,7 @@ const styles = StyleSheet.create({
     height: 40,
     width: 50,
     alignItems: 'center',
-    justifyContent: 'center',
-    paddingBottom: 10
+    justifyContent: 'center'
   }
 })
 

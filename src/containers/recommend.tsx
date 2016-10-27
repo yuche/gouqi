@@ -6,7 +6,6 @@ import {
   View,
   ViewStyle
 } from 'react-native'
-import { Actions as router } from 'react-native-router-flux'
 
 import Toast from '../components/toast'
 
@@ -18,8 +17,13 @@ export default class RecommendScene extends React.Component<any, any> {
 
   private toast: Toast
 
+  constructor(props: any) {
+    super(props)
+  }
+
   showToast = () => {
-    this.toast.warning('错误的帐号或密码')
+    this.props.router.toLogin()
+    // this.toast.warning('错误的帐号或密码')
     // this.refs.toast.show('fuck', 2000)
   }
 
@@ -37,7 +41,7 @@ export default class RecommendScene extends React.Component<any, any> {
           Press Cmd+R to reload,{'\n'}
           Cmd+D or shake for dev menu
         </Text>
-        <Text onPress={router.login}>
+        <Text>
           Go to Login Page
         </Text>
         <Text onPress={this.showToast}>
@@ -55,7 +59,6 @@ export default class RecommendScene extends React.Component<any, any> {
 const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
-    backgroundColor: '#F5FCFF',
     flex: 1,
     justifyContent: 'center'
   } as ViewStyle,
