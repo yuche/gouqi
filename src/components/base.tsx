@@ -128,7 +128,6 @@ const styles = StyleSheet.create({
     padding: 10
   } as ViewStyle,
   formOutterWrapper: {
-    position: 'relative',
     flex: 1,
     backgroundColor: '#FFFFFF',
     borderWidth: StyleSheet.hairlineWidth,

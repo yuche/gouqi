@@ -26,7 +26,8 @@ interface IProps {
   leftButton?: JSX.Element,
   rightButton?: JSX.Element,
   showTitile?: boolean,
-  children?: JSX.Element
+  children?: JSX.Element,
+  hideBorder?: boolean
 }
 
 class NavBar extends React.Component<IProps, any> {
@@ -53,15 +54,16 @@ class NavBar extends React.Component<IProps, any> {
       leftButton = defaultLeftButton,
       rightButton,
       route,
-      showTitile = true
+      showTitile = true,
+      hideBorder = false
     } = this.props
     return <View style={{ flex: 1 }}>
       <NavigationBar
         statusBar={statusBar}
         leftButton={buttonWrapper(leftButton, { marginLeft: 10 })}
         rightButton={buttonWrapper(rightButton, { marginRight: 10})}
-        title={{ title: showTitile && route && route.title, style: {fontSize: 14} }}
-        style={styles.container}
+        title={showTitile ? { title: route && route.title, style: {fontSize: 14} } : <View style={{ height : 0}}/>}
+        style={[styles.container, hideBorder && { borderWidth: 0 }]}
       />
       {children}
     </View>

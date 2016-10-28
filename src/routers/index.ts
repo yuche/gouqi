@@ -7,6 +7,7 @@ import {
 } from 'react-native'
 
 import Login from '../containers/login'
+import Search from '../containers/search'
 
 class Router {
   private navigator: React.NavigatorStatic
@@ -20,6 +21,14 @@ class Router {
       passProps,
       component: Login,
       title: '登录'
+    })
+  }
+
+  public toSearch (passProps: {}) {
+    this.push({
+      passProps,
+      component: Search,
+      title: '搜索'
     })
   }
 

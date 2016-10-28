@@ -50,6 +50,7 @@ class TabBar extends React.Component<ITabBarProps, IState> {
 
   constructor(props: any) {
     super(props)
+    console.log(props)
     this.tabMeasurements = []
     this.state = {
       leftUnderlineWidth: new Animated.Value(0),
@@ -104,6 +105,7 @@ class TabBar extends React.Component<ITabBarProps, IState> {
         <TouchableOpacity
           key='icon'
           style={[styles.icon]}
+          onPress={this.goToSearch}
         >
           <View>
             <Icon name='ios-search' size={15}/>
@@ -152,6 +154,10 @@ class TabBar extends React.Component<ITabBarProps, IState> {
 
   private goToPage (page: number)  {
     return () => this.props.goToPage(page)
+  }
+
+  private goToSearch = () => {
+    this.props.router.toSearch()
   }
 
   private textOnLayout = (page: number) => {

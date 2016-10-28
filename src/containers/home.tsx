@@ -29,7 +29,7 @@ class Home extends React.Component<any, any> {
   }
 
   private renderTabBar = () => {
-    return () => <TabBar />
+    return () => <TabBar {...this.props}/>
   }
 }
 
