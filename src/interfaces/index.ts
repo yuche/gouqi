@@ -37,3 +37,7 @@ export interface IRouterProps {
   route?: Route,
   router?: Router
 }
+
+export interface ISearchPayload {
+  query: string
+}

@@ -58,7 +58,7 @@ export const enum SearchType {
   song = 1,
   singer = 100,
   album = 10,
-  songList = 1000,
+  playList = 1000,
   user = 1002
 }
 

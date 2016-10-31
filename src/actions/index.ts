@@ -16,3 +16,6 @@ export const toastAction: ItoastAction = createAction('ui/toast',
   (kind: styleType, text: string) => ({ kind, text})
 )
 
+export type ISearchQuery = (query: string) => Action<{ query: string}>
+
+export const searchQuery: ISearchQuery = createAction('search/query', (query: string) => ({ query }))

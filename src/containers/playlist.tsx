@@ -53,8 +53,6 @@ class PlayList extends React.Component<
   }
 
   onEndReached = () => {
-    console.log('is loading')
-    console.log(this.props.isLoading)
     if (!this.props.isLoading) {
       this.props.syncPlaylists()
     }
