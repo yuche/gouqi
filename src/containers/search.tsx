@@ -22,28 +22,25 @@ class Search extends React.Component<IRouterProps, any> {
   }
 
   render () {
+    const { router } = this.props
     return <View>
       <View style={styles.container}>
         <View style={styles.formContainer}>
         <Form
           icon='search'
           autoFocus={true}
+          containerStyle={{paddingBottom: 0, paddingTop: 0}}
         />
         </View>
         <View style={styles.cancel}>
-          <Text style={{fontSize: 14}} onPress={() => this.props.router.pop()}>取消</Text>
+          <Text style={{fontSize: 14}} onPress={this.back}>取消</Text>
         </View>
       </View>
     </View>
+  }
 
-    // return <NavBar
-    //   route={this.props.route}
-    //   router={this.props.router}
-    //   leftButton={Left}
-    //   rightButton={Right}
-    //   showTitile={false}
-    //   hideBorder={true}
-    // />
+  private back = () => {
+    this.props.router && this.props.router.pop()
   }
 }
 
@@ -52,7 +49,6 @@ const styles = StyleSheet.create({
     marginTop: 20,
     height: 40,
     flexDirection: 'row',
-    justifyContent: 'space-around',
     borderWidth: StyleSheet.hairlineWidth,
     borderTopWidth: 0,
     borderLeftWidth: 0,

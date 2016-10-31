@@ -52,16 +52,15 @@ export class Form extends React.Component<IForm, IFormStates> {
       inputRef
     } = this.props
 
-    const clearIcon = () => {
-      return value && this.state.focus ?
-        <Icon name='times-circle' size={14} color='#bbb' onPress={onClear}/>
-        :
-        null
-    }
+    const clearIcon = <View style={[styles.formIcon, { marginRight: 5}]}>
+      <Icon name='times-circle' size={14} color='#bbb' onPress={onClear}/>
+    </View>
+
     return <View style={[styles.formContainer, containerStyle]}>
-      <View style={styles.formOutterWrapper}>
         <View style={[styles.formInnerWrapper, wrapperStyle]}>
-          <Icon name={icon} size={14} color='#ccc'/>
+          <View style={styles.formIcon}>
+            <Icon name={icon} size={14} color='#ccc'/>
+          </View>
           <TextInput
             ref={inputRef}
             autoCapitalize={autoCapitalize}
@@ -77,8 +76,7 @@ export class Form extends React.Component<IForm, IFormStates> {
             value={value}
             onSubmitEditing={onSubmitEditing}
           />
-          {clearIcon()}
-        </View>
+          { value && this.state.focus ? clearIcon : null }
       </View>
     </View>
   }
@@ -116,7 +114,6 @@ export const Button = ({
     </TouchableHighlight>
   )
 }
-
 const styles = StyleSheet.create({
   formContainer: {
     padding: 10,
@@ -124,11 +121,16 @@ const styles = StyleSheet.create({
     paddingBottom: 5
   } as ViewStyle,
   formInnerWrapper: {
-    flexDirection: 'row',
-    padding: 10
+      flexDirection: 'row',
+      height: 30,
+    backgroundColor: '#FFFFFF',
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: '#E6E6EA',
+    borderRadius: 5
   } as ViewStyle,
   formOutterWrapper: {
-    flex: 1,
+      flexDirection: 'row',
+    height: 30,
     backgroundColor: '#FFFFFF',
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: '#E6E6EA',
@@ -137,10 +139,13 @@ const styles = StyleSheet.create({
   searchInput: {
     marginLeft: 5,
     flex: 1,
+    height: 30,
     fontSize: 14
   } as TextStyle,
-  clearIcon: {
-    width: 20
+  formIcon: {
+    height: 30,
+    marginLeft: 5,
+    justifyContent: 'center'
   } as TextStyle,
   buttonContainer: {
     backgroundColor: Color.main,
