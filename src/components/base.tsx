@@ -128,14 +128,6 @@ const styles = StyleSheet.create({
     borderColor: '#E6E6EA',
     borderRadius: 5
   } as ViewStyle,
-  formOutterWrapper: {
-      flexDirection: 'row',
-    height: 30,
-    backgroundColor: '#FFFFFF',
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: '#E6E6EA',
-    borderRadius: 5
-  } as ViewStyle,
   searchInput: {
     marginLeft: 5,
     flex: 1,

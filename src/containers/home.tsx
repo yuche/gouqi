@@ -21,9 +21,9 @@ class Home extends React.Component<any, any> {
         renderTabBar={renderTabBar()}
       >
         <RecommendScene tabLabel='推荐' {...this.props}/>
-        <Login tabLabel='电台'/>
+        <View tabLabel='电台'/>
         <PlayList tabLabel='歌单'/>
-        <View tabLabel='排行榜'/>
+        <View tabLabel='我的'/>
       </ScrollableTabView>
     )
   }

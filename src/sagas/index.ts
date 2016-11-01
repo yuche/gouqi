@@ -12,6 +12,9 @@ import {
 import {
   toastAction
 } from '../actions'
+import {
+  syncMoreResource
+} from './common'
 
 export function* loginFlow () {
   while (true) {
@@ -46,41 +49,52 @@ export function* loginFlow () {
 
 export function* syncPlaylists () {
   while (true) {
-    yield take('playlists/sync')
+    yield *syncMoreResource(
+      'playlists/sync',
+      'playlists/sync',
+      'playlists',
+      api.topPlayList,
+      (state: any) => state.playlist,
+      (result: any) => result.playlists
+    )
+    // yield take('playlists/sync')
 
-    yield put({
-      type: 'playlists/sync/start'
-    })
+    // yield put({
+    //   type: 'playlists/sync/start'
+    // })
 
-    const { more, offset, playlists }: IPlaylistsProps = yield select((state: any) => state.playlist)
+    // const { more, offset, playlists }: IPlaylistsProps = yield select((state: any) => state.playlist)
 
-    if (more) {
-      const offsetState = offset + 15
-      const result: api.ItopPlayListResult = yield call(
-        api.topPlayList, '15', offsetState.toString()
-      )
+    // if (more) {
+    //   const offsetState = offset + 15
+    //   const result: api.ItopPlayListResult = yield call(
+    //     api.topPlayList, '15', offsetState.toString()
+    //   )
 
-      yield put({
-        type: 'playlists/sync/save',
-        payload: playlists.concat(result.playlists.map(p => {
-          return Object.assign({}, p, {
-            coverImgUrl: p.coverImgUrl + '?param=100y100'
-          })
-        })),
-        meta: {
-          more: result.more,
-          offset: offsetState
-        }
-      })
-    }
+    //   yield put({
+    //     type: 'playlists/sync/save',
+    //     payload: playlists.concat(result.playlists.map(p => {
+    //       return Object.assign({}, p, {
+    //         coverImgUrl: p.coverImgUrl + '?param=100y100'
+    //       })
+    //     })),
+    //     meta: {
+    //       more: result.more,
+    //       offset: offsetState
+    //     }
+    //   })
+    // } else {
+    //   yield put(toastAction('info', '没有更多资源了'))
+    // }
 
-    yield put({
-      type: 'playlists/sync/end'
-    })
+    // yield put({
+    //   type: 'playlists/sync/end'
+    // })
   }
 }
 
-export default function* root() {
+
+export default function* root () {
   yield [
     fork(loginFlow),
     fork(syncPlaylists)
