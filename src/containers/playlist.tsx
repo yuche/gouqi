@@ -1,7 +1,8 @@
 import * as React from 'react'
 import {
   ListView,
-  Text
+  View,
+  ActivityIndicator
 } from 'react-native'
 import { connect, Dispatch } from 'react-redux'
 import * as api from '../services/api'
@@ -58,10 +59,10 @@ class PlayList extends React.Component<
     }
   }
 
-  renderFooter () {
+  renderFooter = () => {
     return this.props.isLoading ?
-      <Text>载入中...</Text> :
-      null
+      <ActivityIndicator animating style={{marginTop: 10}}/> :
+      <View />
   }
 
   render() {
@@ -77,7 +78,7 @@ class PlayList extends React.Component<
         // onEndReachedThreshold={30}
         scrollRenderAheadDistance={90}
         renderRow={this.renderPlayList}
-        renderFooter={this.renderFooter.bind(this)}
+        renderFooter={this.renderFooter}
       />
     )
   }

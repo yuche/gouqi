@@ -1,4 +1,3 @@
-import Login from './login'
 import RecommendScene from './recommend'
 import PlayList from './playlist'
 import * as React from 'react'

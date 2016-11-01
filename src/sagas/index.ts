@@ -13,7 +13,8 @@ import {
   toastAction
 } from '../actions'
 import {
-  syncMoreResource
+  syncMoreResource,
+  syncSearchResource
 } from './common'
 
 export function* loginFlow () {
@@ -47,10 +48,23 @@ export function* loginFlow () {
   }
 }
 
+export function* syncSearchPlaylists () {
+  while (true) {
+    yield *syncSearchResource(
+      api.SearchType.playList,
+      'search/playlist',
+      'playlists',
+      'playlistCount',
+      'coverImgUrl',
+      (state: any) => state.search.playlist,
+      (result: any) => result.result.playlists
+    )
+  }
+}
+
 export function* syncPlaylists () {
   while (true) {
     yield *syncMoreResource(
-      'playlists/sync',
       'playlists/sync',
       'playlists',
       api.topPlayList,
@@ -97,6 +111,7 @@ export function* syncPlaylists () {
 export default function* root () {
   yield [
     fork(loginFlow),
-    fork(syncPlaylists)
+    fork(syncPlaylists),
+    fork(syncSearchPlaylists)
   ]
 }

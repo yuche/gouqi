@@ -26,7 +26,8 @@ interface IProps {
   scrollValue: IScrollValue,
   tabs: string[],
   underlineStyle: ViewStyle,
-  containerWidth: number
+  containerWidth: number,
+  showIcon: boolean
 }
 
 type ITabBarProps = IProps & any
@@ -100,19 +101,27 @@ class TabBar extends React.Component<ITabBarProps, IState> {
     return (
       <View style={[styles.tabs]}>
         {this.props.tabs.map((name: string, page: number) => this.renderTab(name, page))}
+
         <Animated.View style={[tabUnderlineStyle, this.props.underlineStyle]} />
 
-        <TouchableOpacity
-          key='icon'
-          style={[styles.icon]}
-          onPress={this.goToSearch}
-        >
-          <View>
-            <Icon name='ios-search' size={15}/>
-          </View>
-        </TouchableOpacity>
+        {this.renderIcon()}
       </View>
     )
+  }
+
+  private renderIcon = () => {
+    const { showIcon = true } = this.props
+    return showIcon ?
+      <TouchableOpacity
+        key='icon'
+        style={[styles.icon]}
+        onPress={this.goToSearch}
+      >
+        <View>
+          <Icon name='ios-search' size={15}/>
+        </View>
+      </TouchableOpacity> :
+      null
   }
 
   private updateView = ({ value }: { value: number }) => {

@@ -6,7 +6,7 @@ import {
   Text,
   StyleSheet
 } from 'react-native'
-import { ISearchQuery, searchQuery } from '../actions'
+import { ISearchQuery, startSearch } from '../actions'
 import {
   Form
 } from '../components/base'
@@ -14,11 +14,15 @@ import {
   IRouterProps
 } from '../interfaces'
 import * as api from '../services/api'
+import TabBar from '../components/homeNavBar'
+import PlayList from './search/playlist'
+
 const { SearchType } = api
+const ScrollableTabView = require('react-native-scrollable-tab-view') // tslint:disable-line
+
 
 interface IProps extends IRouterProps {
-  query: '',
-  changeQuery: ISearchQuery
+  startSearch: ISearchQuery
 }
 
 class Search extends React.Component<IProps, { query: string }> {
@@ -30,7 +34,7 @@ class Search extends React.Component<IProps, { query: string }> {
   }
 
   componentDidMount() {
-    api.search('华莱士', SearchType.playList).then(res => {
+    api.search('周杰伦', SearchType.playList).then(res => {
       console.log(res)
     })
   }
@@ -45,27 +49,43 @@ class Search extends React.Component<IProps, { query: string }> {
           autoFocus={true}
           onClear={this.clearQuery}
           onChangeText={this.changeQuery}
-          value={this.props.query}
+          value={this.state.query}
           containerStyle={{paddingBottom: 0, paddingTop: 0}}
+          onSubmitEditing={this.startSearching}
         />
         </View>
         <View style={styles.cancel}>
           <Text style={{fontSize: 14}} onPress={this.back}>取消</Text>
         </View>
       </View>
+      <ScrollableTabView
+        renderTabBar={this.renderTabBar()}
+      >
+        <View tabLabel='单曲'></View>
+        <View tabLabel='专辑'></View>
+        <View tabLabel='艺人'></View>
+      </ScrollableTabView>
     </View>
   }
 
   private changeQuery = (query: string) => {
-    this.props.changeQuery(query)
+    this.setState({ query })
   }
 
   private clearQuery = () => {
-    this.props.changeQuery('')
+    this.setState({ query : ''})
   }
 
   private back = () => {
     this.props.router && this.props.router.pop() // tslint:disable-line
+  }
+
+  private startSearching = () => {
+    this.props.startSearch(this.state.query)
+  }
+
+  private renderTabBar = () => {
+    return () => <TabBar {...this.props} showIcon={false}/>
   }
 }
 
@@ -93,10 +113,10 @@ const styles = StyleSheet.create({
 })
 
 export default connect(
-  (({ search: { query } }: { search: { query: string } }) => ({ query })),
+  () => ({}),
   (dispatch: Dispatch<Redux.Action>) => ({
-    changeQuery(query: string) {
-      return dispatch(searchQuery(query))
+    startSearch(query: string) {
+      return dispatch(startSearch(query))
     }
   })
 )(Search)

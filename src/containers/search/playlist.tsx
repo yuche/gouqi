@@ -1,15 +1,18 @@
 import * as React from 'react'
 import {
   ListView,
-  Text
+  ActivityIndicator,
+  View
 } from 'react-native'
 import { connect, Dispatch } from 'react-redux'
 import * as api from '../../services/api'
 import ListItem from '../../components/listitem'
 import { IPlaylistsProps } from '../../interfaces'
+import * as actions from '../../actions'
 
 interface IProps extends IPlaylistsProps {
-  query: string
+  query: string,
+  syncPlaylists: () => Redux.Action
 }
 
 class PlayList extends React.Component<
@@ -24,11 +27,14 @@ class PlayList extends React.Component<
     }
   }
 
-  componentWillReceiveProps({ playlists }: IProps) {
+  componentWillReceiveProps({ playlists, query }: IProps) {
     if (playlists !== this.props.playlists) {
       this.setState({
         ds: this.state.ds.cloneWithRows(playlists)
       })
+    }
+    if (query !== this.props.query && query !== '' ) {
+      this.props.syncPlaylists()
     }
   }
 
@@ -41,6 +47,18 @@ class PlayList extends React.Component<
         key={playlist.id}
       />
     )
+  }
+
+  renderFooter = () => {
+    return this.props.isLoading ?
+      <ActivityIndicator animating style={{marginTop: 10}}/> :
+      <View />
+  }
+
+  onEndReached = () => {
+    if (!this.props.isLoading) {
+      this.props.syncPlaylists()
+    }
   }
 
   render() {
@@ -56,7 +74,7 @@ class PlayList extends React.Component<
         // onEndReachedThreshold={30}
         scrollRenderAheadDistance={90}
         renderRow={this.renderPlayList}
-        renderFooter={this.renderFooter.bind(this)}
+        renderFooter={this.renderFooter}
       />
     )
   }
@@ -73,5 +91,10 @@ export default connect(
   }: { search: { playlist: IPlaylistsProps, query: string } }) => ({
     isLoading, playlists, offset, more,
     query
+  }),
+  (dispatch: Dispatch<Redux.Action>) => ({
+    syncPlaylists() {
+      return dispatch(actions.searchPlaylist())
+    }
   })
-)(PlayList)
+)(PlayList) as React.ComponentClass<{tabLabel: string}>
