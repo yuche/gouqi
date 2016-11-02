@@ -54,10 +54,10 @@ export function* syncSearchPlaylists () {
       api.SearchType.playList,
       'search/playlist',
       'playlists',
-      'playlistCount',
       'coverImgUrl',
       (state: any) => state.search.playlist,
-      (result: any) => result.result.playlists
+      (res: any) => res.result.playlists,
+      (res: any) => res.result.playlistCount
     )
   }
 }
@@ -106,7 +106,6 @@ export function* syncPlaylists () {
     // })
   }
 }
-
 
 export default function* root () {
   yield [

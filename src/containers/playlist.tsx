@@ -11,7 +11,6 @@ import List from '../components/list'
 import { IPlaylistsProps } from '../interfaces'
 import * as Actions from '../actions'
 
-
 interface IProps extends IPlaylistsProps {
   syncPlaylists: {
     (): Redux.Action
@@ -75,7 +74,7 @@ class PlayList extends React.Component<
         pagingEnabled={false}
         removeClippedSubviews={true}
         onEndReached={this.onEndReached}
-        // onEndReachedThreshold={30}
+        onEndReachedThreshold={30}
         scrollRenderAheadDistance={90}
         renderRow={this.renderPlayList}
         renderFooter={this.renderFooter}
@@ -96,6 +95,3 @@ export default connect(
     }
   })
 )(PlayList) as React.ComponentClass<{tabLabel: string}>
-
-
-

@@ -51,7 +51,6 @@ class TabBar extends React.Component<ITabBarProps, IState> {
 
   constructor(props: any) {
     super(props)
-    console.log(props)
     this.tabMeasurements = []
     this.state = {
       leftUnderlineWidth: new Animated.Value(0),

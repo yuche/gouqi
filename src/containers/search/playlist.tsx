@@ -71,7 +71,7 @@ class PlayList extends React.Component<
         pagingEnabled={false}
         removeClippedSubviews={true}
         onEndReached={this.onEndReached}
-        // onEndReachedThreshold={30}
+        onEndReachedThreshold={30}
         scrollRenderAheadDistance={90}
         renderRow={this.renderPlayList}
         renderFooter={this.renderFooter}

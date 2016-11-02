@@ -20,7 +20,6 @@ import PlayList from './search/playlist'
 const { SearchType } = api
 const ScrollableTabView = require('react-native-scrollable-tab-view') // tslint:disable-line
 
-
 interface IProps extends IRouterProps {
   startSearch: ISearchQuery
 }
@@ -40,7 +39,7 @@ class Search extends React.Component<IProps, { query: string }> {
   }
 
   render () {
-    return <View>
+    return <View style={{flex: 1}}>
       <View style={styles.container}>
         <View style={styles.formContainer}>
         <Form
@@ -61,6 +60,7 @@ class Search extends React.Component<IProps, { query: string }> {
       <ScrollableTabView
         renderTabBar={this.renderTabBar()}
       >
+        <PlayList tabLabel='歌单'/>
         <View tabLabel='单曲'></View>
         <View tabLabel='专辑'></View>
         <View tabLabel='艺人'></View>
@@ -93,12 +93,7 @@ const styles = StyleSheet.create({
   container: {
     marginTop: 20,
     height: 40,
-    flexDirection: 'row',
-    borderWidth: StyleSheet.hairlineWidth,
-    borderTopWidth: 0,
-    borderLeftWidth: 0,
-    borderRightWidth: 0,
-    borderColor: '#ccc'
+    flexDirection: 'row'
   } as ViewStyle,
   formContainer: {
     flex: 1,

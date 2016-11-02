@@ -17,10 +17,10 @@ export function* syncSearchResource (
   type: number,
   action: Pattern,
   resourceKey: string,
-  countKey: string,
   picUrlKey: string,
   stateSelector: (state: any) => any,
-  resultSelector: (result: any) => any[],
+  resultSelector: (res: any) => any[],
+  counterSelector: (res: any) => number,
   picSize = '100y100'
 ) {
   yield take(action)
@@ -34,19 +34,19 @@ export function* syncSearchResource (
     })
 
     const offsetState = state.offset + 15
-    const result = yield call(
+    const response = yield call(
       api.search, query, type.toString(), '15', offsetState.toString()
     )
 
     yield put({
       type: `${action}/save`,
-      payload: state[resourceKey].concat(resultSelector(result).map(p => {
+      payload: state[resourceKey].concat(resultSelector(response).map((p) => {
         return Object.assign({}, p, {
           [picUrlKey]: p[picUrlKey] + `?param=${picSize}`
         })
       })),
       meta: {
-        more: result[countKey] > offsetState ? true : false,
+        more: counterSelector(response) > offsetState ? true : false,
         offset: offsetState
       }
     })

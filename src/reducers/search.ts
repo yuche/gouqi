@@ -12,7 +12,7 @@ const initialState = {
 }
 
 function deepMerge (state: any, key: string, mergedObj: {}) {
-  return Object.assign({}, state, Object.assign({}, { [key]: state[key] }, mergedObj))
+  return Object.assign({}, state, { [key]: Object.assign({}, state[key] , mergedObj) })
 }
 
 export default handleActions({
