@@ -6,7 +6,7 @@ import {
   Text,
   StyleSheet
 } from 'react-native'
-import { ISearchQuery, startSearch } from '../actions'
+import { ISearchQuery, startSearch, ISearchActiveTab, changeSearchActiveTab } from '../actions'
 import {
   Form
 } from '../components/base'
@@ -16,24 +16,35 @@ import {
 import * as api from '../services/api'
 import TabBar from '../components/homeNavBar'
 import PlayList from './search/playlist'
+import Song from './search/song'
 
 const { SearchType } = api
 const ScrollableTabView = require('react-native-scrollable-tab-view') // tslint:disable-line
 
 interface IProps extends IRouterProps {
-  startSearch: ISearchQuery
+  startSearch: ISearchQuery,
+  changeActiveTabs: ISearchActiveTab
 }
 
-class Search extends React.Component<IProps, { query: string }> {
+interface IState {
+  query: string,
+  activeTab: number
+}
+
+class Search extends React.Component<IProps, IState> {
+  private activeTab: number
+
   constructor (props: IProps) {
     super(props)
     this.state = {
-      query: ''
+      query: '',
+      activeTab: 0
     }
+    this.activeTab = 0
   }
 
   componentDidMount() {
-    api.search('周杰伦', SearchType.playList).then(res => {
+    api.search('周杰伦', SearchType.song).then(res => {
       console.log(res)
     })
   }
@@ -59,21 +70,28 @@ class Search extends React.Component<IProps, { query: string }> {
       </View>
       <ScrollableTabView
         renderTabBar={this.renderTabBar()}
+        onChangeTab={this.changeActiveTabs}
       >
-        <PlayList tabLabel='歌单'/>
-        <View tabLabel='单曲'></View>
+        <PlayList tabLabel='歌单' tabIndex={0}/>
+        <Song tabLabel='单曲' tabIndex={1}/>
         <View tabLabel='专辑'></View>
         <View tabLabel='艺人'></View>
       </ScrollableTabView>
     </View>
   }
 
+  private changeActiveTabs = ({ i }: { i: number}) => {
+    console.log('change')
+    this.props.changeActiveTabs(i)
+    // this.setState({activeTab: i}as IState)
+  }
+
   private changeQuery = (query: string) => {
-    this.setState({ query })
+    this.setState({ query } as IState)
   }
 
   private clearQuery = () => {
-    this.setState({ query : ''})
+    this.setState({ query : ''} as IState)
   }
 
   private back = () => {
@@ -112,6 +130,9 @@ export default connect(
   (dispatch: Dispatch<Redux.Action>) => ({
     startSearch(query: string) {
       return dispatch(startSearch(query))
+    },
+    changeActiveTabs(index: number) {
+      return dispatch(changeSearchActiveTab(index))
     }
   })
 )(Search)

@@ -25,33 +25,41 @@ export function* syncSearchResource (
 ) {
   yield take(action)
 
-  const { query } = yield select((state: any) => state.search)
+  const { query = '' } = yield select((state: any) => state.search)
   const state: IMoreResult = yield select(stateSelector)
 
-  if (state.more) {
+  if (state.more && query) {
     yield put({
       type: `${action}/start`
     })
 
     const offsetState = state.offset + 15
+
     const response = yield call(
       api.search, query, type.toString(), '15', offsetState.toString()
     )
 
-    yield put({
-      type: `${action}/save`,
-      payload: state[resourceKey].concat(resultSelector(response).map((p) => {
-        return Object.assign({}, p, {
-          [picUrlKey]: p[picUrlKey] + `?param=${picSize}`
-        })
-      })),
-      meta: {
-        more: counterSelector(response) > offsetState ? true : false,
-        offset: offsetState
-      }
-    })
+    const resource = resultSelector(response)
+
+    if (resource) {
+      yield put({
+        type: `${action}/save`,
+        payload: picUrlKey ? state[resourceKey].concat(resource.map((p) => {
+          return Object.assign({}, p, {
+            [picUrlKey]: p[picUrlKey] + `?param=${picSize}`
+          })
+        })) : state[resourceKey].concat(resource),
+        meta: {
+          more: counterSelector(response) > offsetState ? true : false,
+          offset: offsetState
+        }
+      })
+    } else {
+      yield put(toastAction('info', '什么也找不到'))
+    }
+
   } else {
-    yield put(toastAction('info', '没有更多资源了'))
+    yield put(toastAction('info', '没有更多了'))
   }
 
   yield put({

@@ -6,45 +6,47 @@ import {
 } from 'react-native'
 import { connect, Dispatch } from 'react-redux'
 import * as api from '../../services/api'
+import { ISearchState } from '../../interfaces'
 import ListItem from '../../components/listitem'
-import { IPlaylistsProps, ISearchState } from '../../interfaces'
 import * as actions from '../../actions'
 
-interface IProps extends IPlaylistsProps {
+interface IProps {
   query: string,
-  syncPlaylists: () => Redux.Action,
-  tabIndex: number,
-  activeTab: number
+  syncSongs: () => Redux.Action,
+  activeTab: number,
+  songs: any[],
+  isLoading: boolean,
+  tabIndex: number
 }
 
-class PlayList extends React.Component<
-  IProps,
-  { ds: React.ListViewDataSource }
-> {
+interface IState {
+  ds: React.ListViewDataSource
+}
+
+class Song extends React.Component<IProps, IState> {
   constructor (props: IProps) {
     super(props)
     const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2})
     this.state = {
-      ds: ds.cloneWithRows(props.playlists)
+      ds: ds.cloneWithRows(props.songs)
     }
   }
 
-  componentWillReceiveProps({ playlists, query, activeTab }: IProps) {
-    if (playlists !== this.props.playlists) {
+  componentWillReceiveProps({ songs, query, activeTab }: IProps) {
+    console.log('reveive song')
+    if (songs !== this.props.songs) {
       this.setState({
-        ds: this.state.ds.cloneWithRows(playlists)
+        ds: this.state.ds.cloneWithRows(songs)
       })
-      return
     }
   }
 
-  renderPlayList = (playlist: api.IPlaylist) => {
+  renderPlayList = (song: any) => {
     return (
       <ListItem
-        title={playlist.name}
-        picURI={playlist.coverImgUrl}
-        subTitle={playlist.playCount + ' 次播放'}
-        key={playlist.id}
+        title={song.name}
+        subTitle={song.artists[0].name}
+        key={song.id}
       />
     )
   }
@@ -56,8 +58,9 @@ class PlayList extends React.Component<
   }
 
   onEndReached = () => {
-    if (!this.props.isLoading && this.props.playlists) {
-      this.props.syncPlaylists()
+    if (!this.props.isLoading && this.props.songs.length > 0) {
+      console.warn('trigger end')
+      this.props.syncSongs()
     }
   }
 
@@ -71,7 +74,7 @@ class PlayList extends React.Component<
         pagingEnabled={false}
         removeClippedSubviews={true}
         onEndReached={this.onEndReached}
-        onEndReachedThreshold={30}
+        onEndReachedThreshold={35}
         scrollRenderAheadDistance={90}
         renderRow={this.renderPlayList}
         renderFooter={this.renderFooter}
@@ -83,20 +86,19 @@ class PlayList extends React.Component<
 export default connect(
   ({
     search: {
-      playlist: {
-        isLoading, playlists
+      song: {
+        isLoading, songs
       }
     }
   }: { search: ISearchState }) => ({
-    isLoading, playlists
+    isLoading, songs,
   }),
   (dispatch: Dispatch<Redux.Action>) => ({
-    syncPlaylists() {
-      return dispatch(actions.searchPlaylists())
+    syncSongs() {
+      return dispatch(actions.searchSongs())
     }
   })
-)(PlayList) as React.ComponentClass<{
+)(Song) as React.ComponentClass<{
   tabLabel: string,
   tabIndex: number
 }>
-

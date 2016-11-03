@@ -11,7 +11,7 @@ import {
 } from 'react-native'
 
 interface IListItem {
-  picURI: string,
+  picURI?: string,
   containerStyle?: ViewStyle,
   wrapperStyle?: ViewStyle,
   picStyle?: ImageStyle,
@@ -35,26 +35,29 @@ const ListItem = ({
   roundPic = false,
   onPress
 }: IListItem) => {
-  const subTitleComp = (
+  const SubTitleComp = subTitle &&
     <Text style={[styles.subTitle, subTitleStyle && subTitleStyle]}>
       { subTitle }
     </Text>
-  )
+
+  const Picture = picURI &&
+    <Image
+      resizeMode='contain'
+      source={{uri: picURI}}
+      style={[styles.pic, roundPic && { borderRadius : 17 }, picStyle && picStyle]}
+    />
+
   return <TouchableHighlight
     style={[styles.container, containerStyle && containerStyle]}
     onPress={onPress}
   >
     <View style={[styles.wrapper, containerStyle && wrapperStyle]}>
-      <Image
-        resizeMode='contain'
-        source={{uri: picURI}}
-        style={[styles.pic, roundPic && { borderRadius : 17 }, picStyle && picStyle]}
-      />
+      { Picture }
       <View style={styles.titleContainer}>
         <Text style={[styles.title, titleStyle && titleStyle]}>
           { title }
         </Text>
-        {subTitle && subTitleComp}
+        { SubTitleComp }
       </View>
     </View>
   </TouchableHighlight>

@@ -20,11 +20,18 @@ export interface IFSA<T> {
 
 export type styleType = 'success' | 'info' | 'warning' | 'error'
 
-export interface IPlaylistsProps {
+export interface IInfiList {
   isLoading: boolean,
-  playlists: api.IPlaylist[],
   offset: number,
   more: boolean
+}
+
+export interface IPlaylistsProps extends IInfiList {
+  playlists: api.IPlaylist[]
+}
+
+export interface ISongsProps extends IInfiList {
+  songs: any[]
 }
 
 export interface IToastPayload {
@@ -40,4 +47,11 @@ export interface IRouterProps {
 
 export interface ISearchPayload {
   query: string
+}
+
+export interface ISearchState {
+  query: string,
+  activeTab: number,
+  playlist: IPlaylistsProps,
+  song: ISongsProps
 }

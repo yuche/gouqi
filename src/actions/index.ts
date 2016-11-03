@@ -20,4 +20,11 @@ export type ISearchQuery = (query: string) => Action<{ query: string}>
 
 export const startSearch: ISearchQuery = createAction('search/query', (query: string) => ({ query }))
 
-export const searchPlaylist = createAction('search/playlist')
+export const searchPlaylists = createAction('search/playlist')
+
+export const searchSongs = createAction('search/song')
+
+export type ISearchActiveTab = (activeTab: number) => Action<number>
+export const changeSearchActiveTab: ISearchActiveTab = createAction('search/activeTab',
+  (activeTab: number) => activeTab
+)

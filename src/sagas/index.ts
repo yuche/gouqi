@@ -7,7 +7,7 @@ import { getCookies } from '../services/request'
 import { Action } from 'redux-actions'
 import {
   IUserInfo,
-  IPlaylistsProps
+  ISearchState
 } from '../interfaces'
 import {
   toastAction
@@ -62,6 +62,49 @@ export function* syncSearchPlaylists () {
   }
 }
 
+const searchPageOrder = ['playlist', 'song', 'album', 'artist']
+
+export function* searchQuerying () {
+  while (true) {
+    yield take('search/query')
+    const { activeTab, query }: ISearchState = yield select(state => state.search)
+
+    if (query) {
+      yield put({
+        type: `search/${searchPageOrder[activeTab]}`
+      })
+    }
+  }
+}
+
+export function* changeSearchActiveTab () {
+  while (true) {
+    yield take('search/activeTab')
+
+    const { activeTab, query }: ISearchState = yield select(state => state.search)
+
+    if (query) {
+      yield put({
+        type: `search/${searchPageOrder[activeTab]}`
+      })
+    }
+  }
+}
+
+export function* syncSearchSongs () {
+  while (true) {
+    yield *syncSearchResource(
+      api.SearchType.song,
+      'search/song',
+      'songs',
+      '',
+      (state: any) => state.search.song,
+      (res: any) => res.result.songs,
+      (res: any) => res.result.songCount
+    )
+  }
+}
+
 export function* syncPlaylists () {
   while (true) {
     yield *syncMoreResource(
@@ -111,6 +154,9 @@ export default function* root () {
   yield [
     fork(loginFlow),
     fork(syncPlaylists),
-    fork(syncSearchPlaylists)
+    fork(syncSearchPlaylists),
+    fork(syncSearchSongs),
+    fork(searchQuerying),
+    fork(changeSearchActiveTab)
   ]
 }
