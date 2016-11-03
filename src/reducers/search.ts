@@ -8,18 +8,20 @@ const initialState: ISearchState = {
     playlists: [],
     more: true,
     offset: 0,
-    isLoading: false
+    isLoading: false,
+    query: ''
   },
   song: {
     songs: [],
     more: true,
     offset: 0,
-    isLoading: false
+    isLoading: false,
+    query: ''
   }
 }
 
 
-function deepMerge (state: any, key: string, mergedObj: {}) {
+function deepperMerge (state: any, key: string, mergedObj: {}) {
   return Object.assign({}, state, { [key]: Object.assign({}, state[key] , mergedObj) })
 }
 
@@ -31,29 +33,39 @@ export default handleActions({
     return Object.assign({}, Object.assign({}, initialState, { activeTab: state.activeTab }), { query: payload.query })
   },
   'search/playlist/start' (state: any) {
-    return deepMerge(state, 'playlist', { isLoading : true})
+    return deepperMerge(state, 'playlist', { isLoading : true })
   },
   'search/playlist/end' (state: any) {
-    return deepMerge(state, 'playlist', { isLoading : false})
+    return deepperMerge(state, 'playlist', { isLoading : false })
   },
   'search/playlist/save' (state, { payload, meta }) {
-    return deepMerge(state, 'playlist', {
+    return deepperMerge(state, 'playlist', {
       playlists: payload,
       offset: meta.offset,
       more: meta.more
     })
   },
+  // TODO:
+  // 这个 reducer 实际上是 cache prev state
+  // 避免 query 没有改变的时候重复请求
+  // 看看以后有没有办法用 middleware 一起处理这类情况，下同
+  'search/playlist/query' (state: any) {
+    return deepperMerge(state, 'playlist', { query : state.query })
+  },
   'search/song/start' (state: any) {
-    return deepMerge(state, 'song', { isLoading : true})
+    return deepperMerge(state, 'song', { isLoading : true})
   },
   'search/song/end' (state: any) {
-    return deepMerge(state, 'song', { isLoading : false})
+    return deepperMerge(state, 'song', { isLoading : false})
   },
   'search/song/save' (state, { payload, meta }) {
-    return deepMerge(state, 'song', {
+    return deepperMerge(state, 'song', {
       songs: payload,
       offset: meta.offset,
       more: meta.more
     })
+  },
+  'search/song/query' (state: any) {
+    return deepperMerge(state, 'song', { query : state.query })
   }
 }, initialState)

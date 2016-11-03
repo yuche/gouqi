@@ -64,16 +64,29 @@ export function* syncSearchPlaylists () {
 
 const searchPageOrder = ['playlist', 'song', 'album', 'artist']
 
+function* requestSearch () {
+  const prevState = yield select(state => state.search)
+
+  const key = searchPageOrder[prevState.activeTab]
+
+  yield put({
+    type: `search/${key}/query`
+  })
+
+  const { [key]: { query } }  = yield select(state => state.search)
+
+  if (query && query !== prevState[key].query) {
+    yield put({
+      type: `search/${searchPageOrder[prevState.activeTab]}`
+    })
+  }
+}
+
 export function* searchQuerying () {
   while (true) {
     yield take('search/query')
-    const { activeTab, query }: ISearchState = yield select(state => state.search)
 
-    if (query) {
-      yield put({
-        type: `search/${searchPageOrder[activeTab]}`
-      })
-    }
+    yield *requestSearch()
   }
 }
 
@@ -81,13 +94,7 @@ export function* changeSearchActiveTab () {
   while (true) {
     yield take('search/activeTab')
 
-    const { activeTab, query }: ISearchState = yield select(state => state.search)
-
-    if (query) {
-      yield put({
-        type: `search/${searchPageOrder[activeTab]}`
-      })
-    }
+    yield *requestSearch()
   }
 }
 

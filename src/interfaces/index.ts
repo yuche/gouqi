@@ -23,7 +23,8 @@ export type styleType = 'success' | 'info' | 'warning' | 'error'
 export interface IInfiList {
   isLoading: boolean,
   offset: number,
-  more: boolean
+  more: boolean,
+  query?: string
 }
 
 export interface IPlaylistsProps extends IInfiList {
