@@ -56,7 +56,7 @@ export async function playListDetail(id: string) {
 
 export const enum SearchType {
   song = 1,
-  singer = 100,
+  artist = 100,
   album = 10,
   playList = 1000,
   user = 1002

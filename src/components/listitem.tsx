@@ -44,7 +44,7 @@ const ListItem = ({
     <Image
       resizeMode='contain'
       source={{uri: picURI}}
-      style={[styles.pic, roundPic && { borderRadius : 17 }, picStyle && picStyle]}
+      style={[styles.pic, roundPic && { borderRadius : picStyle ? picStyle.height / 2 : 20 }, picStyle && picStyle]}
     />
 
   return <TouchableHighlight

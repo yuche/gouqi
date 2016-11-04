@@ -7,17 +7,14 @@ import {
   StyleSheet
 } from 'react-native'
 import { ISearchQuery, startSearch, ISearchActiveTab, changeSearchActiveTab } from '../actions'
-import {
-  Form
-} from '../components/base'
-import {
-  IRouterProps
-} from '../interfaces'
+import { Form } from '../components/base'
+import { IRouterProps } from '../interfaces'
 import * as api from '../services/api'
 import TabBar from '../components/homeNavBar'
 import PlayList from './search/playlist'
 import Song from './search/song'
 import Album from './search/album'
+import Artist from './search/artist'
 
 const { SearchType } = api
 const ScrollableTabView = require('react-native-scrollable-tab-view') // tslint:disable-line
@@ -28,24 +25,20 @@ interface IProps extends IRouterProps {
 }
 
 interface IState {
-  query: string,
-  activeTab: number
+  query: string
 }
 
 class Search extends React.Component<IProps, IState> {
-  private activeTab: number
 
   constructor (props: IProps) {
     super(props)
     this.state = {
-      query: '',
-      activeTab: 0
+      query: ''
     }
-    this.activeTab = 0
   }
 
   componentDidMount() {
-    api.search('周杰伦', SearchType.album).then(res => {
+    api.search('taylor', SearchType.artist).then(res => {
       console.log(res)
     })
   }
@@ -73,26 +66,24 @@ class Search extends React.Component<IProps, IState> {
         renderTabBar={this.renderTabBar()}
         onChangeTab={this.changeActiveTabs}
       >
-        <PlayList tabLabel='歌单'/>
         <Song tabLabel='单曲' />
+        <PlayList tabLabel='歌单'/>
+        <Artist tabLabel='艺人'/>
         <Album tabLabel='专辑' />
-        <View tabLabel='艺人'></View>
       </ScrollableTabView>
     </View>
   }
 
   private changeActiveTabs = ({ i }: { i: number}) => {
-    console.log('change')
     this.props.changeActiveTabs(i)
-    // this.setState({activeTab: i}as IState)
   }
 
   private changeQuery = (query: string) => {
-    this.setState({ query } as IState)
+    this.setState({ query })
   }
 
   private clearQuery = () => {
-    this.setState({ query : ''} as IState)
+    this.setState({ query : ''})
   }
 
   private back = () => {

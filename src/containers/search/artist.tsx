@@ -5,42 +5,42 @@ import {
   View
 } from 'react-native'
 import { connect, Dispatch } from 'react-redux'
-import * as api from '../../services/api'
 import { ISearchState, ISearchProps } from '../../interfaces'
 import ListItem from '../../components/listitem'
 import * as actions from '../../actions'
 
 interface IProps extends ISearchProps {
-  songs: any[]
+  artists: any[]
 }
 
 interface IState {
   ds: React.ListViewDataSource
 }
 
-class Song extends React.Component<IProps, IState> {
+class Artist extends React.Component<IProps, IState> {
   constructor (props: IProps) {
     super(props)
     const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2})
     this.state = {
-      ds: ds.cloneWithRows(props.songs)
+      ds: ds.cloneWithRows(props.artists)
     }
   }
 
-  componentWillReceiveProps({ songs }: IProps) {
-    if (songs !== this.props.songs) {
+  componentWillReceiveProps({ artists }: IProps) {
+    if (artists !== this.props.artists) {
       this.setState({
-        ds: this.state.ds.cloneWithRows(songs)
+        ds: this.state.ds.cloneWithRows(artists)
       })
     }
   }
 
-  renderPlayList = (song: any) => {
+  renderPlayList = (artist: any) => {
     return (
       <ListItem
-        title={song.name}
-        subTitle={song.artists[0].name}
-        key={song.id}
+        title={artist.name}
+        picURI={artist.img1v1Url}
+        key={artist.id}
+        roundPic
       />
     )
   }
@@ -52,7 +52,7 @@ class Song extends React.Component<IProps, IState> {
   }
 
   onEndReached = () => {
-    if (!this.props.isLoading && this.props.songs.length > 0) {
+    if (!this.props.isLoading && this.props.artists.length > 0) {
       this.props.sync()
     }
   }
@@ -67,7 +67,7 @@ class Song extends React.Component<IProps, IState> {
         pagingEnabled={false}
         removeClippedSubviews={true}
         onEndReached={this.onEndReached}
-        onEndReachedThreshold={35}
+        onEndReachedThreshold={30}
         scrollRenderAheadDistance={90}
         renderRow={this.renderPlayList}
         renderFooter={this.renderFooter}
@@ -79,18 +79,18 @@ class Song extends React.Component<IProps, IState> {
 export default connect(
   ({
     search: {
-      song: {
-        isLoading, songs
+      artist: {
+        isLoading, artists
       }
     }
   }: { search: ISearchState }) => ({
-    isLoading, songs
+    isLoading, artists
   }),
   (dispatch: Dispatch<Redux.Action>) => ({
     sync() {
-      return dispatch(actions.searchSongs())
+      return dispatch(actions.searchArtists())
     }
   })
-)(Song) as React.ComponentClass<{
+)(Artist) as React.ComponentClass<{
   tabLabel: string
 }>

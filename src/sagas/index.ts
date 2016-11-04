@@ -48,21 +48,8 @@ export function* loginFlow () {
   }
 }
 
-export function* syncSearchPlaylists () {
-  while (true) {
-    yield *syncSearchResource(
-      api.SearchType.playList,
-      'search/playlist',
-      'playlists',
-      'coverImgUrl',
-      (state: any) => state.search.playlist,
-      (res: any) => res.result.playlists,
-      (res: any) => res.result.playlistCount
-    )
-  }
-}
 
-const searchPageOrder = ['playlist', 'song', 'album', 'artist']
+const searchPageOrder = ['song', 'playlist', 'artist', 'album']
 
 function* requestSearch () {
   const prevState = yield select(state => state.search)
@@ -102,12 +89,28 @@ export function* syncSearchSongs () {
   while (true) {
     yield *syncSearchResource(
       api.SearchType.song,
-      'search/song',
-      'songs',
+      'song',
       '',
-      (state: any) => state.search.song,
-      (res: any) => res.result.songs,
-      (res: any) => res.result.songCount
+    )
+  }
+}
+
+export function* syncSearchPlaylists () {
+  while (true) {
+    yield *syncSearchResource(
+      api.SearchType.playList,
+      'playlist',
+      'coverImgUrl'
+    )
+  }
+}
+
+export function* syncSearchArtist () {
+  while (true) {
+    yield *syncSearchResource(
+      api.SearchType.artist,
+      'artist',
+      'img1v1Url'
     )
   }
 }
@@ -116,12 +119,8 @@ export function* syncSearchAlbums () {
   while (true) {
     yield *syncSearchResource(
       api.SearchType.album,
-      'search/album',
-      'albums',
-      'picUrl',
-      (state: any) => state.search.album,
-      (res: any) => res.result.albums,
-      (res: any) => res.result.albumCount
+      'album',
+      'picUrl'
     )
   }
 }
@@ -178,6 +177,7 @@ export default function* root () {
     fork(syncSearchPlaylists),
     fork(syncSearchSongs),
     fork(syncSearchAlbums),
+    fork(syncSearchArtist),
     fork(searchQuerying),
     fork(changeSearchActiveTab)
   ]

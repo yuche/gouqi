@@ -15,44 +15,50 @@ interface IMoreResult {
 
 export function* syncSearchResource (
   type: number,
-  action: Pattern,
-  resourceKey: string,
+  reducerType: string,
   picUrlKey: string,
-  stateSelector: (state: any) => any,
-  resultSelector: (res: any) => any[],
-  counterSelector: (res: any) => number,
   picSize = '100y100'
 ) {
-  yield take(action)
+  yield take(`search/${reducerType}`)
 
-  const { query = '' } = yield select((state: any) => state.search)
-  const state: IMoreResult = yield select(stateSelector)
+  const resourceKey = reducerType + 's'
+
+  const searchState = yield select((state: any) => state.search)
+
+  const { query = '' } = searchState
+
+  const state = searchState[reducerType]
+
+  const counterKey = `${reducerType}Count`
 
   if (state.more && query) {
     yield put({
-      type: `${action}/start`
+      type: `search/${reducerType}/start`
     })
 
     const offsetState = state.offset + 15
 
-    const response = yield call(
-      api.search, query, type.toString(), '15', offsetState.toString()
+    const { result } = yield call(
+      api.search, query, type.toString(), '15',
+      state.offset
     )
 
-    console.log(response)
-
-    const resource = resultSelector(response)
+    const resource: any[] = result[resourceKey]
 
     if (resource) {
       yield put({
-        type: `${action}/save`,
+        type: `search/${reducerType}/save`,
         payload: picUrlKey ? state[resourceKey].concat(resource.map((p) => {
           return Object.assign({}, p, {
-            [picUrlKey]: p[picUrlKey] + `?param=${picSize}`
+            [picUrlKey]: p[picUrlKey] === null ?
+            // TODO:
+            // placeholder image. maybe use local image instead 
+            'http://p4.music.126.net/VnZiScyynLG7atLIZ2YPkw==/18686200114669622.jpg?param=100y100' :
+            p[picUrlKey] + `?param=${picSize}`
           })
         })) : state[resourceKey].concat(resource),
         meta: {
-          more: counterSelector(response) > offsetState ? true : false,
+          more: result[counterKey] > offsetState ? true : false,
           offset: offsetState
         }
       })
@@ -65,7 +71,7 @@ export function* syncSearchResource (
   }
 
   yield put({
-    type: `${action}/end`
+    type: `search/${reducerType}/end`
   })
 }
 
@@ -88,7 +94,8 @@ export function* syncMoreResource (
 
     const offsetState = state.offset + 15
     const result = yield call(
-      caller, '15', offsetState.toString()
+      caller, '15',
+      state.offset === 0 ? state.offset.toString()  : offsetState.toString()
     )
 
     yield put({
