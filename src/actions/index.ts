@@ -24,6 +24,10 @@ export const searchPlaylists = createAction('search/playlist')
 
 export const searchSongs = createAction('search/song')
 
+export const searchAlbums = createAction('search/album')
+
+export const searchArtists = createAction('search/artist')
+
 export type ISearchActiveTab = (activeTab: number) => Action<number>
 export const changeSearchActiveTab: ISearchActiveTab = createAction('search/activeTab',
   (activeTab: number) => activeTab

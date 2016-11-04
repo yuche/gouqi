@@ -6,17 +6,12 @@ import {
 } from 'react-native'
 import { connect, Dispatch } from 'react-redux'
 import * as api from '../../services/api'
-import { ISearchState } from '../../interfaces'
+import { ISearchState, ISearchProps } from '../../interfaces'
 import ListItem from '../../components/listitem'
 import * as actions from '../../actions'
 
-interface IProps {
-  query: string,
-  syncSongs: () => Redux.Action,
-  activeTab: number,
-  songs: any[],
-  isLoading: boolean,
-  tabIndex: number
+interface IProps extends ISearchProps {
+  songs: any[]
 }
 
 interface IState {
@@ -32,8 +27,7 @@ class Song extends React.Component<IProps, IState> {
     }
   }
 
-  componentWillReceiveProps({ songs, query, activeTab }: IProps) {
-    console.log('reveive song')
+  componentWillReceiveProps({ songs }: IProps) {
     if (songs !== this.props.songs) {
       this.setState({
         ds: this.state.ds.cloneWithRows(songs)
@@ -59,8 +53,7 @@ class Song extends React.Component<IProps, IState> {
 
   onEndReached = () => {
     if (!this.props.isLoading && this.props.songs.length > 0) {
-      console.warn('trigger end')
-      this.props.syncSongs()
+      this.props.sync()
     }
   }
 
@@ -94,11 +87,10 @@ export default connect(
     isLoading, songs,
   }),
   (dispatch: Dispatch<Redux.Action>) => ({
-    syncSongs() {
+    sync() {
       return dispatch(actions.searchSongs())
     }
   })
 )(Song) as React.ComponentClass<{
-  tabLabel: string,
-  tabIndex: number
+  tabLabel: string
 }>

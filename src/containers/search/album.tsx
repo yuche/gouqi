@@ -6,42 +6,42 @@ import {
 } from 'react-native'
 import { connect, Dispatch } from 'react-redux'
 import * as api from '../../services/api'
-import ListItem from '../../components/listitem'
 import { ISearchState, ISearchProps } from '../../interfaces'
+import ListItem from '../../components/listitem'
 import * as actions from '../../actions'
 
 interface IProps extends ISearchProps {
-  playlists: api.IPlaylist[]
+  albums: any[]
 }
 
-class PlayList extends React.Component<
-  IProps,
-  { ds: React.ListViewDataSource }
-> {
+interface IState {
+  ds: React.ListViewDataSource
+}
+
+class Album extends React.Component<IProps, IState> {
   constructor (props: IProps) {
     super(props)
     const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2})
     this.state = {
-      ds: ds.cloneWithRows(props.playlists)
+      ds: ds.cloneWithRows(props.albums)
     }
   }
 
-  componentWillReceiveProps({ playlists }: IProps) {
-    if (playlists !== this.props.playlists) {
+  componentWillReceiveProps({ albums }: IProps) {
+    if (albums !== this.props.albums) {
       this.setState({
-        ds: this.state.ds.cloneWithRows(playlists)
+        ds: this.state.ds.cloneWithRows(albums)
       })
-      return
     }
   }
 
-  renderPlayList = (playlist: api.IPlaylist) => {
+  renderPlayList = (album: any) => {
     return (
       <ListItem
-        title={playlist.name}
-        picURI={playlist.coverImgUrl}
-        subTitle={playlist.playCount + ' 次播放'}
-        key={playlist.id}
+        title={album.name}
+        picURI={album.picUrl}
+        subTitle={album.artist.name}
+        key={album.id}
       />
     )
   }
@@ -53,7 +53,7 @@ class PlayList extends React.Component<
   }
 
   onEndReached = () => {
-    if (!this.props.isLoading && this.props.playlists.length > 0) {
+    if (!this.props.isLoading && this.props.albums.length > 0) {
       this.props.sync()
     }
   }
@@ -80,19 +80,19 @@ class PlayList extends React.Component<
 export default connect(
   ({
     search: {
-      playlist: {
-        isLoading, playlists
+      album: {
+        isLoading, albums
       }
     }
   }: { search: ISearchState }) => ({
-    isLoading, playlists
+    isLoading, albums
   }),
   (dispatch: Dispatch<Redux.Action>) => ({
     sync() {
-      return dispatch(actions.searchPlaylists())
+      return dispatch(actions.searchAlbums())
     }
   })
-)(PlayList) as React.ComponentClass<{
+)(Album) as React.ComponentClass<{
   tabLabel: string
 }>
 

@@ -112,6 +112,20 @@ export function* syncSearchSongs () {
   }
 }
 
+export function* syncSearchAlbums () {
+  while (true) {
+    yield *syncSearchResource(
+      api.SearchType.album,
+      'search/album',
+      'albums',
+      'picUrl',
+      (state: any) => state.search.album,
+      (res: any) => res.result.albums,
+      (res: any) => res.result.albumCount
+    )
+  }
+}
+
 export function* syncPlaylists () {
   while (true) {
     yield *syncMoreResource(
@@ -163,6 +177,7 @@ export default function* root () {
     fork(syncPlaylists),
     fork(syncSearchPlaylists),
     fork(syncSearchSongs),
+    fork(syncSearchAlbums),
     fork(searchQuerying),
     fork(changeSearchActiveTab)
   ]

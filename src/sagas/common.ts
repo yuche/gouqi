@@ -39,6 +39,8 @@ export function* syncSearchResource (
       api.search, query, type.toString(), '15', offsetState.toString()
     )
 
+    console.log(response)
+
     const resource = resultSelector(response)
 
     if (resource) {

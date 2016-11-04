@@ -35,6 +35,14 @@ export interface ISongsProps extends IInfiList {
   songs: any[]
 }
 
+export interface IAlbumsProps extends IInfiList {
+  albums: any[]
+}
+
+export interface IArtistProps extends IInfiList {
+  artists: any[]
+}
+
 export interface IToastPayload {
   kind: styleType,
   text: string,
@@ -50,9 +58,16 @@ export interface ISearchPayload {
   query: string
 }
 
+export interface ISearchProps {
+  isLoading: boolean,
+  sync: () => Redux.Action
+}
+
 export interface ISearchState {
   query: string,
   activeTab: number,
   playlist: IPlaylistsProps,
-  song: ISongsProps
+  song: ISongsProps,
+  album: IAlbumsProps,
+  artist: IArtistProps
 }

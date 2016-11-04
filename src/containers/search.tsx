@@ -17,6 +17,7 @@ import * as api from '../services/api'
 import TabBar from '../components/homeNavBar'
 import PlayList from './search/playlist'
 import Song from './search/song'
+import Album from './search/album'
 
 const { SearchType } = api
 const ScrollableTabView = require('react-native-scrollable-tab-view') // tslint:disable-line
@@ -44,7 +45,7 @@ class Search extends React.Component<IProps, IState> {
   }
 
   componentDidMount() {
-    api.search('周杰伦', SearchType.song).then(res => {
+    api.search('周杰伦', SearchType.album).then(res => {
       console.log(res)
     })
   }
@@ -72,9 +73,9 @@ class Search extends React.Component<IProps, IState> {
         renderTabBar={this.renderTabBar()}
         onChangeTab={this.changeActiveTabs}
       >
-        <PlayList tabLabel='歌单' tabIndex={0}/>
-        <Song tabLabel='单曲' tabIndex={1}/>
-        <View tabLabel='专辑'></View>
+        <PlayList tabLabel='歌单'/>
+        <Song tabLabel='单曲' />
+        <Album tabLabel='专辑' />
         <View tabLabel='艺人'></View>
       </ScrollableTabView>
     </View>
