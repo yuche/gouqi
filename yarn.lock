@@ -4906,6 +4906,10 @@ react-native-mock@^0.2.6:
     react-timer-mixin "=0.13.3"
     warning "=2.1.0"
 
+react-native-navbar@^1.5.4:
+  version "1.5.4"
+  resolved "http://registry.npm.taobao.org/react-native-navbar/download/react-native-navbar-1.5.4.tgz#9e8b1cfb6a02eee89abdf631f7ac3af3174a61b1"
+
 react-native-router-flux@^3.35.0:
   version "3.36.0"
   resolved "http://registry.npm.taobao.org/react-native-router-flux/download/react-native-router-flux-3.36.0.tgz#2f36360d684b5e546ecee2d2ee1baccc8e1dd74f"
@@ -6008,8 +6012,8 @@ typedarray@~0.0.5:
   resolved "http://registry.npm.taobao.org/typedarray/download/typedarray-0.0.6.tgz#867ac74e3864187b1d3d47d996a78ec5c8830777"
 
 typescript@next:
-  version "2.1.0-dev.20161022"
-  resolved "http://registry.npm.taobao.org/typescript/download/typescript-2.1.0-dev.20161022.tgz#efbbe17ca29f88c110f7c94e9a88d849e32e30f4"
+  version "2.1.0-dev.20161104"
+  resolved "http://registry.npm.taobao.org/typescript/download/typescript-2.1.0-dev.20161104.tgz#01ebabbc76b36c6fb56a77f9df34fc7fe5fe8512"
 
 ua-parser-js@^0.7.9:
   version "0.7.10"

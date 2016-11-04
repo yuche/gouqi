@@ -52,7 +52,7 @@ export function* loginFlow () {
 const searchPageOrder = ['song', 'playlist', 'artist', 'album']
 
 function* requestSearch () {
-  const prevState = yield select(state => state.search)
+  const prevState = yield select((state: any) => state.search)
 
   const key = searchPageOrder[prevState.activeTab]
 
@@ -60,7 +60,7 @@ function* requestSearch () {
     type: `search/${key}/query`
   })
 
-  const { [key]: { query } }  = yield select(state => state.search)
+  const { [key]: { query } }  = yield select((state: any) => state.search)
 
   if (query && query !== prevState[key].query) {
     yield put({

@@ -76,7 +76,7 @@ export function* syncSearchResource (
 }
 
 export function* syncMoreResource (
-  action: Pattern,
+  action: string,
   resourceKey: string,
   caller: () => Promise<any>,
   stateSelector: (state: any) => any,

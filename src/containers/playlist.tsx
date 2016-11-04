@@ -7,7 +7,6 @@ import {
 import { connect, Dispatch } from 'react-redux'
 import * as api from '../services/api'
 import ListItem from '../components/listitem'
-import List from '../components/list'
 import { IPlaylistsProps } from '../interfaces'
 import * as Actions from '../actions'
 
