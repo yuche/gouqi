@@ -8,7 +8,7 @@ import * as React from 'react'
 const NavigationBar = require('react-native-navbar')
 // tslint:disable-next-line
 const Icon = require('react-native-vector-icons/FontAwesome')
-
+import { Actions } from 'react-native-router-flux'
 import Router from '../routers'
 
 type Ianimation = 'fade' | 'slide' | 'none'
@@ -38,10 +38,10 @@ class NavBar extends React.Component<IProps, any> {
 
   render () {
     const buttonWrapper = (children?: JSX.Element, style?: ViewStyle) => {
-      return children ?
-        <View style={[styles.item, style && style]}>{children}</View> :
-        undefined
+      return children &&
+        <View style={[styles.item, style && style]}>{children}</View>
     }
+    console.log(this.props)
     const defaultLeftButton = <Icon
       name='arrow-left'
       size={14}
@@ -70,8 +70,7 @@ class NavBar extends React.Component<IProps, any> {
   }
 
   private navBack = () => {
-    const { router } = this.props
-    router && router.pop() // tslint:disable-line
+    Actions.pop()
   }
 }
 

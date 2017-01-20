@@ -2,7 +2,8 @@ import * as React from 'react'
 import {
   Navigator,
   View,
-  Text
+  Text,
+  StatusBar
 } from 'react-native'
 import Home from './home'
 import ToastContainer from './toastContainer'
@@ -26,6 +27,7 @@ class Navigation extends React.Component<any, any> {
 
   render () {
     return <View style={{flex: 1}}>
+        <StatusBar />
         <Navigator
           initialRoute={initialRoute}
           configureScene={this.configureScene}

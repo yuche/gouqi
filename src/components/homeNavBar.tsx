@@ -8,6 +8,7 @@ import {
   Animated,
   NativeComponent
 } from 'react-native'
+import { Actions } from 'react-native-router-flux'
 import {
   Color
 } from '../styles'
@@ -77,7 +78,7 @@ class TabBar extends React.Component<ITabBarProps, IState> {
       <View>
         <Text
           ref={`text_${page}`} // tslint:disable-line
-          style={[{color: textColor, fontWeight, fontSize: 14}]}
+          style={[{color: textColor, fontWeight, fontSize: 16}]}
           onLayout={() => this.textOnLayout(page)} // tslint:disable-line
         >
           {name}
@@ -117,7 +118,7 @@ class TabBar extends React.Component<ITabBarProps, IState> {
         onPress={this.goToSearch}
       >
         <View>
-          <Icon name='ios-search' size={15}/>
+          <Icon name='ios-search' size={18}/>
         </View>
       </TouchableOpacity> :
       null
@@ -165,7 +166,7 @@ class TabBar extends React.Component<ITabBarProps, IState> {
   }
 
   private goToSearch = () => {
-    this.props.router.toSearch()
+    Actions.search()
   }
 
   private textOnLayout = (page: number) => {

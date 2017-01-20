@@ -15,6 +15,7 @@ import PlayList from './search/playlist'
 import Song from './search/song'
 import Album from './search/album'
 import Artist from './search/artist'
+import { Actions } from 'react-native-router-flux'
 
 const { SearchType } = api
 const ScrollableTabView = require('react-native-scrollable-tab-view') // tslint:disable-line
@@ -87,7 +88,7 @@ class Search extends React.Component<IProps, IState> {
   }
 
   private back = () => {
-    this.props.router && this.props.router.pop() // tslint:disable-line
+    Actions.pop()
   }
 
   private startSearching = () => {

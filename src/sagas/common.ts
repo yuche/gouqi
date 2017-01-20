@@ -66,8 +66,6 @@ export function* syncSearchResource (
       yield put(toastAction('info', '什么也找不到'))
     }
 
-  } else {
-    yield put(toastAction('info', '没有更多了'))
   }
 
   yield put({
