@@ -22,9 +22,10 @@ export interface IattemptLogin {
   (userInfo: IUserInfo): Redux.Action
 }
 
-export interface IProps extends IRouterProps {
+export interface IProps {
   isLoading: boolean,
-  attemptLogin: IattemptLogin
+  attemptLogin: IattemptLogin,
+  title: string
 }
 
 class Login extends React.Component<IProps, IUserInfo> {
@@ -35,7 +36,6 @@ class Login extends React.Component<IProps, IUserInfo> {
       username: '',
       password: ''
     }
-    console.log(props)
   }
 
   handleUsernameChange = (username: string)  => {
@@ -68,9 +68,8 @@ class Login extends React.Component<IProps, IUserInfo> {
 
   render() {
     const { username, password } = this.state
-    const { route, router } = this.props
     return (
-      <NavBar route={route} router={router}>
+      <NavBar title={this.props.title}>
         <ScrollView
           style={{marginTop: 10}}
           keyboardShouldPersistTaps={true}

@@ -35,7 +35,7 @@ type ITabBarProps = IProps & any
 
 interface IState {
   leftUnderlineWidth: Animated.Value,
-  undelineWidth: Animated.Value
+  underlineWidth: Animated.Value
 }
 
 type tabMeasurement = {
@@ -55,7 +55,7 @@ class TabBar extends React.Component<ITabBarProps, IState> {
     this.tabMeasurements = []
     this.state = {
       leftUnderlineWidth: new Animated.Value(0),
-      undelineWidth: new Animated.Value(0)
+      underlineWidth: new Animated.Value(0)
     }
   }
 
@@ -88,10 +88,10 @@ class TabBar extends React.Component<ITabBarProps, IState> {
   }
 
   render () {
-    const { undelineWidth, leftUnderlineWidth } = this.state
+    const { underlineWidth, leftUnderlineWidth } = this.state
     const tabUnderlineStyle = {
       position: 'absolute',
-      width: undelineWidth,
+      width: underlineWidth,
       height: 2,
       backgroundColor: Color.main,
       bottom: 0,
@@ -111,7 +111,7 @@ class TabBar extends React.Component<ITabBarProps, IState> {
 
   private renderIcon = () => {
     const { showIcon = true } = this.props
-    return showIcon ?
+    return showIcon &&
       <TouchableOpacity
         key='icon'
         style={[styles.icon]}
@@ -120,19 +120,20 @@ class TabBar extends React.Component<ITabBarProps, IState> {
         <View>
           <Icon name='ios-search' size={18}/>
         </View>
-      </TouchableOpacity> :
-      null
+      </TouchableOpacity>
   }
 
-  private updateView = ({ value }: { value: number }) => {
+  private updateView = (value: number) => {
     const position = Math.floor(value)
     const tabCount = this.props.tabs.length
     const pageOffset = value % 1
+    const tabsInvalid = tabCount === 0 || value < 0 || value > tabCount - 1
+    const isReadyToUpdate = this.isMesuresDone(position) && !tabsInvalid
 
-    // if (tabCount === 0 || value < 0 || value > tabCount - 1) {
-    //   return
-    // }
-    if (this.isMesuresDone(position) && tabCount && value >= 0 && value <= tabCount - 1) {
+    if (tabsInvalid) {
+      return
+    }
+    if (isReadyToUpdate) {
       this.updateUnderline(position, pageOffset, tabCount)
     }
   }
@@ -150,12 +151,12 @@ class TabBar extends React.Component<ITabBarProps, IState> {
       let nextTabLeft = this.tabMeasurements[position + 1].left
       nextTabWidth = (pageOffset * nextTabWidth + (1 - pageOffset) * width)
       nextTabLeft = (pageOffset * nextTabLeft + (1 - pageOffset) * left)
-      this.state.undelineWidth.setValue(nextTabWidth)
+      this.state.underlineWidth.setValue(nextTabWidth)
       this.state.leftUnderlineWidth.setValue(nextTabLeft)
 
     } else {
 
-      this.state.undelineWidth.setValue(width)
+      this.state.underlineWidth.setValue(width)
       this.state.leftUnderlineWidth.setValue(left)
 
     }
@@ -174,7 +175,7 @@ class TabBar extends React.Component<ITabBarProps, IState> {
 
     textComp.measure((ox, oy, width, height, pageX) => {
       this.tabMeasurements[page] = { width, left: pageX }
-      this.updateView({ value: this.props.scrollValue._value })
+      this.updateView(this.props.scrollValue._value)
     })
   }
 }

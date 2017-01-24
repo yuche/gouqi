@@ -14,8 +14,7 @@ import Router from '../routers'
 type Ianimation = 'fade' | 'slide' | 'none'
 
 interface IProps {
-  route: React.Route | undefined,
-  router: Router | undefined,
+  title: string,
   statusBar?: {
     statusBar: ViewStyle,
     hidden: boolean,
@@ -41,7 +40,6 @@ class NavBar extends React.Component<IProps, any> {
       return children &&
         <View style={[styles.item, style && style]}>{children}</View>
     }
-    console.log(this.props)
     const defaultLeftButton = <Icon
       name='arrow-left'
       size={14}
@@ -53,7 +51,7 @@ class NavBar extends React.Component<IProps, any> {
       statusBar,
       leftButton = defaultLeftButton,
       rightButton,
-      route,
+      title,
       showTitile = true,
       hideBorder = false
     } = this.props
@@ -62,7 +60,7 @@ class NavBar extends React.Component<IProps, any> {
         statusBar={statusBar}
         leftButton={buttonWrapper(leftButton, { marginLeft: 10 })}
         rightButton={buttonWrapper(rightButton, { marginRight: 10})}
-        title={showTitile ? { title: route && route.title, style: {fontSize: 14} } : <View style={{ height : 0}}/>}
+        title={showTitile ? { title, style: {fontSize: 14} } : <View style={{ height : 0}}/>}
         style={[styles.container, hideBorder && { borderWidth: 0 }]}
       />
       {children}

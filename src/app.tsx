@@ -19,9 +19,9 @@ const AppRouter = () => (
   <Provider store={store}>
     <Router>
       <Scene key='root'>
-        <Scene key='home' component={Home} hideNavBar/>
-        <Scene key='login' component={Login} title='登录' hideNavBar/>
-        <Scene key='search' component={Search} hideNavBar/>
+        <Scene key='home' component={Home} hideNavBar initial/>
+        <Scene key='login' component={Login} title='登录' />
+        <Scene key='search' component={Search} direction='vertical' hideNavBar/>
       </Scene>
     </Router>
   </Provider>

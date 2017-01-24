@@ -38,26 +38,20 @@ class Search extends React.Component<IProps, IState> {
     }
   }
 
-  componentDidMount() {
-    api.search('taylor', SearchType.artist).then(res => {
-      console.log(res)
-    })
-  }
-
   render () {
     return <View style={{flex: 1}}>
       <View style={styles.container}>
         <View style={styles.formContainer}>
-        <Form
-          icon='search'
-          placeholder='搜索歌单，单曲，专辑，艺人'
-          autoFocus={true}
-          onClear={this.clearQuery}
-          onChangeText={this.changeQuery}
-          value={this.state.query}
-          containerStyle={{paddingBottom: 0, paddingTop: 0}}
-          onSubmitEditing={this.startSearching}
-        />
+          <Form
+            icon='search'
+            placeholder='搜索歌单，单曲，专辑，艺人'
+            autoFocus={true}
+            onClear={this.clearQuery}
+            onChangeText={this.changeQuery}
+            value={this.state.query}
+            containerStyle={{paddingBottom: 0, paddingTop: 0}}
+            onSubmitEditing={this.startSearching}
+          />
         </View>
         <View style={styles.cancel}>
           <Text style={{fontSize: 14}} onPress={this.back}>取消</Text>
