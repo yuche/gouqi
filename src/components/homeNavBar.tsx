@@ -8,7 +8,7 @@ import {
   Animated,
   NativeComponent
 } from 'react-native'
-import { Actions } from 'react-native-router-flux'
+import Router from '../routers'
 import {
   Color
 } from '../styles'
@@ -123,7 +123,7 @@ class TabBar extends React.Component<ITabBarProps, IState> {
       </TouchableOpacity>
   }
 
-  private updateView = (value: number) => {
+  private updateView = ({ value }: { value: number }) => {
     const position = Math.floor(value)
     const tabCount = this.props.tabs.length
     const pageOffset = value % 1
@@ -167,7 +167,7 @@ class TabBar extends React.Component<ITabBarProps, IState> {
   }
 
   private goToSearch = () => {
-    Actions.search()
+    Router.toSearch()
   }
 
   private textOnLayout = (page: number) => {
@@ -175,7 +175,7 @@ class TabBar extends React.Component<ITabBarProps, IState> {
 
     textComp.measure((ox, oy, width, height, pageX) => {
       this.tabMeasurements[page] = { width, left: pageX }
-      this.updateView(this.props.scrollValue._value)
+      this.updateView({ value: this.props.scrollValue._value })
     })
   }
 }

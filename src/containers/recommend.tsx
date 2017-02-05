@@ -6,7 +6,7 @@ import {
   View,
   ViewStyle
 } from 'react-native'
-import { Actions } from 'react-native-router-flux'
+import Router from '../routers'
 import Toast from '../components/toast'
 
 export default class RecommendScene extends React.Component<any, any> {
@@ -22,7 +22,7 @@ export default class RecommendScene extends React.Component<any, any> {
   }
 
   showToast = () => {
-    Actions.login()
+    Router.toLogin()
     // this.toast.warning('错误的帐号或密码')
     // this.refs.toast.show('fuck', 2000)
   }

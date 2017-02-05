@@ -2,7 +2,8 @@
   "presets": ["react-native"],
   "env": {
     "development": {
-      "sourceMaps": "inline"
+      "sourceMaps": "true"
+        // because of some bugs from vscode-node-debug & vscode-react-native, "sourceMaps" cannot be "inline" or "both"
     }
   }
 }

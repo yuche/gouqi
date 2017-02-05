@@ -1,49 +1,32 @@
-import * as React from 'react'
+import { Actions, RNRFActions } from 'react-native-router-flux'
 
-import {
-  View,
-  BackAndroid,
-  Platform
-} from 'react-native'
+interface IRouterPassProps {
+  props?: Object | undefined
+}
 
-import Login from '../containers/login'
-import Search from '../containers/search'
+let navigator = Actions
 
-class Router {
-  private navigator: React.NavigatorStatic
+function toHome (passProps?: IRouterPassProps) {
+  navigator['home'](passProps)
+}
 
-  constructor(navigator: React.NavigatorStatic) {
-    this.navigator = navigator
-  }
+function toLogin (passProps?: IRouterPassProps) {
+  navigator['login'](passProps)
+}
 
-  public toLogin (passProps: {}) {
-    this.push({
-      passProps,
-      component: Login,
-      title: '登录'
-    })
-  }
+function toSearch (passProps?: IRouterPassProps) {
+  navigator['search'](passProps)
+}
 
-  public toSearch (passProps: {}) {
-    this.push({
-      passProps,
-      component: Search,
-      title: '搜索'
-    })
-  }
+function pop (passProps?: IRouterPassProps) {
+  navigator.pop(passProps)
+}
 
-  public pop () {
-    this.navigator.pop()
-  }
-
-  private push (route: React.Route) {
-    let routesList = this.navigator.getCurrentRoutes()
-    let nextIndex = routesList[routesList.length - 1].index + 1
-    this.navigator.push(Object.assign({}, route, {
-      index: nextIndex,
-      id: Date.now().toString()
-    }))
-  }
+const Router = {
+  toHome,
+  toLogin,
+  toSearch,
+  pop
 }
 
 export default Router

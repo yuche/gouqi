@@ -54,7 +54,7 @@ const ListItem = ({
     <View style={[styles.wrapper, containerStyle && wrapperStyle]}>
       { Picture }
       <View style={styles.titleContainer}>
-        <Text style={[styles.title, titleStyle && titleStyle]}>
+        <Text style={[styles.title, titleStyle && titleStyle]} numberOfLines={1}>
           { title }
         </Text>
         { SubTitleComp }
