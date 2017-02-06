@@ -20,7 +20,8 @@ interface IListItem {
   subTitle?: string,
   subTitleStyle?: TextStyle,
   roundPic?: boolean,
-  onPress?: any
+  onPress?: (e?: any) => void,
+  fuck?: string
 }
 
 const ListItem = ({
@@ -33,8 +34,11 @@ const ListItem = ({
   subTitle,
   subTitleStyle,
   roundPic = false,
-  onPress
+  onPress,
+  fuck
 }: IListItem) => {
+  const Component = onPress ? TouchableHighlight : View
+
   const SubTitleComp = subTitle &&
     <Text style={[styles.subTitle, subTitleStyle && subTitleStyle]}>
       { subTitle }
@@ -47,20 +51,20 @@ const ListItem = ({
       style={[styles.pic, roundPic && { borderRadius : picStyle ? picStyle.height / 2 : 20 }, picStyle && picStyle]}
     />
 
-  return <TouchableHighlight
+  return <Component
     style={[styles.container, containerStyle && containerStyle]}
     onPress={onPress}
   >
     <View style={[styles.wrapper, containerStyle && wrapperStyle]}>
       { Picture }
       <View style={styles.titleContainer}>
-        <Text style={[styles.title, titleStyle && titleStyle]} numberOfLines={1}>
+        <Text style={[styles.title, titleStyle && titleStyle]} numberOfLines={1} onPress={onPress}>
           { title }
         </Text>
         { SubTitleComp }
       </View>
     </View>
-  </TouchableHighlight>
+  </Component>
 }
 
 const styles = StyleSheet.create({

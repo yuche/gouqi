@@ -9,6 +9,7 @@ import * as api from '../services/api'
 import ListItem from '../components/listitem'
 import { IPlaylistsProps } from '../interfaces'
 import * as Actions from '../actions'
+import Router from '../routers'
 
 interface IProps extends IPlaylistsProps {
   syncPlaylists: {
@@ -47,6 +48,8 @@ class PlayList extends React.Component<
         picURI={playlist.coverImgUrl}
         subTitle={playlist.subscribedCount + ' 人订阅'}
         key={playlist.id}
+        // tslint:disable-next-line:jsx-no-lambda
+        onPress={() => Router.toPlayList({ route: playlist })}
       />
     )
   }

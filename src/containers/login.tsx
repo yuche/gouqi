@@ -69,7 +69,8 @@ class Login extends React.Component<IProps, IUserInfo> {
   render() {
     const { username, password } = this.state
     return (
-      <NavBar title={this.props.title}>
+      <View style={{flex: 1}}>
+        <NavBar title={this.props.title} />
         <ScrollView
           style={{marginTop: 10}}
           keyboardShouldPersistTaps={true}
@@ -104,7 +105,7 @@ class Login extends React.Component<IProps, IUserInfo> {
             登录
           </Button>
         </ScrollView>
-      </NavBar>
+      </View>
     )
   }
 }

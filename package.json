@@ -12,12 +12,6 @@
     "coverage:check": "open coverage/index.html"
   },
   "dependencies": {
-    "@types/isomorphic-fetch": "0.0.31",
-    "@types/qs": "^6.2.30",
-    "@types/react": "^0.14.37",
-    "@types/react-native": "^0.29.35",
-    "@types/react-redux": "^4.4.32",
-    "@types/redux-actions": "^0.8.30",
     "big-integer": "^1.6.15",
     "blueimp-md5": "^2.4.0",
     "buffer": "^5.0.0",
@@ -26,6 +20,7 @@
     "qs": "^6.2.1",
     "react": "^15.4.2",
     "react-native": "0.39.0",
+    "react-native-blur": "^2.0.0",
     "react-native-navbar": "^1.5.4",
     "react-native-router-flux": "^3.37.0",
     "react-native-scrollable-tab-view": "^0.6.0",
@@ -40,6 +35,12 @@
     "typescript": "next"
   },
   "devDependencies": {
+    "@types/isomorphic-fetch": "0.0.31",
+    "@types/qs": "^6.2.30",
+    "@types/react": "^0.14.37",
+    "@types/react-native": "^0.29.35",
+    "@types/react-redux": "^4.4.32",
+    "@types/redux-actions": "^0.8.30",
     "ava": "^0.16.0",
     "babel-eslint": "^6.1.2",
     "babel-preset-es2015": "^6.14.0",

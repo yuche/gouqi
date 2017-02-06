@@ -41,7 +41,7 @@ export default class RecommendScene extends React.Component<any, any> {
           Press Cmd+R to reload,{'\n'}
           Cmd+D or shake for dev menu
         </Text>
-        <Text>
+        <Text onPress={Router.toPlayList}>
           Go to Login Page
         </Text>
         <Text onPress={this.showToast}>

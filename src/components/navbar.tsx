@@ -47,7 +47,6 @@ class NavBar extends React.Component<IProps, any> {
       onPress={this.navBack}
     />
     const {
-      children,
       statusBar,
       leftButton = defaultLeftButton,
       rightButton,
@@ -55,16 +54,13 @@ class NavBar extends React.Component<IProps, any> {
       showTitile = true,
       hideBorder = false
     } = this.props
-    return <View style={{ flex: 1 }}>
-      <NavigationBar
-        statusBar={statusBar}
-        leftButton={buttonWrapper(leftButton, { marginLeft: 10 })}
-        rightButton={buttonWrapper(rightButton, { marginRight: 10})}
-        title={showTitile ? { title, style: {fontSize: 14} } : <View style={{ height : 0}}/>}
-        style={[styles.container, hideBorder && { borderWidth: 0 }]}
-      />
-      {children}
-    </View>
+    return <NavigationBar
+      statusBar={statusBar}
+      leftButton={buttonWrapper(leftButton, { marginLeft: 10 })}
+      rightButton={buttonWrapper(rightButton, { marginRight: 10})}
+      title={showTitile ? { title, style: {fontSize: 14} } : <View style={{ height : 0}}/>}
+      style={[styles.container, hideBorder && { borderWidth: 0 }]}
+    />
   }
 
   private navBack = () => {

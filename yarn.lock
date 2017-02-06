@@ -5079,6 +5079,10 @@ react-dom@^15.3.1:
   version "15.3.2"
   resolved "http://registry.npm.taobao.org/react-dom/download/react-dom-15.3.2.tgz#c46b0aa5380d7b838e7a59c4a7beff2ed315531f"
 
+react-native-blur:
+  version "2.0.0"
+  resolved "https://registry.npmjs.org/react-native-blur/-/react-native-blur-2.0.0.tgz#284b3abfb42c2d90924aa15f494ccb88d6055342"
+
 react-native-experimental-navigation@0.26.x:
   version "0.26.10"
   resolved "http://registry.npm.taobao.org/react-native-experimental-navigation/download/react-native-experimental-navigation-0.26.10.tgz#355e37929a2bfb84088dca331f34bc575297df68"
