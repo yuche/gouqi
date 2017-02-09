@@ -2,7 +2,6 @@ import * as api from '../services/api'
 import {
   Route
 } from 'react'
-import Router from '../routers'
 export interface IUserInfo {
   username: string,
   password: string
@@ -50,15 +49,14 @@ export interface IToastPayload {
 }
 
 export interface IRouterProps {
-  route?: Route,
-  router?: Router
+  route?: Route
 }
 
 export interface ISearchPayload {
   query: string
 }
 
-export interface ISearchProps {
+export interface ILoadingProps {
   isLoading: boolean,
   sync: () => Redux.Action
 }

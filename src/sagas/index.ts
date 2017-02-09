@@ -16,6 +16,10 @@ import {
   syncMoreResource,
   syncSearchResource
 } from './common'
+import {
+  IinitialState as IDetailState
+} from '../reducers/detail'
+import { isEqual, isEmpty } from 'lodash'
 
 export function* loginFlow () {
   while (true) {
@@ -170,6 +174,49 @@ export function* syncPlaylists () {
   }
 }
 
+export function* syncPlaylistDetail () {
+  while (true) {
+    const { payload }: { payload: number } = yield take('details/playlist')
+
+    const playlist: any = select((state: any) => state.details.playlist)
+
+    const originalTracks: api.ITrack[] = playlist[payload]
+
+    const isCached = !isEmpty(originalTracks)
+
+    if ( !isCached ) {
+      yield put({
+        type: 'details/playlist/start'
+      })
+    }
+
+    try {
+      const response = yield call(api.playListDetail, payload.toString())
+
+      if (response.code === 200) {
+        let { tracks }: { tracks: api.ITrack[] } = response.result
+        tracks.forEach(track => track.album.picUrl += '?param=50y50')
+        const needUpdate = isCached && !isEqual(originalTracks, tracks)
+        yield put({
+          type: 'details/playlist/save',
+          payload: {
+            [payload]: tracks
+          }
+        })
+        // tslint:disable-next-line:no-unused-expression
+        needUpdate && put(toastAction('success', '已更新内容。'))
+      }
+    } catch (error) {
+      put(toastAction('error', '网络出现错误...'))
+    } finally {
+      yield put({
+        type: 'details/playlist/end'
+      })
+    }
+
+  }
+}
+
 export default function* root () {
   yield [
     fork(loginFlow),
@@ -179,6 +226,7 @@ export default function* root () {
     fork(syncSearchAlbums),
     fork(syncSearchArtist),
     fork(searchQuerying),
-    fork(changeSearchActiveTab)
+    fork(changeSearchActiveTab),
+    fork(syncPlaylistDetail)
   ]
 }

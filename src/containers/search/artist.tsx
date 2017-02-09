@@ -5,11 +5,11 @@ import {
   View
 } from 'react-native'
 import { connect, Dispatch } from 'react-redux'
-import { ISearchState, ISearchProps } from '../../interfaces'
+import { ISearchState, ILoadingProps } from '../../interfaces'
 import ListItem from '../../components/listitem'
 import * as actions from '../../actions'
 
-interface IProps extends ISearchProps {
+interface IProps extends ILoadingProps {
   artists: any[]
 }
 

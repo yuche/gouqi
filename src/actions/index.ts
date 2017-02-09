@@ -32,3 +32,9 @@ export type ISearchActiveTab = (activeTab: number) => Action<number>
 export const changeSearchActiveTab: ISearchActiveTab = createAction('search/activeTab',
   (activeTab: number) => activeTab
 )
+
+export type ISyncDetail = (id: number) => Action<string>
+export const syncPlaylistDetail: ISyncDetail = createAction('details/playlist',
+  (id: number) => id
+)
+

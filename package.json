@@ -12,11 +12,12 @@
     "coverage:check": "open coverage/index.html"
   },
   "dependencies": {
+    "@types/lodash": "^4.14.52",
     "big-integer": "^1.6.15",
     "blueimp-md5": "^2.4.0",
     "buffer": "^5.0.0",
     "crypto-js": "^3.1.6",
-    "lodash": "^4.15.0",
+    "lodash": "^4.17.4",
     "qs": "^6.2.1",
     "react": "^15.4.2",
     "react-native": "0.39.0",
@@ -32,7 +33,7 @@
     "redux-logger": "^2.7.0",
     "redux-saga": "^0.11.1",
     "tough-cookie-no-native": "yuche/tough-cookie-no-native",
-    "typescript": "next"
+    "typescript": "^2.1.6"
   },
   "devDependencies": {
     "@types/isomorphic-fetch": "0.0.31",

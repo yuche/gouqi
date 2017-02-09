@@ -124,11 +124,38 @@ export async function newAlbums(
 
 export interface IPlaylist {
   coverImgUrl: string,
-  creator: any,
+  creator: Object,
   subscribedCount: number,
   name: string,
   playCount: number,
-  id: number
+  id: number,
+  description: string,
+  tracks: ITrack[]
+}
+
+export interface ITrack {
+  album: IAlbum,
+  artists: IArtist[],
+  commentThreadId: string,
+  mp3Url: string,
+  name: string,
+  id: string
+}
+
+export interface IAlbum {
+  id: number,
+  company: string,
+  description: string,
+  name: string,
+  picUrl: string,
+  size: string
+}
+
+export interface IArtist {
+  picUrl: string,
+  id: number,
+  name: string,
+
 }
 
 export interface ItopPlayListResult {

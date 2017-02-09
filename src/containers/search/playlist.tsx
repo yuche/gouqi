@@ -7,10 +7,10 @@ import {
 import { connect, Dispatch } from 'react-redux'
 import * as api from '../../services/api'
 import ListItem from '../../components/listitem'
-import { ISearchState, ISearchProps } from '../../interfaces'
+import { ISearchState, ILoadingProps } from '../../interfaces'
 import * as actions from '../../actions'
 
-interface IProps extends ISearchProps {
+interface IProps extends ILoadingProps {
   playlists: api.IPlaylist[]
 }
 
