@@ -1638,7 +1638,7 @@ clamp@^1.0.1:
 
 class-extend@^0.1.0, class-extend@^0.1.1:
   version "0.1.2"
-  resolved "https://registry.npmjs.org/class-extend/-/class-extend-0.1.2.tgz#8057a82b00f53f82a5d62c50ef8cffdec6fabc34"
+  resolved "http://registry.npmjs.org/class-extend/-/class-extend-0.1.2.tgz#8057a82b00f53f82a5d62c50ef8cffdec6fabc34"
   dependencies:
     object-assign "^2.0.0"
 
@@ -2051,8 +2051,8 @@ dateformat@^2.0.0:
   resolved "https://registry.npmjs.org/dateformat/-/dateformat-2.0.0.tgz#2743e3abb5c3fc2462e527dca445e04e9f4dee17"
 
 debug@^2.0.0, debug@^2.1.0:
-  version "2.6.0"
-  resolved "https://registry.npmjs.org/debug/-/debug-2.6.0.tgz#bc596bcabe7617f11d9fa15361eded5608b8499b"
+  version "2.6.1"
+  resolved "https://registry.npmjs.org/debug/-/debug-2.6.1.tgz#79855090ba2c4e3115cc7d8769491d58f0491351"
   dependencies:
     ms "0.7.2"
 
@@ -2482,8 +2482,8 @@ escape-string-regexp@^1.0.2, escape-string-regexp@^1.0.4, escape-string-regexp@^
   resolved "http://registry.npm.taobao.org/escape-string-regexp/download/escape-string-regexp-1.0.5.tgz#1b61c0562190a8dff6ae3bb2cf0200ca130b86d4"
 
 escodegen-wallaby@^1.6.7:
-  version "1.6.8"
-  resolved "https://registry.npmjs.org/escodegen-wallaby/-/escodegen-wallaby-1.6.8.tgz#903afc307b1a0df4a79797e523157fade70b1165"
+  version "1.6.10"
+  resolved "https://registry.npmjs.org/escodegen-wallaby/-/escodegen-wallaby-1.6.10.tgz#abffe3301b20df346229b51cf1e827873aff1e06"
   dependencies:
     esprima "^2.7.1"
     estraverse "^1.9.1"
@@ -5083,9 +5083,9 @@ react-dom@^15.3.1:
   version "15.3.2"
   resolved "http://registry.npm.taobao.org/react-dom/download/react-dom-15.3.2.tgz#c46b0aa5380d7b838e7a59c4a7beff2ed315531f"
 
-react-native-blur:
-  version "2.0.0"
-  resolved "https://registry.npmjs.org/react-native-blur/-/react-native-blur-2.0.0.tgz#284b3abfb42c2d90924aa15f494ccb88d6055342"
+react-native-blur@1.2.0:
+  version "1.2.0"
+  resolved "https://registry.npmjs.org/react-native-blur/-/react-native-blur-1.2.0.tgz#4479a1efdb3666768835767accb9475b27af4ab3"
 
 react-native-experimental-navigation@0.26.x:
   version "0.26.10"

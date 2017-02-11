@@ -17,9 +17,9 @@ import {
   syncSearchResource
 } from './common'
 import {
-  IinitialState as IDetailState
+  ITracks
 } from '../reducers/detail'
-import { isEqual, isEmpty } from 'lodash'
+import { isEmpty } from 'lodash'
 
 export function* loginFlow () {
   while (true) {
@@ -178,9 +178,9 @@ export function* syncPlaylistDetail () {
   while (true) {
     const { payload }: { payload: number } = yield take('details/playlist')
 
-    const playlist: any = select((state: any) => state.details.playlist)
+    const playlist: ITracks = yield select((state: any) => state.details.playlist)
 
-    const originalTracks: api.ITrack[] = playlist[payload]
+    const originalTracks = playlist[payload]
 
     const isCached = !isEmpty(originalTracks)
 
@@ -194,20 +194,20 @@ export function* syncPlaylistDetail () {
       const response = yield call(api.playListDetail, payload.toString())
 
       if (response.code === 200) {
+        console.log(response.result)
         let { tracks }: { tracks: api.ITrack[] } = response.result
-        tracks.forEach(track => track.album.picUrl += '?param=50y50')
-        const needUpdate = isCached && !isEqual(originalTracks, tracks)
-        yield put({
-          type: 'details/playlist/save',
-          payload: {
-            [payload]: tracks
-          }
-        })
-        // tslint:disable-next-line:no-unused-expression
-        needUpdate && put(toastAction('success', '已更新内容。'))
+        if (Array.isArray(tracks)) {
+          tracks.forEach(track => track.album.picUrl += '?param=50y50')
+          yield put({
+            type: 'details/playlist/save',
+            payload: {
+              [payload]: tracks
+            }
+          })
+        }
       }
     } catch (error) {
-      put(toastAction('error', '网络出现错误...'))
+      yield put(toastAction('error', '网络出现错误...'))
     } finally {
       yield put({
         type: 'details/playlist/end'

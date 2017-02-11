@@ -7,7 +7,7 @@ export interface IinitialState {
 }
 
 export interface ITracks {
-  [props: number]: api.IPlaylist
+  [props: number]: api.ITrack[]
 }
 
 const initialState: IinitialState = {

@@ -82,16 +82,17 @@ const styles = StyleSheet.create({
     flexDirection: 'row'
   } as ViewStyle,
   titleContainer: {
-    justifyContent: 'center'
+    flexDirection: 'column',
+    justifyContent: 'space-between'
   } as ViewStyle,
   title: {
-    fontSize: 14,
+    fontSize: 15,
     fontWeight: '100',
     marginLeft: 10
   } as TextStyle,
   subTitle: {
     fontSize: 12,
-    marginTop: 1,
+    marginTop: 4,
     fontWeight: '100',
     marginLeft: 10,
     color: '#ccc'
