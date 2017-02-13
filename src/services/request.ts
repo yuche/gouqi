@@ -17,7 +17,8 @@ const defaultHeaders = {
 }
 
 export function getCookies () {
-  return cookieJar.getCookieStringSync(API_BASE_URL)
+  const cookie = '__remember_me=true; Expires=Tue, 28-Feb-2017 12:22:57 GMT; Path=/; HttpOnly, MUSIC_U=dca0f785b3a88055ebfdc379d8217473d73cf0caeced258fc865dc5862a6aa2206bca4ccd2e075e0eece4abf183f8c8341049cea1c6bb9b6; HttpOnly, __csrf=58305e9430ecad49d9c2566f1f2481c2'
+  return cookieJar.getCookieStringSync(API_BASE_URL) || cookie
 }
 
 export function setCookies (cookie: string): void {
@@ -25,7 +26,7 @@ export function setCookies (cookie: string): void {
 }
 
 export function getCsrfFromCookies (): string | null {
-  const csrfReg = /csrf=(\w*);/.exec(getCookies())
+  const csrfReg = /csrf=(\w*)/.exec(getCookies())
   return csrfReg ? csrfReg[1] : null
 }
 
@@ -49,8 +50,8 @@ function parseJSONFilter (response: IResponse) {
 
 function setCookiesFilter (response: IResponse) {
   const cookies = response.headers.getAll('set-cookie')
-  if (cookies.length) {
-    cookies.forEach(setCookies)
+  if (cookies.length && cookies[0]) {
+    cookies[0].split(';').forEach(setCookies)
   }
   return response
 }

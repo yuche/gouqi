@@ -17,7 +17,7 @@ import {
   syncSearchResource
 } from './common'
 import {
-  ITracks
+  IPlaylists
 } from '../reducers/detail'
 import { isEmpty } from 'lodash'
 
@@ -178,11 +178,9 @@ export function* syncPlaylistDetail () {
   while (true) {
     const { payload }: { payload: number } = yield take('details/playlist')
 
-    const playlist: ITracks = yield select((state: any) => state.details.playlist)
+    const playlist: api.IPlaylist = yield select((state: any) => state.details.playlist[payload])
 
-    const originalTracks = playlist[payload]
-
-    const isCached = !isEmpty(originalTracks)
+    const isCached = !isEmpty(playlist)
 
     if ( !isCached ) {
       yield put({
@@ -194,14 +192,14 @@ export function* syncPlaylistDetail () {
       const response = yield call(api.playListDetail, payload.toString())
 
       if (response.code === 200) {
-        console.log(response.result)
-        let { tracks }: { tracks: api.ITrack[] } = response.result
-        if (Array.isArray(tracks)) {
-          tracks.forEach(track => track.album.picUrl += '?param=50y50')
+        const { result }: { result: api.IPlaylist } = response
+        console.log(result)
+        if (Array.isArray(result.tracks)) {
+          result.tracks.forEach(track => track.album.picUrl += '?param=50y50')
           yield put({
             type: 'details/playlist/save',
             payload: {
-              [payload]: tracks
+              [payload]: result
             }
           })
         }
@@ -217,6 +215,43 @@ export function* syncPlaylistDetail () {
   }
 }
 
+export function* subscribePlaylist () {
+  while (true) {
+    const { payload }: { payload: number } = yield take('details/playlist/subscribe')
+
+    const playlist: api.IPlaylist = yield select((state: any) => state.details.playlist[payload])
+
+    const { subscribed } = playlist
+
+    yield put({
+      type: 'details/subscribe/start'
+    })
+
+    try {
+      const response = yield call(api.subscribePlaylist, payload.toString(), !subscribed)
+      console.log(response)
+      if (response.code === 200) {
+        yield put({
+          type: 'details/playlist/save',
+          payload: {
+            [payload]: {
+              ...playlist,
+              subscribed: !subscribed
+            }
+          }
+        })
+      }
+    } catch (error) {
+      console.log(error)
+      yield put(toastAction('error', '网络出现错误...'))
+    }
+
+    yield put({
+      type: 'details/subscribe/end'
+    })
+  }
+}
+
 export default function* root () {
   yield [
     fork(loginFlow),
@@ -227,6 +262,7 @@ export default function* root () {
     fork(syncSearchArtist),
     fork(searchQuerying),
     fork(changeSearchActiveTab),
-    fork(syncPlaylistDetail)
+    fork(syncPlaylistDetail),
+    fork(subscribePlaylist)
   ]
 }

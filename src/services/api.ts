@@ -129,7 +129,11 @@ export interface IPlaylist {
   name: string,
   playCount: number,
   id: number,
+  commentCount: number,
+  commentThreadId: string,
   description: string,
+  subscribed: boolean,
+  subscribing: boolean,
   tracks: ITrack[]
 }
 

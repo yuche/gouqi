@@ -1,5 +1,5 @@
 import * as React from 'react'
-import * as api from '../../services/api'
+import { IPlaylist, ITrack } from '../../services/api'
 import {
   View,
   ViewStyle,
@@ -9,29 +9,35 @@ import {
   Text,
   TextStyle,
   Image,
-  Dimensions
+  Dimensions,
+  TouchableOpacity
 } from 'react-native'
 import Navbar from '../../components/navbar'
 import { ILoadingProps } from '../../interfaces'
 import { connect, Dispatch } from 'react-redux'
-import { syncPlaylistDetail } from '../../actions'
+import { syncPlaylistDetail, subscribePlaylist } from '../../actions'
 import ListItem from '../../components/listitem'
 import {
   IinitialState as IDetailState
 } from '../../reducers/detail'
-import { get } from 'lodash'
+import { get, isEmpty } from 'lodash'
 // tslint:disable-next-line:no-var-requires
 const { BlurView } = require('react-native-blur')
 const { width, height } = Dimensions.get('window')
+// tslint:disable-next-line
+const Icon = require('react-native-vector-icons/FontAwesome')
 
 interface IProps extends ILoadingProps {
-  route: api.IPlaylist,
-  tracks: api.ITrack[]
+  route: IPlaylist,
+  playlist: IPlaylist,
+  subscribing: boolean,
+  subscribe: () => Redux.Action
 }
 
 interface IState {
   titleOpacity: number
-  headerOpacity: number
+  headerOpacity: number,
+  subscribed: boolean
 }
 
 class PlayList extends React.Component<IProps, IState> {
@@ -40,7 +46,8 @@ class PlayList extends React.Component<IProps, IState> {
     super(props)
     this.state = {
       titleOpacity: 0,
-      headerOpacity: 1
+      headerOpacity: 1,
+      subscribed: false
     }
   }
 
@@ -50,9 +57,8 @@ class PlayList extends React.Component<IProps, IState> {
 
   render () {
     const {
-      route,
       isLoading,
-      tracks
+      playlist
     } = this.props
     const {
       titleOpacity,
@@ -60,15 +66,15 @@ class PlayList extends React.Component<IProps, IState> {
     } = this.state
     return (
       <View style={{flex: 1, backgroundColor: '#f3f3f3'}}>
-        {this.renderBlur( route )}
-        {this.renderNavbar(route, titleOpacity)}
-        {this.renderHeader(route, headerOpacity)}
+        {this.renderBlur( playlist )}
+        {this.renderNavbar(playlist, titleOpacity)}
+        {this.renderHeader(playlist, headerOpacity)}
         {/*{this.renderPlayList(isLoading, tracks)}*/}
       </View>
     )
   }
 
-  renderNavbar (playlist: api.IPlaylist, opacity: number ) {
+  renderNavbar (playlist: IPlaylist, opacity: number ) {
     return (
       <Navbar
         title={playlist.name}
@@ -78,13 +84,13 @@ class PlayList extends React.Component<IProps, IState> {
     )
   }
 
-  renderHeader ( playlist: api.IPlaylist, opacity: number ) {
+  renderHeader ( playlist: IPlaylist, opacity: number ) {
     const uri = playlist.coverImgUrl
     const { creator } = playlist
     return (
       <View style={styles.headerContainer}>
         <Animated.View style={[styles.header, { opacity }]}>
-          <View style={{ flexDirection: 'row' }}>
+          <View style={{ flexDirection: 'row'}}>
             <Image source={{uri}} style={styles.headerPic}/>
             <View style={{ flex: 1, marginLeft: 14 }}>
               <Text style={[styles.white, { fontSize: 16 }]}>{playlist.name}</Text>
@@ -93,31 +99,78 @@ class PlayList extends React.Component<IProps, IState> {
                 <Text style={[styles.white, { marginLeft: 5 }]}>{creator.nickname}</Text>
               </View>
             </View>
-            {this.renderActions()}
           </View>
+          {this.renderActions(playlist)}
         </Animated.View>
       </View>
     )
   }
 
-  renderActions = () => {
+  renderActions = (playlist: IPlaylist) => {
+    const {
+      subscribed,
+      subscribedCount,
+      commentCount
+    } = playlist
+    const {
+      subscribing,
+      subscribe
+    } = this.props
     return (
-      <View style={{ flexDirection: 'row'}}>
-
+      <View style={{ flexDirection: 'row', marginTop: 10}}>
+        <View style={styles.btnContainer}>
+          {this.rendeSubIcon(subscribed, subscribing, subscribe)}
+          <Text style={{ color: 'white' }}>{subscribedCount}</Text>
+        </View>
+        <View style={styles.btnContainer}>
+          {this.renderBtn('comment-o')}
+          <Text style={{ color: 'white' }}>{commentCount}</Text>
+        </View>
+        <View style={styles.btnContainer}>
+          {this.renderBtn('info-circle')}
+        </View>
+        <View style={styles.btnContainer}>
+          {this.renderBtn('download')}
+        </View>
       </View>
     )
   }
 
-  renderBlur (playlist: api.IPlaylist) {
+  rendeSubIcon = (
+    subscribed: boolean,
+    subscribing: boolean,
+    subscribe: () => Redux.Action
+  ) => {
+    if (subscribing) {
+      return <ActivityIndicator animating color='white' style={{ width: 30, height: 30}}/>
+    } else {
+      return subscribed ?
+        this.renderBtn('star', subscribe) :
+        this.renderBtn('star-o', subscribe)
+    }
+  }
+
+  renderBtn = (
+    iconName: string,
+    onPress?: (e?: any) => void
+  ) => {
+    return (
+      <TouchableOpacity onPress={onPress} style={styles.btn}>
+        <Icon name={iconName} size={16} color='#fff'/>
+      </TouchableOpacity>
+    )
+  }
+
+  renderBlur (playlist: IPlaylist) {
     const uri = playlist.coverImgUrl
     return (
       <Animated.Image source={{uri}} style={styles.bg}>
-          <BlurView blurType='light' blurAmount={25} style={styles.blur} />
+        <BlurView blurType='light' blurAmount={25} style={styles.blur} />
       </Animated.Image>
     )
   }
 
-  renderTrack = (track: api.ITrack) => {
+  renderTrack = (track: ITrack) => {
     const artistName = get(track, 'artists[0].name', null)
     const albumName = get(track, 'album.name', '')
     const subTitle = artistName ?
@@ -137,7 +190,7 @@ class PlayList extends React.Component<IProps, IState> {
 
   renderPlayList = (
     isLoading: boolean,
-    tracks: api.ITrack[]
+    tracks: ITrack[]
   ) => {
     return isLoading ?
       <ActivityIndicator animating style={{marginTop: 20}}/> :
@@ -188,20 +241,39 @@ const styles = {
     position: 'absolute',
     top: 0,
     width
+  } as ViewStyle,
+  btnContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center'
+  } as ViewStyle,
+  btn: {
+    width: 30,
+    height: 30,
+    justifyContent: 'center',
+    alignItems: 'center'
   } as ViewStyle
 }
 
 function mapStateToProps (
   {
     details: {
-      playlist
+      playlist,
+      isLoading,
+      subscribing
     }
   }: { details: IDetailState },
   ownProps: IProps
 ) {
-  const { id } = ownProps.route
+  const { route } = ownProps
   return {
-    tracks: playlist[id] || []
+    playlist: {
+      ...route,
+      ...(isEmpty(route) ? {} : playlist[route.id])
+    },
+    isLoading,
+    subscribing
   }
 }
 
@@ -210,6 +282,9 @@ export default connect(
   (dispatch: Dispatch<Redux.Action>, ownProps: IProps) => ({
     sync() {
       return dispatch(syncPlaylistDetail(ownProps.route.id))
+    },
+    subscribe() {
+      return dispatch(subscribePlaylist(ownProps.route.id))
     }
   })
 )(PlayList)

@@ -99,7 +99,7 @@ class Login extends React.Component<IProps, IUserInfo> {
           />
 
           <Button
-            onPress={this.userOnClear}
+            onPress={this.handleUserLogin}
             disabled={!username || !password}
           >
             登录

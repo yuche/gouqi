@@ -137,7 +137,7 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     justifyContent: 'center',
-    alignItems: 'center',
+    alignItems: 'center'
     // position: 'absolute'
   } as ViewStyle
 })

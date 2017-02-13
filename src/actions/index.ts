@@ -38,3 +38,7 @@ export const syncPlaylistDetail: ISyncDetail = createAction('details/playlist',
   (id: number) => id
 )
 
+export const subscribePlaylist: ISyncDetail = createAction('details/playlist/subscribe',
+  (id: number) => id
+)
+
