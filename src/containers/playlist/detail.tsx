@@ -37,7 +37,8 @@ interface IProps extends ILoadingProps {
 interface IState {
   titleOpacity: number
   headerOpacity: number,
-  subscribed: boolean
+  subscribed: boolean,
+  scrollY: Animated.Value
 }
 
 class PlayList extends React.Component<IProps, IState> {
@@ -47,7 +48,8 @@ class PlayList extends React.Component<IProps, IState> {
     this.state = {
       titleOpacity: 0,
       headerOpacity: 1,
-      subscribed: false
+      subscribed: false,
+      scrollY: new Animated.Value(0)
     }
   }
 
@@ -65,11 +67,11 @@ class PlayList extends React.Component<IProps, IState> {
       headerOpacity
     } = this.state
     return (
-      <View style={{flex: 1, backgroundColor: '#f3f3f3'}}>
+      <View style={{flex: 1, backgroundColor: 'white'}}>
         {this.renderBlur( playlist )}
         {this.renderNavbar(playlist, titleOpacity)}
         {this.renderHeader(playlist, headerOpacity)}
-        {/*{this.renderPlayList(isLoading, tracks)}*/}
+        {this.renderPlayList(isLoading, playlist.tracks || [])}
       </View>
     )
   }
@@ -182,7 +184,7 @@ class PlayList extends React.Component<IProps, IState> {
         picURI={track.album.picUrl}
         subTitle={subTitle}
         picStyle={{ width: 30, height: 30 }}
-        titleStyle={{ fontSize: 13 }}
+        titleStyle={{ fontSize: 14 }}
         key={track.id}
       />
     )
@@ -193,10 +195,22 @@ class PlayList extends React.Component<IProps, IState> {
     tracks: ITrack[]
   ) => {
     return isLoading ?
-      <ActivityIndicator animating style={{marginTop: 20}}/> :
-      <ScrollView>
-        {tracks.map(this.renderTrack)}
-      </ScrollView>
+      <ActivityIndicator animating style={{marginTop: 15}}/> :
+      <Animated.View style={styles.playlistContainer}>
+        <ScrollView
+          style={{ marginTop: 150 }}
+          onScroll={Animated.event([{nativeEvent: {contentOffset: {y: this.state.scrollY}}}])}
+          scrollEventThrottle={16}
+        >
+          <Animated.View>
+            {tracks.map(this.renderTrack)}
+          </Animated.View>
+        </ScrollView>
+      </Animated.View >
+  }
+
+  playlistOnScroll () {
+    
   }
 
 }
@@ -209,11 +223,18 @@ const styles = {
     right: 0,
     bottom: 0,
     paddingTop: Navbar.HEIGHT,
-    backgroundColor: 'rgba(0 ,0 , 0, .3)'
+    backgroundColor: 'rgba(0 ,0 , 0, .1)'
   } as ViewStyle,
   header: {
     paddingHorizontal: 16,
     flexDirection: 'column'
+  } as ViewStyle,
+  playlistContainer: {
+    position: 'absolute',
+    left: 0,
+    top: Navbar.HEIGHT,
+    right: 0,
+    bottom: 0
   } as ViewStyle,
   headerPic: {
     width: 100,

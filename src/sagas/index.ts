@@ -221,7 +221,7 @@ export function* subscribePlaylist () {
 
     const playlist: api.IPlaylist = yield select((state: any) => state.details.playlist[payload])
 
-    const { subscribed } = playlist
+    const { subscribed, subscribedCount } = playlist
 
     yield put({
       type: 'details/subscribe/start'
@@ -229,20 +229,20 @@ export function* subscribePlaylist () {
 
     try {
       const response = yield call(api.subscribePlaylist, payload.toString(), !subscribed)
-      console.log(response)
       if (response.code === 200) {
+        const count = subscribed ? subscribedCount - 1 : subscribedCount + 1
         yield put({
           type: 'details/playlist/save',
           payload: {
             [payload]: {
               ...playlist,
+              subscribedCount: count,
               subscribed: !subscribed
             }
           }
         })
       }
     } catch (error) {
-      console.log(error)
       yield put(toastAction('error', '网络出现错误...'))
     }
 
