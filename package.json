@@ -30,7 +30,6 @@
     "react-redux": "^4.4.5",
     "redux": "^3.6.0",
     "redux-actions": "^0.12.0",
-    "redux-logger": "^2.7.0",
     "redux-saga": "^0.11.1",
     "tough-cookie-no-native": "yuche/tough-cookie-no-native",
     "typescript": "^2.1.6"
@@ -59,6 +58,7 @@
     "nyc": "^8.1.0",
     "react-dom": "^15.3.1",
     "react-native-mock": "^0.2.6",
+    "remote-redux-devtools": "^0.5.7",
     "tslint": "^3.15.0-dev.0",
     "tslint-react": "^1.0.0"
   },

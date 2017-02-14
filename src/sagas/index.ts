@@ -52,7 +52,6 @@ export function* loginFlow () {
   }
 }
 
-
 const searchPageOrder = ['song', 'playlist', 'artist', 'album']
 
 function* requestSearch () {
@@ -193,7 +192,6 @@ export function* syncPlaylistDetail () {
 
       if (response.code === 200) {
         const { result }: { result: api.IPlaylist } = response
-        console.log(result)
         if (Array.isArray(result.tracks)) {
           result.tracks.forEach(track => track.album.picUrl += '?param=50y50')
           yield put({

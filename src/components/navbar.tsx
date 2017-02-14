@@ -90,6 +90,7 @@ class NavBar extends React.Component<IProps, any> {
             {title}
           </Animated.Text>
         </View>
+        <View style={styles.btn}/>
       </View>
     )
   }
@@ -113,7 +114,7 @@ const styles = StyleSheet.create({
     height: NavBar.HEIGHT,
     backgroundColor: 'gray',
     flexDirection: 'row',
-    // justifyContent: 'space-between',
+    justifyContent: 'space-between',
     alignItems: 'center',
     paddingTop: (Platform.OS === 'ios') ? 20 : 0,
     zIndex: 999
@@ -129,8 +130,8 @@ const styles = StyleSheet.create({
     color: 'white',
     fontWeight: 'bold',
     fontSize: 16,
-    position: 'relative',
-    right: 20
+    // position: 'relative',
+    // right: 20
     // marginLeft: -30
   } as TextStyle,
   btn: {

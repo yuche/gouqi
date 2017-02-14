@@ -10,7 +10,10 @@ import {
   TextStyle,
   Image,
   Dimensions,
-  TouchableOpacity
+  TouchableOpacity,
+  RefreshControl,
+  InteractionManager,
+  ListView
 } from 'react-native'
 import Navbar from '../../components/navbar'
 import { ILoadingProps } from '../../interfaces'
@@ -44,9 +47,11 @@ interface IState {
 const MARGIN_TOP = 160
 
 class PlayList extends React.Component<IProps, IState> {
+  private ds: React.ListViewDataSource
 
   constructor(props: IProps) {
     super(props)
+    this.ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2})
     this.state = {
       titleOpacity: 0,
       headerOpacity: 1,
@@ -56,7 +61,9 @@ class PlayList extends React.Component<IProps, IState> {
   }
 
   componentDidMount () {
-    this.props.sync()
+    InteractionManager.runAfterInteractions(() => {
+      this.props.sync()
+    })
   }
 
   render () {
@@ -226,20 +233,32 @@ class PlayList extends React.Component<IProps, IState> {
       inputRange: [0, MARGIN_TOP, MARGIN_TOP],
       outputRange: [0, MARGIN_TOP, MARGIN_TOP]
     })
-    return isLoading ?
-      <ActivityIndicator animating style={{marginTop: 15}}/> :
+    if (tracks) {
+      this.ds = this.ds.cloneWithRows(tracks)
+    }
+    return (
       <Animated.View style={[styles.playlistContainer, { transform: [{ translateY: containerY }] }]}>
-        <View style={{ height: height - Navbar.HEIGHT}}>
+        <View style={{ height: height - Navbar.HEIGHT, backgroundColor: 'white'}}>
           <ScrollView
             onScroll={Animated.event([{nativeEvent: {contentOffset: {y: scrollY}}}])}
             scrollEventThrottle={16}
+            // tslint:disable-next-line:jsx-no-multiline-js
           >
             <Animated.View style={{transform: [{ translateY :playlistY }], paddingBottom: MARGIN_TOP}}>
-              {tracks.map(this.renderTrack)}
-            </Animated.View>
+              <ListView
+                enableEmptySections
+                scrollRenderAheadDistance={90}
+                initialListSize={15}
+                dataSource={this.ds}
+                renderRow={this.renderTrack}
+                showsVerticalScrollIndicator={false}
+                // tslint:disable-next-line:jsx-no-multiline-js
+              />
+              </Animated.View>
           </ScrollView>
         </View>
-      </Animated.View >
+      </Animated.View>
+    )
   }
 
 }
@@ -320,7 +339,7 @@ function mapStateToProps (
   return {
     playlist: {
       ...route,
-      ...(isEmpty(route) ? {} : playlist[route.id])
+      ...playlist[route.id]
     },
     isLoading,
     subscribing

@@ -5,16 +5,15 @@ import {
 import rootReducer from '../reducers'
 import createSagaMiddleware from 'redux-saga'
 import sagas from '../sagas'
-const createLogger = require('redux-logger')
+// tslint:disable-next-line:no-var-requires
 
 
 export default function configureStore(initialState: any) {
   const sagaMiddleware = createSagaMiddleware()
-  const logger = createLogger()
   const store = createStore(
     rootReducer,
     initialState,
-    applyMiddleware(sagaMiddleware, logger)
+    applyMiddleware(sagaMiddleware)
   )
   sagaMiddleware.run(sagas)
   return store

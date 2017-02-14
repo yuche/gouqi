@@ -52,6 +52,8 @@ const ListItem = ({
     />
 
   return <Component
+    activeOpacity={0.3}
+    underlayColor='whitesmoke'
     style={[styles.container, containerStyle && containerStyle]}
     onPress={onPress}
   >
