@@ -41,6 +41,8 @@ interface IState {
   scrollY: Animated.Value
 }
 
+const MARGIN_TOP = 160
+
 class PlayList extends React.Component<IProps, IState> {
 
   constructor(props: IProps) {
@@ -63,20 +65,23 @@ class PlayList extends React.Component<IProps, IState> {
       playlist
     } = this.props
     const {
-      titleOpacity,
-      headerOpacity
+      scrollY
     } = this.state
     return (
       <View style={{flex: 1, backgroundColor: 'white'}}>
-        {this.renderBlur( playlist )}
-        {this.renderNavbar(playlist, titleOpacity)}
-        {this.renderHeader(playlist, headerOpacity)}
-        {this.renderPlayList(isLoading, playlist.tracks || [])}
+        {this.renderBlur(playlist, scrollY)}
+        {this.renderNavbar(playlist, scrollY)}
+        {this.renderHeader(playlist, scrollY)}
+        {this.renderPlayList(isLoading, scrollY, playlist.tracks || [])}
       </View>
     )
   }
 
-  renderNavbar (playlist: IPlaylist, opacity: number ) {
+  renderNavbar (playlist: IPlaylist, scrollY: Animated.Value ) {
+    const opacity = scrollY.interpolate({
+      inputRange: [0, 100, MARGIN_TOP],
+      outputRange: [0, 0, 1]
+    })
     return (
       <Navbar
         title={playlist.name}
@@ -86,9 +91,13 @@ class PlayList extends React.Component<IProps, IState> {
     )
   }
 
-  renderHeader ( playlist: IPlaylist, opacity: number ) {
+  renderHeader ( playlist: IPlaylist, scrollY: Animated.Value ) {
     const uri = playlist.coverImgUrl
     const { creator } = playlist
+    const opacity = scrollY.interpolate({
+      inputRange: [0, 50, MARGIN_TOP],
+      outputRange: [1, 1, 0]
+    })
     return (
       <View style={styles.headerContainer}>
         <Animated.View style={[styles.header, { opacity }]}>
@@ -119,7 +128,7 @@ class PlayList extends React.Component<IProps, IState> {
       subscribe
     } = this.props
     return (
-      <View style={{ flexDirection: 'row', marginTop: 10}}>
+      <View style={{ flexDirection: 'row', paddingVertical: 10}}>
         <View style={styles.btnContainer}>
           {this.rendeSubIcon(subscribed, subscribing, subscribe)}
           <Text style={{ color: 'white' }}>{subscribedCount}</Text>
@@ -163,10 +172,24 @@ class PlayList extends React.Component<IProps, IState> {
     )
   }
 
-  renderBlur (playlist: IPlaylist) {
+  renderBlur (playlist: IPlaylist, scrollY: Animated.Value) {
     const uri = playlist.coverImgUrl
+    const transform = [
+      {
+        translateY: scrollY.interpolate({
+          inputRange: [-MARGIN_TOP, 0, MARGIN_TOP, MARGIN_TOP],
+          outputRange: [MARGIN_TOP / 2, 0, -MARGIN_TOP / 3, -MARGIN_TOP / 3]
+        })
+      },
+      {
+        scale: scrollY.interpolate({
+          inputRange: [-MARGIN_TOP, 0, MARGIN_TOP],
+          outputRange: [2, 1, 1]
+        })
+      }
+    ]
     return (
-      <Animated.Image source={{uri}} style={styles.bg}>
+      <Animated.Image source={{uri}} style={[styles.bg, { transform }]}>
         <BlurView blurType='light' blurAmount={25} style={styles.blur} />
       </Animated.Image>
     )
@@ -192,25 +215,31 @@ class PlayList extends React.Component<IProps, IState> {
 
   renderPlayList = (
     isLoading: boolean,
+    scrollY: Animated.Value,
     tracks: ITrack[]
   ) => {
+    const containerY = scrollY.interpolate({
+      inputRange: [0 , MARGIN_TOP, MARGIN_TOP],
+      outputRange: [0, -MARGIN_TOP, -MARGIN_TOP]
+    })
+    const playlistY = scrollY.interpolate({
+      inputRange: [0, MARGIN_TOP, MARGIN_TOP],
+      outputRange: [0, MARGIN_TOP, MARGIN_TOP]
+    })
     return isLoading ?
       <ActivityIndicator animating style={{marginTop: 15}}/> :
-      <Animated.View style={styles.playlistContainer}>
-        <ScrollView
-          style={{ marginTop: 150 }}
-          onScroll={Animated.event([{nativeEvent: {contentOffset: {y: this.state.scrollY}}}])}
-          scrollEventThrottle={16}
-        >
-          <Animated.View>
-            {tracks.map(this.renderTrack)}
-          </Animated.View>
-        </ScrollView>
+      <Animated.View style={[styles.playlistContainer, { transform: [{ translateY: containerY }] }]}>
+        <View style={{ height: height - Navbar.HEIGHT}}>
+          <ScrollView
+            onScroll={Animated.event([{nativeEvent: {contentOffset: {y: scrollY}}}])}
+            scrollEventThrottle={16}
+          >
+            <Animated.View style={{transform: [{ translateY :playlistY }], paddingBottom: MARGIN_TOP}}>
+              {tracks.map(this.renderTrack)}
+            </Animated.View>
+          </ScrollView>
+        </View>
       </Animated.View >
-  }
-
-  playlistOnScroll () {
-    
   }
 
 }
@@ -222,7 +251,7 @@ const styles = {
     top: 0,
     right: 0,
     bottom: 0,
-    paddingTop: Navbar.HEIGHT,
+    paddingTop: Navbar.HEIGHT + 10,
     backgroundColor: 'rgba(0 ,0 , 0, .1)'
   } as ViewStyle,
   header: {
@@ -232,7 +261,7 @@ const styles = {
   playlistContainer: {
     position: 'absolute',
     left: 0,
-    top: Navbar.HEIGHT,
+    top: Navbar.HEIGHT + MARGIN_TOP,
     right: 0,
     bottom: 0
   } as ViewStyle,
@@ -273,7 +302,7 @@ const styles = {
     width: 30,
     height: 30,
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
   } as ViewStyle
 }
 

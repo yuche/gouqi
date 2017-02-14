@@ -21,7 +21,7 @@ interface IProps {
   title: string,
   style?: ViewStyle,
   hideBorder?: boolean,
-  titleStyle?: TextStyle
+  titleStyle?: Object
 }
 
 /*class NavBar extends React.Component<IProps, any> {
