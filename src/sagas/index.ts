@@ -1,6 +1,7 @@
 import { take, put, call, fork, select } from 'redux-saga/effects'
 import {
-  AsyncStorage
+  AsyncStorage,
+  InteractionManager
 } from 'react-native'
 import * as api from '../services/api'
 import { getCookies } from '../services/request'
@@ -189,6 +190,8 @@ export function* syncPlaylistDetail () {
 
     try {
       const response = yield call(api.playListDetail, payload.toString())
+
+      yield call(InteractionManager.runAfterInteractions)
 
       if (response.code === 200) {
         const { result }: { result: api.IPlaylist } = response

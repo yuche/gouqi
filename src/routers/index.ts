@@ -22,6 +22,10 @@ function toPlayList (passProps?: IRouterPassProps) {
   navigator['playlist'](passProps)
 }
 
+function toComment (passProps?: IRouterPassProps) {
+  navigator['comment'](passProps)
+}
+
 function pop (passProps?: IRouterPassProps) {
   navigator.pop(passProps)
 }
@@ -31,6 +35,7 @@ const Router = {
   toLogin,
   toSearch,
   toPlayList,
+  toComment,
   pop
 }
 

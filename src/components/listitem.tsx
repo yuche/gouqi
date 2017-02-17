@@ -40,7 +40,7 @@ const ListItem = ({
   const Component = onPress ? TouchableHighlight : View
 
   const SubTitleComp = subTitle &&
-    <Text style={[styles.subTitle, subTitleStyle && subTitleStyle]}>
+    <Text style={[styles.subTitle, subTitleStyle && subTitleStyle]} numberOfLines={1}>
       { subTitle }
     </Text>
 

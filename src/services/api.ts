@@ -48,7 +48,7 @@ export async function userPlayList(
 ) {
   return await request.get('/api/user/playlist/'
     + `?uid=${uid}&offset=${offset}&limit=${limit}&total=${total}`)
-}
+} 
 
 export async function playListDetail(id: string) {
   return await request.get(`/api/playlist/detail?id=${id}`)
@@ -324,6 +324,25 @@ export async function subscribePlaylist(pid: string, subscribe = true) {
     .post(`/weapi/playlist/${prefix}subscribe/?csrf_token=${csrf}`, encryptedRequest({
       id: pid,
       pid
+    }))
+}
+
+export async function getComments(
+  commentId: string,
+  offset = '0',
+  limit = '100',
+  total = 'true'
+) {
+  const csrf = getCsrfFromCookies()
+  if (!csrf) {
+    return null
+  }
+  return await request
+    .post(`/weapi/v1/resource/comments/${commentId}/?csrf_token=${csrf}`, encryptedRequest({
+      rid: commentId,
+      offset,
+      limit,
+      total
     }))
 }
 

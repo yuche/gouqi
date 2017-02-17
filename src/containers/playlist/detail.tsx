@@ -11,7 +11,6 @@ import {
   Image,
   Dimensions,
   TouchableOpacity,
-  RefreshControl,
   InteractionManager,
   ListView
 } from 'react-native'
@@ -23,7 +22,8 @@ import ListItem from '../../components/listitem'
 import {
   IinitialState as IDetailState
 } from '../../reducers/detail'
-import { get, isEmpty } from 'lodash'
+import { get } from 'lodash'
+import Router from '../../routers'
 // tslint:disable-next-line:no-var-requires
 const { BlurView } = require('react-native-blur')
 const { width, height } = Dimensions.get('window')
@@ -61,9 +61,10 @@ class PlayList extends React.Component<IProps, IState> {
   }
 
   componentDidMount () {
-    InteractionManager.runAfterInteractions(() => {
-      this.props.sync()
-    })
+    this.props.sync()
+    // InteractionManager.runAfterInteractions(() => {
+    //   this.props.sync()
+    // })
   }
 
   render () {
@@ -128,7 +129,8 @@ class PlayList extends React.Component<IProps, IState> {
     const {
       subscribed,
       subscribedCount,
-      commentCount
+      commentCount,
+      commentThreadId
     } = playlist
     const {
       subscribing,
@@ -141,7 +143,7 @@ class PlayList extends React.Component<IProps, IState> {
           <Text style={{ color: 'white' }}>{subscribedCount}</Text>
         </View>
         <View style={styles.btnContainer}>
-          {this.renderBtn('comment-o')}
+          {this.renderBtn('comment-o', () => Router.toComment({ route: { id: commentThreadId } }))}
           <Text style={{ color: 'white' }}>{commentCount}</Text>
         </View>
         <View style={styles.btnContainer}>
@@ -242,7 +244,6 @@ class PlayList extends React.Component<IProps, IState> {
           <ScrollView
             onScroll={Animated.event([{nativeEvent: {contentOffset: {y: scrollY}}}])}
             scrollEventThrottle={16}
-            // tslint:disable-next-line:jsx-no-multiline-js
           >
             <Animated.View style={{transform: [{ translateY :playlistY }], paddingBottom: MARGIN_TOP}}>
               <ListView
@@ -252,8 +253,8 @@ class PlayList extends React.Component<IProps, IState> {
                 dataSource={this.ds}
                 renderRow={this.renderTrack}
                 showsVerticalScrollIndicator={false}
-                // tslint:disable-next-line:jsx-no-multiline-js
               />
+              {isLoading && <ActivityIndicator animating style={{marginTop: 15}}/>}
               </Animated.View>
           </ScrollView>
         </View>
@@ -339,7 +340,8 @@ function mapStateToProps (
   return {
     playlist: {
       ...route,
-      ...playlist[route.id]
+      ...playlist[route.id],
+      coverImgUrl: route.coverImgUrl
     },
     isLoading,
     subscribing

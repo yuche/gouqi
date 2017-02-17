@@ -5,6 +5,7 @@ import Home from '../containers/home'
 import Login from '../containers/login'
 import Search from '../containers/search'
 import PlayList from '../containers/playlist/detail'
+import Comment from '../containers/playlist/comment'
 
 const Routers = () => (
   <Router>
@@ -13,6 +14,7 @@ const Routers = () => (
       <Scene key='login' component={Login} title='登录' />
       <Scene key='playlist' component={PlayList} title='' />
       <Scene key='search' component={Search} direction='vertical' hideNavBar panHandlers={null}/>
+      <Scene key='comment' component={Comment} title='评论'/>
     </Scene>
   </Router>
 )
