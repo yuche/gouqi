@@ -1,9 +1,20 @@
 import { handleActions } from 'redux-actions'
+import { IComments } from '../services/api'
+
+export interface ICommentState {
+  comments: ICommentObj,
+  isLoading: false
+}
+
+export interface ICommentObj {
+  [props: string]: IComments
+}
 
 const initialState = {
   comments: {},
   isLoading: false
 }
+
 export default handleActions({
   'comments/sync/start' (state) {
     return {
@@ -22,8 +33,10 @@ export default handleActions({
       ...state,
       comments: {
         ...state.comments,
-        ...payload
+        ...{
+          ...payload
+        }
       }
     }
-  },
+  }
 }, initialState)

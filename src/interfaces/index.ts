@@ -58,7 +58,7 @@ export interface ISearchPayload {
 
 export interface ILoadingProps {
   isLoading: boolean,
-  sync: () => Redux.Action
+  sync: (e?: any) => Redux.Action
 }
 
 export interface ISearchState {

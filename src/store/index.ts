@@ -7,6 +7,7 @@ import createSagaMiddleware from 'redux-saga'
 import sagas from '../sagas'
 // tslint:disable-next-line:no-var-requires
 const { composeWithDevTools } = require('remote-redux-devtools')
+
 export default function configureStore(initialState: any) {
   const sagaMiddleware = createSagaMiddleware()
   const store = createStore(

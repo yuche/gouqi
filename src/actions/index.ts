@@ -42,3 +42,6 @@ export const subscribePlaylist: ISyncDetail = createAction('details/playlist/sub
   (id: number) => id
 )
 
+export const getComments = createAction('comments/sync',
+  (id: string, loading: boolean) => ({ id, loading })
+)

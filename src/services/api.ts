@@ -142,7 +142,8 @@ export interface IUser {
   backgroundUrl: string,
   gender: number,
   nickname: string,
-  signature: string
+  signature: string,
+  userId: number
 }
 
 export interface ITrack {
@@ -327,10 +328,31 @@ export async function subscribePlaylist(pid: string, subscribe = true) {
     }))
 }
 
+export interface IComments {
+  comments: IComemnt[],
+  hotComments: IComemnt[],
+  code: number,
+  more: boolean,
+  offset: number,
+  userId: number,
+  total: number
+}
+
+export interface IComemnt {
+  beReplied: IComemnt[],
+  commentId: number,
+  content: string,
+  liked: boolean,
+  likedCount: number,
+  time: number,
+  user: IUser,
+  id: number
+}
+
 export async function getComments(
   commentId: string,
-  offset = '0',
   limit = '100',
+  offset = '0',
   total = 'true'
 ) {
   const csrf = getCsrfFromCookies()

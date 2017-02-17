@@ -253,6 +253,55 @@ export function* subscribePlaylist () {
   }
 }
 
+export function* syncComments () {
+  const { payload } = yield take('comments/sync')
+
+  const commentState: api.IComments = yield select((state: any) => {
+    return state.comment.comments[payload.id] || {
+      comments: [],
+      hotComments: [],
+      offset: 0
+    }
+  })
+
+  const isCached = !isEmpty(commentState.comments)
+
+  const offsetState = commentState.offset + 50
+
+  if (!isCached || payload.loading) {
+    yield put({
+      type: 'comments/sync/start'
+    })
+  }
+
+  try {
+    const response: api.IComments = yield call(
+      api.getComments,
+      payload.id,
+      '50',
+      commentState.offset === 0 ? '0' : offsetState.toString()
+    )
+
+    console.log(response)
+
+    yield put({
+      type: 'comments/sync/save',
+      payload: {
+        [payload.id]: {
+          ...response,
+          offset: offsetState
+        }
+      }
+    })
+  } catch (error) {
+    yield put(toastAction('error', '网络出现错误...'))
+  } finally {
+    yield put({
+      type: 'comments/sync/end'
+    })
+  }
+}
+
 export default function* root () {
   yield [
     fork(loginFlow),
@@ -264,6 +313,7 @@ export default function* root () {
     fork(searchQuerying),
     fork(changeSearchActiveTab),
     fork(syncPlaylistDetail),
-    fork(subscribePlaylist)
+    fork(subscribePlaylist),
+    fork(syncComments)
   ]
 }

@@ -17,56 +17,95 @@ interface IListItem {
   picStyle?: ImageStyle,
   title: string,
   titleStyle?: TextStyle,
-  subTitle?: string,
+  subTitle?: string | JSX.Element,
   subTitleStyle?: TextStyle,
   roundPic?: boolean,
-  onPress?: (e?: any) => void,
-  fuck?: string
+  subTitleContainerStyle?: ViewStyle,
+  mainTitleContainerStyle?: ViewStyle,
+  noBorder?: boolean,
+  renderLeft?: JSX.Element,
+  renderRight?: JSX.Element,
+  onPress?: (e?: any) => void
 }
 
-const ListItem = ({
-  picURI,
-  containerStyle,
-  wrapperStyle,
-  picStyle,
-  title,
-  titleStyle,
-  subTitle,
-  subTitleStyle,
-  roundPic = false,
-  onPress,
-  fuck
-}: IListItem) => {
-  const Component = onPress ? TouchableHighlight : View
+class ListItem extends React.Component<IListItem, any> {
 
-  const SubTitleComp = subTitle &&
-    <Text style={[styles.subTitle, subTitleStyle && subTitleStyle]} numberOfLines={1}>
-      { subTitle }
-    </Text>
+  constructor (props: IListItem) {
+    super(props)
+  }
 
-  const Picture = picURI &&
-    <Image
-      resizeMode='contain'
-      source={{uri: picURI}}
-      style={[styles.pic, roundPic && { borderRadius : picStyle ? picStyle.height / 2 : 20 }, picStyle && picStyle]}
-    />
+  render () {
+    const {
+      picURI,
+      containerStyle,
+      wrapperStyle,
+      picStyle,
+      title,
+      titleStyle,
+      subTitle,
+      subTitleStyle,
+      roundPic = false,
+      noBorder = false,
+      subTitleContainerStyle,
+      mainTitleContainerStyle,
+      renderLeft,
+      renderRight,
+      onPress
+    } = this.props
+    const Component = onPress ? TouchableHighlight : View
+    return (
+      <Component
+        activeOpacity={0.3}
+        underlayColor='whitesmoke'
+        style={[styles.container, containerStyle && containerStyle, noBorder && { borderBottomWidth: 0 }]}
+        onPress={onPress}
+      >
+        <View style={[styles.wrapper, wrapperStyle && wrapperStyle]}>
+          { this.renderLeft(picURI, roundPic, picStyle, renderLeft) }
+          <View style={styles.titleContainer}>
+            <View style={[mainTitleContainerStyle && mainTitleContainerStyle]}>
+              <Text style={[styles.title, titleStyle && titleStyle]} numberOfLines={1} onPress={onPress}>
+                { title }
+              </Text>
+            </View>
+            { this.renderSubtitle(subTitle, subTitleStyle, subTitleContainerStyle) }
+          </View>
+          { renderRight && renderRight }
+        </View>
+      </Component>
+    )
+  }
 
-  return <Component
-    activeOpacity={0.3}
-    underlayColor='whitesmoke'
-    style={[styles.container, containerStyle && containerStyle]}
-    onPress={onPress}
-  >
-    <View style={[styles.wrapper, containerStyle && wrapperStyle]}>
-      { Picture }
-      <View style={styles.titleContainer}>
-        <Text style={[styles.title, titleStyle && titleStyle]} numberOfLines={1} onPress={onPress}>
-          { title }
-        </Text>
-        { SubTitleComp }
-      </View>
-    </View>
-  </Component>
+  renderLeft (picURI?: string, roundPic?: boolean, picStyle?: ViewStyle, renderLeft?: JSX.Element) {
+    if (picURI) {
+      return <Image
+        resizeMode='contain'
+        source={{uri: picURI}}
+        style={[styles.pic, roundPic && { borderRadius : picStyle ? picStyle.height / 2 : 20 }, picStyle && picStyle]}
+      />
+    }
+    if (renderLeft) {
+      return renderLeft
+    }
+  }
+
+  renderSubtitle (
+    subTitle?: string | JSX.Element,
+    subTitleStyle?: ViewStyle,
+    subTitleContainer?: ViewStyle
+  ) {
+    if (subTitle && typeof subTitle === 'string') {
+      return (
+        <View style={[ subTitleContainer && subTitleContainer ]}>
+          <Text style={[styles.subTitle, subTitleStyle && subTitleStyle]} numberOfLines={1}>
+            { subTitle }
+          </Text>
+        </View>
+      )
+    }
+
+    return subTitle
+  }
 }
 
 const styles = StyleSheet.create({
@@ -84,6 +123,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row'
   } as ViewStyle,
   titleContainer: {
+    flex: 1,
     flexDirection: 'column',
     justifyContent: 'space-between'
   } as ViewStyle,
