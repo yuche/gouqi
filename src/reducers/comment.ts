@@ -3,7 +3,8 @@ import { IComments } from '../services/api'
 
 export interface ICommentState {
   comments: ICommentObj,
-  isLoading: false
+  isLoading: false,
+  isLoadingMore: false
 }
 
 export interface ICommentObj {
@@ -12,7 +13,8 @@ export interface ICommentObj {
 
 const initialState = {
   comments: {},
-  isLoading: false
+  isLoading: false,
+  isLoadingMore: false
 }
 
 export default handleActions({
@@ -22,10 +24,22 @@ export default handleActions({
       isLoading: true
     }
   },
+  'comments/more/start' (state) {
+    return {
+      ...state,
+      isLoadingMore: true
+    }
+  },
   'comments/sync/end' (state) {
     return {
       ...state,
       isLoading: false
+    }
+  },
+  'comments/more/end' (state) {
+    return {
+      ...state,
+      isLoadingMore: false
     }
   },
   'comments/sync/save' (state, { payload }) {
@@ -33,9 +47,7 @@ export default handleActions({
       ...state,
       comments: {
         ...state.comments,
-        ...{
-          ...payload
-        }
+        ...payload
       }
     }
   }

@@ -23,6 +23,7 @@ interface IListItem {
   subTitleContainerStyle?: ViewStyle,
   mainTitleContainerStyle?: ViewStyle,
   noBorder?: boolean,
+  numeberOfLines?: number,
   renderLeft?: JSX.Element,
   renderRight?: JSX.Element,
   onPress?: (e?: any) => void
@@ -48,6 +49,7 @@ class ListItem extends React.Component<IListItem, any> {
       noBorder = false,
       subTitleContainerStyle,
       mainTitleContainerStyle,
+      numeberOfLines = 1,
       renderLeft,
       renderRight,
       onPress
@@ -64,7 +66,7 @@ class ListItem extends React.Component<IListItem, any> {
           { this.renderLeft(picURI, roundPic, picStyle, renderLeft) }
           <View style={styles.titleContainer}>
             <View style={[mainTitleContainerStyle && mainTitleContainerStyle]}>
-              <Text style={[styles.title, titleStyle && titleStyle]} numberOfLines={1} onPress={onPress}>
+              <Text style={[styles.title, titleStyle && titleStyle]} numberOfLines={numeberOfLines} onPress={onPress}>
                 { title }
               </Text>
             </View>

@@ -1,23 +1,27 @@
 import * as React from 'react'
-import { IComemnt } from '../../services/api'
+import { IComemnt, IPlaylist } from '../../services/api'
 import Navbar from '../../components/navbar'
 import { ILoadingProps } from '../../interfaces'
 import { connect, Dispatch } from 'react-redux'
 import { ICommentState } from '../../reducers/comment'
-import { getComments } from '../../actions'
+import { getComments, getMoreComments } from '../../actions'
 import ListItem from '../../components/listitem'
 import {
   View,
   ListView,
   Text,
-  ScrollView,
   StyleSheet,
   ViewStyle,
-  Dimensions
+  Dimensions,
+  ActivityIndicator
 } from 'react-native'
 import { isEmpty } from 'lodash'
+import Router from '../../routers'
 // tslint:disable-next-line
 const Icon = require('react-native-vector-icons/FontAwesome')
+// tslint:disable-next-line:no-var-requires
+const timeago = require('timeago.js')
+const timeagoInstance = new timeago(new Date(), 'zh_CN')
 
 const { width } = Dimensions.get('window')
 
@@ -26,57 +30,117 @@ interface IProps extends ILoadingProps {
   title: string,
   comments: IComemnt[],
   hotComments: IComemnt[],
-  commentCount: number
+  commentCount: number,
+  isLoadingMore: boolean,
+  more: () => Redux.Action
 }
 
 interface ICommentRoute {
   id: number,
-  title: string
+  playlist: IPlaylist
 }
 
 class Comments extends React.Component<IProps, any> {
-  private hotCommentsDS: React.ListViewDataSource
-  private commentsDS: React.ListViewDataSource
+  private ds: React.ListViewDataSource
 
   constructor(props: IProps) {
     super(props)
-    this.hotCommentsDS = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2})
-    this.commentsDS = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2})
+    this.ds = new ListView.DataSource({
+      rowHasChanged: (r1, r2) => r1 !== r2,
+      sectionHeaderHasChanged: (s1, s2) => s1 !== s2
+    })
   }
 
   componentDidMount () {
-    this.props.sync()
+    if (isEmpty(this.props.comments)) {
+      this.props.sync()
+    }
   }
 
   render () {
     const {
-      commentCount,
       comments,
-      hotComments
+      hotComments,
+      isLoading,
+      commentCount,
+      route
     } = this.props
-    const title = commentCount ? '评论' : `评论（${commentCount}）`
 
-    if (comments) {
-      this.commentsDS = this.commentsDS.cloneWithRows(comments)
-    }
+    const title = '评论' + (commentCount ? `(${commentCount})` : '')
 
-    if (hotComments) {
-      this.hotCommentsDS = this.hotCommentsDS.cloneWithRows(hotComments)
+    if (comments && hotComments) {
+      this.ds = this.ds.cloneWithRowsAndSections({ hotComments, comments })
     }
 
     return (
       <View style={{ flex: 1 }}>
         <Navbar title={title}/>
-        <ScrollView>
-          <ListView
-            dataSource={this.commentsDS}
-            enableEmptySections
-            showsVerticalScrollIndicator={false}
-            renderRow={this.renderComment}
-          />
-        </ScrollView>
+        {this.renderHeader(route)}
+        {isLoading && <ActivityIndicator animating style={{paddingVertical: 15}}/>}
+        <ListView
+          dataSource={this.ds}
+          enableEmptySections
+          scrollRenderAheadDistance={90}
+          renderRow={this.renderComment}
+          onEndReachedThreshold={15}
+          renderFooter={this.renderFooter}
+          renderSectionHeader={this.renderSectionHeader}
+          onEndReached={this.onEndReached}
+        />
       </View>
     )
+  }
+
+  renderHeader (route: ICommentRoute) {
+    const { playlist } = route
+    return (
+      <ListItem
+        picURI={playlist.coverImgUrl}
+        title={playlist.name}
+        subTitle={playlist.creator.nickname}
+        picStyle={{ width: 75, height : 75 }}
+        titleStyle={{fontSize: 15}}
+        numeberOfLines={0}
+        subTitleStyle={{fontSize: 13, color: '#bbb' }}
+        mainTitleContainerStyle={{marginTop: 10}}
+        subTitleContainerStyle={{marginBottom: 10}}
+        noBorder
+        // tslint:disable-next-line:jsx-no-multiline-js
+        renderRight={
+          <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+            <Icon size={15} color='#ddd' name='chevron-right'/>
+          </View>
+        }
+        // tslint:disable-next-line:jsx-no-lambda
+        onPress={() => Router.toPlayList({ route: playlist })}
+      />
+    )
+  }
+
+  renderSectionHeader = (data: any, section: string) => {
+    const title = section === 'comments' ? '全部评论' : '精彩评论'
+    if (isEmpty(data)) {
+      return <View />
+    }
+    return (
+      <View style={[{ backgroundColor: '#e2e3e4' }]}>
+        <Text style={{ paddingVertical: 5, color: 'gray', fontSize: 13, paddingHorizontal: 10}}>
+          {title}
+        </Text>
+      </View>
+    )
+  }
+
+  renderFooter = () => {
+    return this.props.isLoadingMore ?
+      <ActivityIndicator animating style={{paddingVertical: 15}}/> :
+      <View />
+  }
+
+  onEndReached = () => {
+    if (!this.props.isLoadingMore && !this.props.isLoading) {
+      this.props.more()
+    }
   }
 
   renderComment = (comment: IComemnt) => {
@@ -88,12 +152,13 @@ class Comments extends React.Component<IProps, any> {
       beReplied,
       content
     } = comment
+    const timeagoStr = timeagoInstance.format(time)
     return (
       <View>
         <ListItem
           title={user.nickname}
-          picURI={user.avatarUrl}
-          subTitle={time.toString()}
+          picURI={user.avatarUrl + '?param=50y50'}
+          subTitle={timeagoStr}
           picStyle={{ width: 30, height : 30 }}
           roundPic
           titleStyle={{fontSize: 13}}
@@ -101,10 +166,10 @@ class Comments extends React.Component<IProps, any> {
           // tslint:disable-next-line:jsx-no-multiline-js
           renderRight={
             <View style={{ flexDirection: 'row' }}>
-              <Text style={{ color: '#ccc', fontSize: 14, marginRight: 5}}>
+              <Text style={{ color: '#bbb', fontSize: 14, marginRight: 5}}>
                 {likedCount}
               </Text>
-              <Icon name='thumbs-o-up' size={14} color='#ccc'/>
+              <Icon name='thumbs-o-up' size={14} color='#bbb'/>
             </View>
           }
           key={id}
@@ -129,7 +194,7 @@ class Comments extends React.Component<IProps, any> {
           </Text>
           <View style={styles.border}>
             <View style={{ padding: 10 }}>
-              <Text>
+              <Text style={{lineHeight: 18}}>
                 {`@${replie.user.nickname}：${replie.content}`}
               </Text>
             </View>
@@ -140,7 +205,7 @@ class Comments extends React.Component<IProps, any> {
 
     return (
       <View style={styles.contentContainer}>
-        <Text>
+        <Text style={{lineHeight: 18}}>
           {content}
         </Text>
       </View>
@@ -157,9 +222,10 @@ const styles = {
     borderBottomWidth: StyleSheet.hairlineWidth
   } as ViewStyle,
   border: {
-    borderColor: '#ccc',
+    borderColor: '#bbb',
     borderWidth: StyleSheet.hairlineWidth,
-    marginTop: 10
+    marginTop: 10,
+    marginBottom: 1
   } as ViewStyle,
   contentContainer: {
     width: width - 60,
@@ -171,7 +237,8 @@ function mapStateToProps (
   {
     comment: {
       comments,
-      isLoading
+      isLoading,
+      isLoadingMore
     }
   }: { comment: ICommentState },
   ownProps: IProps
@@ -184,8 +251,9 @@ function mapStateToProps (
   return {
     comments: commentsObj.comments,
     hotComments: commentsObj.hotComments,
-    commentCount: commentsObj.total || 0,
-    isLoading
+    commentCount: commentsObj.total,
+    isLoading,
+    isLoadingMore
   }
 }
 
@@ -194,8 +262,11 @@ function mapStateToProps (
 export default connect(
   mapStateToProps,
   (dispatch: Dispatch<Redux.Action>, ownProps: IProps) => ({
-    sync({ loading }: { loading: boolean } = { loading: false }) {
-      return dispatch(getComments(ownProps.route.id, loading))
+    sync() {
+      return dispatch(getComments(ownProps.route.id))
+    },
+    more() {
+      return dispatch(getMoreComments(ownProps.route.id))
     }
   })
 )(Comments)

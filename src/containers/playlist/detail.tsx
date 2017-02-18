@@ -143,7 +143,7 @@ class PlayList extends React.Component<IProps, IState> {
           <Text style={{ color: 'white' }}>{subscribedCount}</Text>
         </View>
         <View style={styles.btnContainer}>
-          {this.renderBtn('comment-o', () => Router.toComment({ route: { id: commentThreadId } }))}
+          {this.renderBtn('comment-o', () => Router.toComment({ route: { id: commentThreadId, playlist } }))}
           <Text style={{ color: 'white' }}>{commentCount}</Text>
         </View>
         <View style={styles.btnContainer}>
@@ -213,7 +213,7 @@ class PlayList extends React.Component<IProps, IState> {
     return (
       <ListItem
         title={track.name}
-        picURI={track.album.picUrl}
+        picURI={track.album.picUrl + '?param=50y50'}
         subTitle={subTitle}
         picStyle={{ width: 30, height: 30 }}
         titleStyle={{ fontSize: 14 }}
@@ -341,6 +341,7 @@ function mapStateToProps (
     playlist: {
       ...route,
       ...playlist[route.id],
+      creator: route.creator,
       coverImgUrl: route.coverImgUrl
     },
     isLoading,

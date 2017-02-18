@@ -30,6 +30,7 @@
     "redux": "^3.6.0",
     "redux-actions": "^0.12.0",
     "redux-saga": "^0.11.1",
+    "timeago.js": "^2.0.5",
     "tough-cookie-no-native": "yuche/tough-cookie-no-native",
     "typescript": "^2.1.6"
   },

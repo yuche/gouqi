@@ -195,15 +195,12 @@ export function* syncPlaylistDetail () {
 
       if (response.code === 200) {
         const { result }: { result: api.IPlaylist } = response
-        if (Array.isArray(result.tracks)) {
-          result.tracks.forEach(track => track.album.picUrl += '?param=50y50')
-          yield put({
-            type: 'details/playlist/save',
-            payload: {
-              [payload]: result
-            }
-          })
-        }
+        yield put({
+          type: 'details/playlist/save',
+          payload: {
+            [payload]: result
+          }
+        })
       }
     } catch (error) {
       yield put(toastAction('error', '网络出现错误...'))
@@ -254,51 +251,84 @@ export function* subscribePlaylist () {
 }
 
 export function* syncComments () {
-  const { payload } = yield take('comments/sync')
+  while (true) {
+    const { payload } = yield take('comments/sync')
 
-  const commentState: api.IComments = yield select((state: any) => {
-    return state.comment.comments[payload.id] || {
-      comments: [],
-      hotComments: [],
-      offset: 0
-    }
-  })
-
-  const isCached = !isEmpty(commentState.comments)
-
-  const offsetState = commentState.offset + 50
-
-  if (!isCached || payload.loading) {
     yield put({
       type: 'comments/sync/start'
     })
-  }
 
-  try {
-    const response: api.IComments = yield call(
-      api.getComments,
-      payload.id,
-      '50',
-      commentState.offset === 0 ? '0' : offsetState.toString()
-    )
+    try {
+      const response: api.IComments = yield call(
+        api.getComments,
+        payload,
+        '30',
+        '0'
+      )
 
-    console.log(response)
+      yield call(InteractionManager.runAfterInteractions)
 
-    yield put({
-      type: 'comments/sync/save',
-      payload: {
-        [payload.id]: {
-          ...response,
-          offset: offsetState
+      yield put({
+        type: 'comments/sync/save',
+        payload: {
+          [payload]: {
+            ...response,
+            offset: 0
+          }
         }
+      })
+    } catch (error) {
+      yield put(toastAction('error', '网络出现错误...'))
+    } finally {
+      yield put({
+        type: 'comments/sync/end'
+      })
+    }
+  }
+}
+
+export function* syncMoreComments () {
+  while (true) {
+    const { payload } = yield take('comments/more')
+
+    const commentsState: api.IComments  = yield select((state: any) => state.comment.comments[payload])
+
+    if (commentsState.more) {
+      yield put({
+        type: 'comments/more/start'
+      })
+
+      const offset = commentsState.offset + 30
+
+      try {
+        const response: api.IComments = yield call(
+          api.getComments,
+          payload,
+          '30',
+          offset.toString()
+        )
+        yield put({
+          type: 'comments/sync/save',
+          payload: {
+            [payload]: {
+              ...response,
+              hotComments: commentsState.hotComments,
+              comments: commentsState.comments.concat(response.comments),
+              offset
+            }
+          }
+        })
+      } catch (error) {
+        yield put(toastAction('error', '网络出现错误...'))
+      } finally {
+        yield put({
+          type: 'comments/more/end'
+        })
       }
-    })
-  } catch (error) {
-    yield put(toastAction('error', '网络出现错误...'))
-  } finally {
-    yield put({
-      type: 'comments/sync/end'
-    })
+    } else {
+      yield put(toastAction('info', '所有资源已经加载完毕'))
+    }
+
   }
 }
 
@@ -314,6 +344,7 @@ export default function* root () {
     fork(changeSearchActiveTab),
     fork(syncPlaylistDetail),
     fork(subscribePlaylist),
-    fork(syncComments)
+    fork(syncComments),
+    fork(syncMoreComments)
   ]
 }
