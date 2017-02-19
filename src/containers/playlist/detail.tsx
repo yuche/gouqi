@@ -11,7 +11,6 @@ import {
   Image,
   Dimensions,
   TouchableOpacity,
-  InteractionManager,
   ListView
 } from 'react-native'
 import Navbar from '../../components/navbar'
@@ -322,7 +321,7 @@ const styles = {
     width: 30,
     height: 30,
     justifyContent: 'center',
-    alignItems: 'center',
+    alignItems: 'center'
   } as ViewStyle
 }
 

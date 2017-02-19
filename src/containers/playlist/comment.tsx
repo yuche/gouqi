@@ -75,8 +75,6 @@ class Comments extends React.Component<IProps, any> {
     return (
       <View style={{ flex: 1 }}>
         <Navbar title={title}/>
-        {this.renderHeader(route)}
-        {isLoading && <ActivityIndicator animating style={{paddingVertical: 15}}/>}
         <ListView
           dataSource={this.ds}
           enableEmptySections
@@ -84,6 +82,8 @@ class Comments extends React.Component<IProps, any> {
           renderRow={this.renderComment}
           onEndReachedThreshold={15}
           renderFooter={this.renderFooter}
+          // tslint:disable-next-line:jsx-no-lambda
+          renderHeader={() => this.renderHeader(route, isLoading)}
           renderSectionHeader={this.renderSectionHeader}
           onEndReached={this.onEndReached}
         />
@@ -91,29 +91,32 @@ class Comments extends React.Component<IProps, any> {
     )
   }
 
-  renderHeader (route: ICommentRoute) {
+  renderHeader (route: ICommentRoute, isLoading: boolean) {
     const { playlist } = route
     return (
-      <ListItem
-        picURI={playlist.coverImgUrl}
-        title={playlist.name}
-        subTitle={playlist.creator.nickname}
-        picStyle={{ width: 75, height : 75 }}
-        titleStyle={{fontSize: 15}}
-        numeberOfLines={0}
-        subTitleStyle={{fontSize: 13, color: '#bbb' }}
-        mainTitleContainerStyle={{marginTop: 10}}
-        subTitleContainerStyle={{marginBottom: 10}}
-        noBorder
-        // tslint:disable-next-line:jsx-no-multiline-js
-        renderRight={
-          <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-            <Icon size={15} color='#ddd' name='chevron-right'/>
-          </View>
-        }
-        // tslint:disable-next-line:jsx-no-lambda
-        onPress={() => Router.toPlayList({ route: playlist })}
-      />
+      <View>
+        <ListItem
+          picURI={playlist.coverImgUrl}
+          title={playlist.name}
+          subTitle={playlist.creator.nickname}
+          picStyle={{ width: 75, height : 75 }}
+          titleStyle={{fontSize: 15}}
+          numeberOfLines={0}
+          subTitleStyle={{fontSize: 13, color: '#bbb' }}
+          mainTitleContainerStyle={{marginTop: 10}}
+          subTitleContainerStyle={{marginBottom: 10}}
+          noBorder
+          // tslint:disable-next-line:jsx-no-multiline-js
+          renderRight={
+            <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+              <Icon size={15} color='#ddd' name='chevron-right'/>
+            </View>
+          }
+          // tslint:disable-next-line:jsx-no-lambda
+          onPress={() => Router.toPlayList({ route: playlist })}
+        />
+        {isLoading && <ActivityIndicator animating style={{paddingVertical: 15}}/>}
+      </View>
     )
   }
 
@@ -230,6 +233,12 @@ const styles = {
   contentContainer: {
     width: width - 60,
     paddingBottom: 10
+  } as ViewStyle,
+  loaderContainer: {
+    position: 'absolute',
+    top: Navbar.HEIGHT + 110,
+    justifyContent: 'center',
+    alignItems: 'center'
   } as ViewStyle
 }
 
@@ -256,8 +265,6 @@ function mapStateToProps (
     isLoadingMore
   }
 }
-
-
 
 export default connect(
   mapStateToProps,

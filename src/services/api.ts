@@ -48,7 +48,7 @@ export async function userPlayList(
 ) {
   return await request.get('/api/user/playlist/'
     + `?uid=${uid}&offset=${offset}&limit=${limit}&total=${total}`)
-} 
+}
 
 export async function playListDetail(id: string) {
   return await request.get(`/api/playlist/detail?id=${id}`)

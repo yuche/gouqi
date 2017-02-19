@@ -3,13 +3,17 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "start": "node node_modules/react-native/local-cli/cli.js start",
+    "start": "NODE_ENV=development node node_modules/react-native/local-cli/cli.js start",
+    "ios": "NODE_ENV=development node node_modules/react-native/local-cli/cli.js run-ios",
+    "link": "node node_modules/react-native/local-cli/cli.js link",
     "quickbuild": "tsc",
     "dev": "node_modules/.bin/tsc  -w",
     "test": "ava --verbose",
     "test:watch": "ava --watch --verbose",
     "coverage": "nyc ava --verbose && nyc report --reporter=html",
-    "coverage:check": "open coverage/index.html"
+    "coverage:check": "open coverage/index.html",
+    "remotedev": "remotedev-debugger --hostname localhost --port 5678 --injectserver",
+    "postinstall": "npm run link && npm run remotedev"
   },
   "dependencies": {
     "big-integer": "^1.6.15",
@@ -60,6 +64,7 @@
     "react-dom": "^15.3.1",
     "react-native-mock": "^0.2.6",
     "remote-redux-devtools": "^0.5.7",
+    "remote-redux-devtools-on-debugger": "^0.7.0",
     "tslint": "^3.15.0-dev.0",
     "tslint-react": "^1.0.0"
   },
