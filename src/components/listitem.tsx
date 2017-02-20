@@ -139,7 +139,7 @@ const styles = StyleSheet.create({
     marginTop: 4,
     fontWeight: '100',
     marginLeft: 10,
-    color: '#ccc'
+    color: '#bbb'
   } as TextStyle
 })
 

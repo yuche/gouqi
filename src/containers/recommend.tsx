@@ -8,6 +8,7 @@ import {
 } from 'react-native'
 import Router from '../routers'
 import Toast from '../components/toast'
+import Icon  from '../components/icon'
 
 export default class RecommendScene extends React.Component<any, any> {
 
@@ -47,6 +48,7 @@ export default class RecommendScene extends React.Component<any, any> {
         <Text onPress={this.showToast}>
           Go to fck Page
         </Text>
+        <Icon name='comment' size={18}  color='black'/>
       </View>
     )
   }

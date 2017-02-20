@@ -1,5 +1,6 @@
 {
   "presets": ["react-native"],
+  "plugins": [["import", { "libraryName": "antd-mobile" }]],
   "env": {
     "development": {
       "sourceMaps": "true"

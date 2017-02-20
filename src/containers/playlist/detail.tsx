@@ -23,11 +23,16 @@ import {
 } from '../../reducers/detail'
 import { get } from 'lodash'
 import Router from '../../routers'
+import * as Styles from '../../styles'
+import Popup from 'antd-mobile/lib/popup'
+import PopupContent from './popup'
 // tslint:disable-next-line:no-var-requires
 const { BlurView } = require('react-native-blur')
 const { width, height } = Dimensions.get('window')
 // tslint:disable-next-line
 const Icon = require('react-native-vector-icons/FontAwesome')
+// tslint:disable-next-line:no-var-requires
+const Ionic = require('react-native-vector-icons/Ionicons')
 
 interface IProps extends ILoadingProps {
   route: IPlaylist,
@@ -105,6 +110,7 @@ class PlayList extends React.Component<IProps, IState> {
       inputRange: [0, 50, MARGIN_TOP],
       outputRange: [1, 1, 0]
     })
+    const avatarUrl = creator.avatarUrl + '?param=30y30'
     return (
       <View style={styles.headerContainer}>
         <Animated.View style={[styles.header, { opacity }]}>
@@ -113,7 +119,7 @@ class PlayList extends React.Component<IProps, IState> {
             <View style={{ flex: 1, marginLeft: 14 }}>
               <Text style={[styles.white, { fontSize: 16 }]}>{playlist.name}</Text>
               <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 12 }}>
-                <Image source={{uri: creator.avatarUrl}} style={{ width: 25, height: 25, borderRadius: 12.5 }}/>
+                <Image source={{uri: avatarUrl}} style={{ width: 25, height: 25, borderRadius: 12.5 }}/>
                 <Text style={[styles.white, { marginLeft: 5 }]}>{creator.nickname}</Text>
               </View>
             </View>
@@ -216,9 +222,24 @@ class PlayList extends React.Component<IProps, IState> {
         subTitle={subTitle}
         picStyle={{ width: 30, height: 30 }}
         titleStyle={{ fontSize: 14 }}
+        // tslint:disable-next-line:jsx-no-multiline-js
+        renderRight={
+          // tslint:disable-next-line:jsx-no-lambda
+          <TouchableOpacity style={{ justifyContent: 'center'}} onPress={() => this.moreIconOnClick()}>
+            <Ionic size={20} name='ios-more' color='#999'/>
+          </TouchableOpacity>
+        }
         key={track.id}
       />
     )
+  }
+
+  moreIconOnClick = () => {
+    Popup.show(<PopupContent onClose={() => Popup.hide()}/>, {
+      animationType: 'slide-up',
+      maskClosable: true,
+      onMaskClose: () => (null)
+    })
   }
 
   renderPlayList = (
