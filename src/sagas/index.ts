@@ -1,26 +1,19 @@
-import { take, put, call, fork, select } from 'redux-saga/effects'
+import { take, put, call, fork } from 'redux-saga/effects'
 import {
-  AsyncStorage,
-  InteractionManager
+  AsyncStorage
 } from 'react-native'
 import * as api from '../services/api'
-import { getCookies } from '../services/request'
+import { getCookies, setCookies } from '../services/request'
 import { Action } from 'redux-actions'
 import {
-  IUserInfo,
-  ISearchState
+  IUserInfo
 } from '../interfaces'
 import {
   toastAction
 } from '../actions'
-import {
-  syncMoreResource,
-  syncSearchResource
-} from './common'
-import {
-  IPlaylists
-} from '../reducers/detail'
-import { isEmpty } from 'lodash'
+import watchSearch from './search'
+import watchComment from './comment'
+import watchPlaylist from './playlist'
 
 export function* loginFlow () {
   while (true) {
@@ -53,298 +46,58 @@ export function* loginFlow () {
   }
 }
 
-const searchPageOrder = ['song', 'playlist', 'artist', 'album']
-
-function* requestSearch () {
-  const prevState = yield select((state: any) => state.search)
-
-  const key = searchPageOrder[prevState.activeTab]
-
-  yield put({
-    type: `search/${key}/query`
-  })
-
-  const { [key]: { query } }  = yield select((state: any) => state.search)
-
-  if (query && query !== prevState[key].query) {
-    yield put({
-      type: `search/${searchPageOrder[prevState.activeTab]}`
-    })
-  }
-}
-
-export function* searchQuerying () {
+export function* init() {
   while (true) {
-    yield take('search/query')
+    yield take('app/init')
+    const Cookies: string = yield AsyncStorage.getItem('Cookies')
 
-    yield *requestSearch()
-  }
-}
-
-export function* changeSearchActiveTab () {
-  while (true) {
-    yield take('search/activeTab')
-
-    yield *requestSearch()
-  }
-}
-
-export function* syncSearchSongs () {
-  while (true) {
-    yield *syncSearchResource(
-      api.SearchType.song,
-      'song',
-      '',
-    )
-  }
-}
-
-export function* syncSearchPlaylists () {
-  while (true) {
-    yield *syncSearchResource(
-      api.SearchType.playList,
-      'playlist',
-      'coverImgUrl'
-    )
-  }
-}
-
-export function* syncSearchArtist () {
-  while (true) {
-    yield *syncSearchResource(
-      api.SearchType.artist,
-      'artist',
-      'img1v1Url'
-    )
-  }
-}
-
-export function* syncSearchAlbums () {
-  while (true) {
-    yield *syncSearchResource(
-      api.SearchType.album,
-      'album',
-      'picUrl'
-    )
-  }
-}
-
-export function* syncPlaylists () {
-  while (true) {
-    yield *syncMoreResource(
-      'playlists/sync',
-      'playlists',
-      api.topPlayList,
-      (state: any) => state.playlist,
-      (result: any) => result.playlists
-    )
-    // yield take('playlists/sync')
-
-    // yield put({
-    //   type: 'playlists/sync/start'
-    // })
-
-    // const { more, offset, playlists }: IPlaylistsProps = yield select((state: any) => state.playlist)
-
-    // if (more) {
-    //   const offsetState = offset + 15
-    //   const result: api.ItopPlayListResult = yield call(
-    //     api.topPlayList, '15', offsetState.toString()
-    //   )
-
-    //   yield put({
-    //     type: 'playlists/sync/save',
-    //     payload: playlists.concat(result.playlists.map(p => {
-    //       return Object.assign({}, p, {
-    //         coverImgUrl: p.coverImgUrl + '?param=100y100'
-    //       })
-    //     })),
-    //     meta: {
-    //       more: result.more,
-    //       offset: offsetState
-    //     }
-    //   })
-    // } else {
-    //   yield put(toastAction('info', '没有更多资源了'))
-    // }
-
-    // yield put({
-    //   type: 'playlists/sync/end'
-    // })
-  }
-}
-
-export function* syncPlaylistDetail () {
-  while (true) {
-    const { payload }: { payload: number } = yield take('details/playlist')
-
-    const playlist: api.IPlaylist = yield select((state: any) => state.details.playlist[payload])
-
-    const isCached = !isEmpty(playlist)
-
-    if ( !isCached ) {
+    if (Cookies && Cookies.includes(';')) {
+      setCookies(Cookies)
       yield put({
-        type: 'details/playlist/start'
+        type: 'personal/playlist'
       })
     }
+  }
+}
 
-    try {
-      const response = yield call(api.playListDetail, payload.toString())
+export function* syncPersonnalPlaylist() {
+  while (true) {
+    yield take('personal/playlist')
 
-      yield call(InteractionManager.runAfterInteractions)
+    const userId = api.getUserId()
 
-      if (response.code === 200) {
-        const { result }: { result: api.IPlaylist } = response
+    if (userId) {
+      const res = yield call(api.userPlayList)
+      if (res.code === 200) {
+        const playlists: api.IPlaylist[] = res.playlist
+        let collect: api.IPlaylist[] = []
+        let created: api.IPlaylist[] = []
+        playlists.forEach(playlist => {
+          if (playlist.creator.userId.toString() === userId) {
+            created.push(playlist)
+          } else {
+            collect.push(playlist)
+          }
+        })
         yield put({
-          type: 'details/playlist/save',
+          type: 'personal/playlist/save',
           payload: {
-            [payload]: result
+            created,
+            collect
           }
         })
       }
-    } catch (error) {
-      yield put(toastAction('error', '网络出现错误...'))
-    } finally {
-      yield put({
-        type: 'details/playlist/end'
-      })
     }
-
-  }
-}
-
-export function* subscribePlaylist () {
-  while (true) {
-    const { payload }: { payload: number } = yield take('details/playlist/subscribe')
-
-    const playlist: api.IPlaylist = yield select((state: any) => state.details.playlist[payload])
-
-    const { subscribed, subscribedCount } = playlist
-
-    yield put({
-      type: 'details/subscribe/start'
-    })
-
-    try {
-      const response = yield call(api.subscribePlaylist, payload.toString(), !subscribed)
-      if (response.code === 200) {
-        const count = subscribed ? subscribedCount - 1 : subscribedCount + 1
-        yield put({
-          type: 'details/playlist/save',
-          payload: {
-            [payload]: {
-              ...playlist,
-              subscribedCount: count,
-              subscribed: !subscribed
-            }
-          }
-        })
-      }
-    } catch (error) {
-      yield put(toastAction('error', '网络出现错误...'))
-    }
-
-    yield put({
-      type: 'details/subscribe/end'
-    })
-  }
-}
-
-export function* syncComments () {
-  while (true) {
-    const { payload } = yield take('comments/sync')
-
-    yield put({
-      type: 'comments/sync/start'
-    })
-
-    try {
-      const response: api.IComments = yield call(
-        api.getComments,
-        payload,
-        '30',
-        '0'
-      )
-
-      yield call(InteractionManager.runAfterInteractions)
-
-      yield put({
-        type: 'comments/sync/save',
-        payload: {
-          [payload]: {
-            ...response,
-            offset: 0
-          }
-        }
-      })
-    } catch (error) {
-      yield put(toastAction('error', '网络出现错误...'))
-    } finally {
-      yield put({
-        type: 'comments/sync/end'
-      })
-    }
-  }
-}
-
-export function* syncMoreComments () {
-  while (true) {
-    const { payload } = yield take('comments/more')
-
-    const commentsState: api.IComments  = yield select((state: any) => state.comment.comments[payload])
-
-    if (commentsState.more) {
-      yield put({
-        type: 'comments/more/start'
-      })
-
-      const offset = commentsState.offset + 30
-
-      try {
-        const response: api.IComments = yield call(
-          api.getComments,
-          payload,
-          '30',
-          offset.toString()
-        )
-        yield put({
-          type: 'comments/sync/save',
-          payload: {
-            [payload]: {
-              ...response,
-              hotComments: commentsState.hotComments,
-              comments: commentsState.comments.concat(response.comments),
-              offset
-            }
-          }
-        })
-      } catch (error) {
-        yield put(toastAction('error', '网络出现错误...'))
-      } finally {
-        yield put({
-          type: 'comments/more/end'
-        })
-      }
-    } else {
-      yield put(toastAction('info', '所有资源已经加载完毕'))
-    }
-
   }
 }
 
 export default function* root () {
   yield [
+    fork(init),
     fork(loginFlow),
-    fork(syncPlaylists),
-    fork(syncSearchPlaylists),
-    fork(syncSearchSongs),
-    fork(syncSearchAlbums),
-    fork(syncSearchArtist),
-    fork(searchQuerying),
-    fork(changeSearchActiveTab),
-    fork(syncPlaylistDetail),
-    fork(subscribePlaylist),
-    fork(syncComments),
-    fork(syncMoreComments)
+    fork(watchPlaylist),
+    fork(watchSearch),
+    fork(watchComment),
+    fork(syncPersonnalPlaylist)
   ]
 }

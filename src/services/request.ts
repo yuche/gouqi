@@ -17,12 +17,19 @@ const defaultHeaders = {
 }
 
 export function getCookies () {
-  const cookie = '__remember_me=true; Expires=Tue, 28-Feb-2017 12:22:57 GMT; Path=/; HttpOnly, MUSIC_U=dca0f785b3a88055ebfdc379d8217473d73cf0caeced258fc865dc5862a6aa2206bca4ccd2e075e0eece4abf183f8c8341049cea1c6bb9b6; HttpOnly, __csrf=58305e9430ecad49d9c2566f1f2481c2'
-  return cookieJar.getCookieStringSync(API_BASE_URL) || cookie
+  return cookieJar.getCookieStringSync(API_BASE_URL)
 }
 
 export function setCookies (cookie: string): void {
-  cookieJar.setCookieSync(cookie, API_BASE_URL)
+  if (typeof cookie === 'string')  {
+    if (cookie.includes(';')) {
+      cookie.split(';').forEach(c => {
+        cookieJar.setCookieSync(c, API_BASE_URL)
+      })
+    } else {
+      cookieJar.setCookieSync(cookie, API_BASE_URL)
+    }
+  }
 }
 
 export function getCsrfFromCookies (): string | null {
@@ -48,10 +55,17 @@ function parseJSONFilter (response: IResponse) {
     )
 }
 
+function addUserIdToCookies (response: any) {
+  if (response && response.profile && response.profile.userId) {
+    setCookies(`uid=${response.profile.userId}`)
+  }
+  return response
+}
+
 function setCookiesFilter (response: IResponse) {
   const cookies = response.headers.getAll('set-cookie')
   if (cookies.length && cookies[0]) {
-    cookies[0].split(';').forEach(setCookies)
+    setCookies(cookies[0])
   }
   return response
 }
@@ -83,6 +97,7 @@ function post (
   .then(checkStatusFilter)
   .then(setCookiesFilter)
   .then(parseJSONFilter)
+  .then(addUserIdToCookies)
 }
 
 export const request = {

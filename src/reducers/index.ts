@@ -5,6 +5,7 @@ import ui from './ui'
 import search from './search'
 import details from './detail'
 import comment from './comment'
+import personal from './personal'
 
 export default combineReducers({
   login,
@@ -12,5 +13,6 @@ export default combineReducers({
   ui,
   search,
   details,
-  comment
+  comment,
+  personal
 })

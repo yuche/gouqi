@@ -11,10 +11,12 @@ import {
   request
 } from './request'
 
-function getUserId(): string | null {
+export function getUserId(): string | null {
   const cookies = getCookies()
-  const uids = /\d+/.exec(cookies.split(';')[3])
-  return uids ? uids[0] : null
+  const uids = cookies.match(/uid=\d+/g)
+  return uids && Array.isArray(uids)
+    ? uids[0].substr(4)
+    : null
 }
 
 interface ILoginBody {
@@ -22,6 +24,12 @@ interface ILoginBody {
   rememberLogin: string,
   phone?: string,
   username?: string
+}
+
+export interface IProfile {
+  avatarUrl: string,
+  userId: number,
+  nickname: string
 }
 
 export async function login(username: string, password: string) {
@@ -134,6 +142,7 @@ export interface IPlaylist {
   description: string,
   subscribed: boolean,
   subscribing: boolean,
+  trackCount: number,
   tracks: ITrack[]
 }
 

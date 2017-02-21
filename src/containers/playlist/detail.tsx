@@ -23,7 +23,6 @@ import {
 } from '../../reducers/detail'
 import { get } from 'lodash'
 import Router from '../../routers'
-import * as Styles from '../../styles'
 import Popup from 'antd-mobile/lib/popup'
 import PopupContent from './popup'
 // tslint:disable-next-line:no-var-requires
@@ -42,9 +41,6 @@ interface IProps extends ILoadingProps {
 }
 
 interface IState {
-  titleOpacity: number
-  headerOpacity: number,
-  subscribed: boolean,
   scrollY: Animated.Value
 }
 
@@ -57,9 +53,6 @@ class PlayList extends React.Component<IProps, IState> {
     super(props)
     this.ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2})
     this.state = {
-      titleOpacity: 0,
-      headerOpacity: 1,
-      subscribed: false,
       scrollY: new Animated.Value(0)
     }
   }
@@ -225,7 +218,7 @@ class PlayList extends React.Component<IProps, IState> {
         // tslint:disable-next-line:jsx-no-multiline-js
         renderRight={
           // tslint:disable-next-line:jsx-no-lambda
-          <TouchableOpacity style={{ justifyContent: 'center'}} onPress={() => this.moreIconOnClick()}>
+          <TouchableOpacity style={{ justifyContent: 'center'}} onPress={() => this.moreIconOnClick(track)}>
             <Ionic size={20} name='ios-more' color='#999'/>
           </TouchableOpacity>
         }
@@ -234,8 +227,9 @@ class PlayList extends React.Component<IProps, IState> {
     )
   }
 
-  moreIconOnClick = () => {
-    Popup.show(<PopupContent onClose={() => Popup.hide()}/>, {
+  moreIconOnClick = (track: ITrack) => {
+    // tslint:disable-next-line:jsx-no-lambda
+    Popup.show(<PopupContent track={track}/>, {
       animationType: 'slide-up',
       maskClosable: true,
       onMaskClose: () => (null)

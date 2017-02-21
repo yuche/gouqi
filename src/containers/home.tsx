@@ -1,8 +1,11 @@
 import RecommendScene from './recommend'
 import PlayList from './playlist'
+import { connect } from 'react-redux'
 import * as React from 'react'
+import { createAction } from 'redux-actions'
 import {
-  View
+  View,
+  AsyncStorage
 } from 'react-native'
 import TabBar from '../components/homeNavBar'
 const ScrollableTabView = require('react-native-scrollable-tab-view') // tslint:disable-line
@@ -10,6 +13,10 @@ const ScrollableTabView = require('react-native-scrollable-tab-view') // tslint:
 class Home extends React.Component<any, any> {
   constructor(props: any) {
     super(props)
+  }
+
+  componentDidMount() {
+    this.props.init()
   }
 
   render() {
@@ -32,4 +39,11 @@ class Home extends React.Component<any, any> {
   }
 }
 
-export default Home
+export default connect(
+  () => ({}),
+  (dispatch: any) => ({
+    init() {
+      return dispatch(createAction('app/init')())
+    }
+  })
+)(Home)

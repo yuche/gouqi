@@ -17,7 +17,7 @@ interface IListItem {
   picStyle?: ImageStyle,
   title: string,
   titleStyle?: TextStyle,
-  subTitle?: string | JSX.Element,
+  subTitle?: string | JSX.Element | null,
   subTitleStyle?: TextStyle,
   roundPic?: boolean,
   subTitleContainerStyle?: ViewStyle,
@@ -92,7 +92,7 @@ class ListItem extends React.Component<IListItem, any> {
   }
 
   renderSubtitle (
-    subTitle?: string | JSX.Element,
+    subTitle?: string | JSX.Element | null,
     subTitleStyle?: ViewStyle,
     subTitleContainer?: ViewStyle
   ) {

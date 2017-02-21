@@ -5,7 +5,8 @@ const initialState = {
   isLoading: false,
   playlists: [],
   offset: 0,
-  more: true
+  more: true,
+  track: {}
 }
 
 export default handleActions({
@@ -27,5 +28,12 @@ export default handleActions({
       offset: meta.offset,
       more: meta.more
     })
+  },
+
+  'playlists/track/save' (state, { payload } ) {
+    return {
+      ...state,
+      track: payload
+    }
   }
 }, initialState)

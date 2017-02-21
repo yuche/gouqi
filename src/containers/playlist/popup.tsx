@@ -9,11 +9,12 @@ import {
 import { centering } from '../../styles'
 import CustomIcon from '../../components/icon'
 import Popup from 'antd-mobile/lib/popup'
+import { ITrack } from '../../services/api'
 
 const { width } = Dimensions.get('window')
 
 interface IProps {
-  onClose: () => void
+  track: ITrack
 }
 
 class PopupContent extends React.Component<IProps, any> {

@@ -24,47 +24,6 @@ interface IProps {
   titleStyle?: Object
 }
 
-/*class NavBar extends React.Component<IProps, any> {
-
-  constructor(props: IProps) {
-    super(props)
-  }
-
-  render () {
-    const buttonWrapper = (children?: JSX.Element, style?: ViewStyle) => {
-      return children &&
-        <View style={[styles.item, style && style]}>{children}</View>
-    }
-    const defaultLeftButton = <Icon
-      name='chevron-left'
-      size={16}
-      color='#bbb'
-      onPress={this.navBack}
-    />
-    const {
-      statusBar,
-      leftButton = defaultLeftButton,
-      rightButton,
-      title,
-      style,
-      showTitile = true,
-      hideBorder = false,
-      transparent = false
-    } = this.props
-    return <NavigationBar
-      statusBar={statusBar}
-      leftButton={buttonWrapper(leftButton, { marginLeft: 10 })}
-      rightButton={buttonWrapper(rightButton, { marginRight: 10})}
-      title={showTitile ? { title, style: {fontSize: 14} } : <View style={{ height : 0}}/>}
-      style={[styles.container, style && style ,hideBorder && { borderWidth: 0 }]}
-    />
-  }
-
-  private navBack = () => {
-    Actions.pop()
-  }
-}*/
-
 class NavBar extends React.Component<IProps, any> {
   static HEIGHT = Platform.OS === 'ios' ? 64 : 32
 
@@ -129,7 +88,7 @@ const styles = StyleSheet.create({
   title: {
     color: 'white',
     fontWeight: 'bold',
-    fontSize: 16,
+    fontSize: 16
     // position: 'relative',
     // right: 20
     // marginLeft: -30
