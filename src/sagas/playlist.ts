@@ -99,8 +99,44 @@ function* subscribePlaylist () {
   }
 }
 
+function* popupTrackActionSheet () {
+  while (true) {
+    const { payload }: { payload: api.ITrack } = yield take('playlists/track/popup')
+
+    yield put({
+      type: 'ui/popup/track/show'
+    })
+
+    yield put({
+      type: 'playlists/track/save',
+      payload
+    })
+  }
+}
+
+const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
+
+function* popupCollectActionSheet () {
+  while (true) {
+    yield take('playlists/collect/popup')
+
+    yield put({
+      type: 'ui/popup/track/hide'
+    })
+
+    yield call(InteractionManager.runAfterInteractions)
+
+    yield put({
+      type: 'ui/popup/collect/show'
+    })
+
+  }
+}
+
 export default function* rootSaga () {
   yield fork(syncPlaylists)
   yield fork(syncPlaylistDetail)
   yield fork(subscribePlaylist)
+  yield fork(popupTrackActionSheet)
+  yield fork(popupCollectActionSheet)
 }

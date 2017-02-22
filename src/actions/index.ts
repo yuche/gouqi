@@ -28,6 +28,14 @@ export const searchAlbums = createAction('search/album')
 
 export const searchArtists = createAction('search/artist')
 
+export const popupTrackActionSheet = createAction('playlists/track/popup')
+
+export const hideTrackActionSheet = createAction('ui/popup/track/hide')
+
+export const hideCollectActionSheet = createAction('ui/popup/collect/hide')
+
+export const popupCollectActionSheet = createAction('playlists/collect/popup')
+
 export type ISearchActiveTab = (activeTab: number) => Action<number>
 export const changeSearchActiveTab: ISearchActiveTab = createAction('search/activeTab',
   (activeTab: number) => activeTab

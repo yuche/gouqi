@@ -16,15 +16,13 @@ import {
 import Navbar from '../../components/navbar'
 import { ILoadingProps } from '../../interfaces'
 import { connect, Dispatch } from 'react-redux'
-import { syncPlaylistDetail, subscribePlaylist } from '../../actions'
+import { syncPlaylistDetail, subscribePlaylist, popupTrackActionSheet } from '../../actions'
 import ListItem from '../../components/listitem'
 import {
   IinitialState as IDetailState
 } from '../../reducers/detail'
 import { get } from 'lodash'
 import Router from '../../routers'
-import Popup from 'antd-mobile/lib/popup'
-import PopupContent from './popup'
 // tslint:disable-next-line:no-var-requires
 const { BlurView } = require('react-native-blur')
 const { width, height } = Dimensions.get('window')
@@ -37,7 +35,8 @@ interface IProps extends ILoadingProps {
   route: IPlaylist,
   playlist: IPlaylist,
   subscribing: boolean,
-  subscribe: () => Redux.Action
+  subscribe: () => Redux.Action,
+  popup: (track: ITrack) => Redux.Action
 }
 
 interface IState {
@@ -229,11 +228,7 @@ class PlayList extends React.Component<IProps, IState> {
 
   moreIconOnClick = (track: ITrack) => {
     // tslint:disable-next-line:jsx-no-lambda
-    Popup.show(<PopupContent track={track}/>, {
-      animationType: 'slide-up',
-      maskClosable: true,
-      onMaskClose: () => (null)
-    })
+    this.props.popup(track)
   }
 
   renderPlayList = (
@@ -371,6 +366,9 @@ export default connect(
     },
     subscribe() {
       return dispatch(subscribePlaylist(ownProps.route.id))
+    },
+    popup(track: ITrack) {
+      return dispatch(popupTrackActionSheet(track))
     }
   })
 )(PlayList)

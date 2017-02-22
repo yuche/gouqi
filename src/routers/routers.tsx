@@ -1,4 +1,7 @@
 import * as React from 'react'
+import {
+  View
+} from 'react-native'
 
 import {Scene, Router, Actions} from 'react-native-router-flux'
 import Home from '../containers/home'
@@ -6,6 +9,7 @@ import Login from '../containers/login'
 import Search from '../containers/search'
 import PlayList from '../containers/playlist/detail'
 import Comment from '../containers/playlist/comment'
+import UIContainer from '../containers/UIContainer'
 
 const scenes = Actions.create(
   <Scene key='root'>
@@ -18,7 +22,10 @@ const scenes = Actions.create(
 )
 
 const Routers = () => (
-  <Router scenes={scenes}/>
+  <View style={{flex: 1}}>
+      <Router scenes={scenes}/>
+      <UIContainer />
+  </View>
 )
 
 export default Routers
