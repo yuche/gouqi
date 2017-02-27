@@ -1,6 +1,6 @@
-import { take, put, call, fork, select } from 'redux-saga/effects'
-import { Pattern } from 'redux-saga'
+import { take, put, call, select } from 'redux-saga/effects'
 import * as api from '../services/api'
+import Router from '../routers'
 
 import {
   toastAction
@@ -71,6 +71,17 @@ export function* syncSearchResource (
   yield put({
     type: `search/${reducerType}/end`
   })
+}
+
+export function* ajaxErrorHandler (res: any) {
+  if (res.error) {
+    yield put(toastAction('error', '网络出现错误...'))
+
+    if (res.error.message === '未登录') {
+      yield put(toastAction('info', '请先登录'))
+      yield Router.toLogin()
+    }
+  }
 }
 
 export function* syncMoreResource (

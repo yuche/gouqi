@@ -11,7 +11,8 @@ import {
   Image,
   Dimensions,
   TouchableOpacity,
-  ListView
+  ListView,
+  Alert
 } from 'react-native'
 import Navbar from '../../components/navbar'
 import { ILoadingProps } from '../../interfaces'
@@ -147,9 +148,21 @@ class PlayList extends React.Component<IProps, IState> {
           {this.renderBtn('info-circle')}
         </View>
         <View style={styles.btnContainer}>
-          {this.renderBtn('download')}
+          {this.renderBtn('download', this.downloadTrack)}
         </View>
       </View>
+    )
+  }
+
+  downloadTrack = () => {
+    Alert.alert(
+      '确定下载全部吗？',
+      '',
+      [{
+        text: '取消'
+      }, {
+        text: '确定'
+      }]
     )
   }
 

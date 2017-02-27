@@ -114,8 +114,6 @@ function* popupTrackActionSheet () {
   }
 }
 
-const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
-
 function* popupCollectActionSheet () {
   while (true) {
     yield take('playlists/collect/popup')
@@ -133,10 +131,34 @@ function* popupCollectActionSheet () {
   }
 }
 
+function* collectTrackToPlayliast () {
+  while (true) {
+    const { payload } = yield take('playlists/collect')
+
+    yield put({
+      type: 'ui/popup/collect/hide'
+    })
+
+    const response = yield call(
+      api.opMuiscToPlaylist,
+      payload.trackIds.toString(),
+      payload.pid.toString(),
+      'add'
+    )
+
+    if (response.code === 200) {
+      yield put(toastAction('success', '已收藏到歌单'))
+    } else if (response.code === 502) {
+      yield put(toastAction('info', '歌曲已存在'))
+    }
+  }
+}
+
 export default function* rootSaga () {
   yield fork(syncPlaylists)
   yield fork(syncPlaylistDetail)
   yield fork(subscribePlaylist)
   yield fork(popupTrackActionSheet)
   yield fork(popupCollectActionSheet)
+  yield fork(collectTrackToPlayliast)
 }

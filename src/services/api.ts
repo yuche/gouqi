@@ -19,6 +19,12 @@ export function getUserId(): string | null {
     : null
 }
 
+function needLogin () {
+    return getUserId() ? null : {
+      error: new Error('未登录')
+    }
+}
+
 interface ILoginBody {
   password: string,
   rememberLogin: string,
@@ -54,8 +60,8 @@ export async function userPlayList(
   limit = '100',
   total = true
 ) {
-  return await request.get('/api/user/playlist/'
-    + `?uid=${uid}&offset=${offset}&limit=${limit}&total=${total}`)
+  return await (needLogin() || request.get('/api/user/playlist/'
+    + `?uid=${uid}&offset=${offset}&limit=${limit}&total=${total}`))
 }
 
 export async function playListDetail(id: string) {
@@ -161,7 +167,7 @@ export interface ITrack {
   commentThreadId: string,
   mp3Url: string,
   name: string,
-  id: string
+  id: number
 }
 
 export interface IAlbum {

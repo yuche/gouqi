@@ -6,6 +6,7 @@ import { connect, Dispatch } from 'react-redux'
 import { ICommentState } from '../../reducers/comment'
 import { getComments, getMoreComments } from '../../actions'
 import ListItem from '../../components/listitem'
+import { centering } from '../../styles'
 import {
   View,
   ListView,
@@ -108,7 +109,7 @@ class Comments extends React.Component<IProps, any> {
           noBorder
           // tslint:disable-next-line:jsx-no-multiline-js
           renderRight={
-            <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+            <View style={[centering, { marginLeft: 10 }]}>
               <Icon size={15} color='#ddd' name='chevron-right'/>
             </View>
           }
@@ -237,8 +238,7 @@ const styles = {
   loaderContainer: {
     position: 'absolute',
     top: Navbar.HEIGHT + 110,
-    justifyContent: 'center',
-    alignItems: 'center'
+    ...centering
   } as ViewStyle
 }
 

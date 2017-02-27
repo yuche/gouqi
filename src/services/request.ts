@@ -81,6 +81,7 @@ function get (
   .then(checkStatusFilter)
   .then(setCookiesFilter)
   .then(parseJSONFilter)
+  .catch(error => ({error}))
 }
 
 function post (
@@ -98,6 +99,7 @@ function post (
   .then(setCookiesFilter)
   .then(parseJSONFilter)
   .then(addUserIdToCookies)
+  .catch(error => ({error}))
 }
 
 export const request = {

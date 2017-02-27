@@ -36,6 +36,8 @@ export const hideCollectActionSheet = createAction('ui/popup/collect/hide')
 
 export const popupCollectActionSheet = createAction('playlists/collect/popup')
 
+export const collectTrackToPlayliast = createAction('playlists/collect')
+
 export type ISearchActiveTab = (activeTab: number) => Action<number>
 export const changeSearchActiveTab: ISearchActiveTab = createAction('search/activeTab',
   (activeTab: number) => activeTab

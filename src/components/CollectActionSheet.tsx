@@ -9,7 +9,7 @@ import {
   ViewStyle,
   Text
 } from 'react-native'
-import { hideCollectActionSheet } from '../actions'
+import { hideCollectActionSheet, collectTrackToPlayliast } from '../actions'
 import PopuoContainer from './PopupContainer'
 
 const { height } = Dimensions.get('window')
@@ -18,7 +18,8 @@ interface IProps {
   track: ITrack,
   created: IPlaylist[],
   visible: boolean,
-  hide: () => Redux.Action
+  hide: () => Redux.Action,
+  collect: (trackIds: number, pid: number) => Redux.Action
 }
 
 class Collect extends React.Component<IProps, any> {
@@ -57,12 +58,18 @@ class Collect extends React.Component<IProps, any> {
   }
 
   renderPlaylist = (playlist: IPlaylist) => {
+    const {
+      track,
+      collect
+    } = this.props
     return (
       <ListItem
         title={playlist.name}
         picURI={playlist.coverImgUrl + '?param=50y50'}
         subTitle={playlist.trackCount + ' 首'}
         key={playlist.id}
+        // tslint:disable-next-line:jsx-no-lambda
+        onPress={() => collect(track.id, playlist.id)}
       />
     )
   }
@@ -103,6 +110,12 @@ export default connect(
   (dispatch: Dispatch<Redux.Action>) => ({
     hide() {
       return dispatch(hideCollectActionSheet())
+    },
+    collect(trackIds: number, pid: number) {
+      return dispatch(collectTrackToPlayliast({
+        trackIds,
+        pid
+      }))
     }
   })
 )(Collect)

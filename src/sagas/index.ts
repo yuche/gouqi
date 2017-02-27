@@ -52,10 +52,17 @@ export function* init() {
     const Cookies: string = yield AsyncStorage.getItem('Cookies')
 
     if (Cookies && Cookies.includes(';')) {
-      setCookies(Cookies)
-      yield put({
-        type: 'personal/playlist'
-      })
+      const expires = Cookies.split(';').find(c => c.includes('Expires'))
+      if (expires) {
+        if (new Date(expires) > new Date()) {
+          setCookies(Cookies)
+          yield put({
+            type: 'personal/playlist'
+          })
+        } else {
+          console.log('过期')
+        }
+      }
     }
   }
 }

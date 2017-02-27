@@ -6,11 +6,12 @@ import {
   View,
   ViewStyle
 } from 'react-native'
+import { connect } from 'react-redux'
 import Router from '../routers'
 import Toast from '../components/toast'
 import Icon  from '../components/icon'
 
-export default class RecommendScene extends React.Component<any, any> {
+class RecommendScene extends React.Component<any, any> {
 
   refs: {
     toast: Toast
@@ -23,7 +24,14 @@ export default class RecommendScene extends React.Component<any, any> {
   }
 
   showToast = () => {
-    Router.toLogin()
+    // Router.toLogin()
+    this.props.dispatch({
+      type: 'ui/toast',
+      payload: {
+        kind: 'success',
+        text: '我操你妈'
+      }
+    })
     // this.toast.warning('错误的帐号或密码')
     // this.refs.toast.show('fuck', 2000)
   }
@@ -57,6 +65,8 @@ export default class RecommendScene extends React.Component<any, any> {
     this.toast = view
   }
 }
+
+export default connect()(RecommendScene)
 
 const styles = StyleSheet.create({
   container: {
