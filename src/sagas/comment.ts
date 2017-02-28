@@ -3,6 +3,7 @@ import {
   toastAction
 } from '../actions'
 import * as api from '../services/api'
+import { ajaxErrorHandler } from './common'
 import {
   InteractionManager
 } from 'react-native'
@@ -15,16 +16,18 @@ function* syncComments () {
       type: 'comments/sync/start'
     })
 
-    try {
-      const response: api.IComments = yield call(
-        api.getComments,
-        payload,
-        '30',
-        '0'
-      )
+    const response: api.IComments = yield call(
+      api.getComments,
+      payload,
+      '30',
+      '0'
+    )
 
-      yield call(InteractionManager.runAfterInteractions)
+    yield* ajaxErrorHandler(response)
 
+    yield call(InteractionManager.runAfterInteractions)
+
+    if (response.code === 200) {
       yield put({
         type: 'comments/sync/save',
         payload: {
@@ -34,13 +37,12 @@ function* syncComments () {
           }
         }
       })
-    } catch (error) {
-      yield put(toastAction('error', '网络出现错误...'))
-    } finally {
-      yield put({
-        type: 'comments/sync/end'
-      })
     }
+
+    yield put({
+      type: 'comments/sync/end'
+    })
+
   }
 }
 
@@ -57,13 +59,16 @@ function* syncMoreComments () {
 
       const offset = commentsState.offset + 30
 
-      try {
-        const response: api.IComments = yield call(
-          api.getComments,
-          payload,
-          '30',
-          offset.toString()
-        )
+      const response: api.IComments = yield call(
+        api.getComments,
+        payload,
+        '30',
+        offset.toString()
+      )
+
+      yield* ajaxErrorHandler(response)
+
+      if (response.code === 200) {
         yield put({
           type: 'comments/sync/save',
           payload: {
@@ -75,13 +80,12 @@ function* syncMoreComments () {
             }
           }
         })
-      } catch (error) {
-        yield put(toastAction('error', '网络出现错误...'))
-      } finally {
-        yield put({
-          type: 'comments/more/end'
-        })
       }
+
+      yield put({
+        type: 'comments/more/end'
+      })
+
     } else {
       yield put(toastAction('info', '所有资源已经加载完毕'))
     }

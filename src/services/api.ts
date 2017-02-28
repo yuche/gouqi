@@ -94,15 +94,11 @@ export async function recommendPlayList(
   total = 'true'
 ) {
   const csrf = getCsrfFromCookies()
-  if (!csrf) {
-    return null
-  }
-  return await request
+  return await (needLogin() || request
     .post('/weapi/v1/discovery/recommend/songs?csrf_token=' + csrf, encryptedRequest({
-      offset, limit, total,
-      'csrf-token': csrf
-    })
-    )
+        offset, limit, total,
+        'csrf-token': csrf
+    })))
 }
 
 export async function personalFM() {
@@ -279,13 +275,13 @@ export async function opMuiscToPlaylist(
   pid: string,
   op: 'add' | 'del'
 ) {
-  return await request
+  return await (needLogin() || request
     .post(`/api/playlist/manipulate/tracks`, {
       tracks,
       trackIds: `[${tracks}]`,
       pid,
       op
-    })
+    }))
 }
 
 export async function setMusicFavorite(
@@ -293,12 +289,12 @@ export async function setMusicFavorite(
   like: boolean | string,
   time = '0'
 ) {
-  return await request
+  return await (needLogin() || request
     .post(`/api/song/like`, {
       trackId,
       like,
       time
-    })
+    }))
 }
 
 export async function createPlaylist(
@@ -306,41 +302,32 @@ export async function createPlaylist(
 ) {
   const uid = getUserId()
   const csrf = getCsrfFromCookies()
-  if (!uid) {
-    return null
-  }
-  return await request
+  return await (needLogin() || request
     .post(`/weapi/playlist/create?csrf_token=${csrf}`, encryptedRequest({
       name,
       uid
-    }))
+    })))
 }
 
 export async function deletePlaylist(
   pid: string
 ) {
   const csrf = getCsrfFromCookies()
-  if (!csrf) {
-    return null
-  }
-  return await request
+  return await (needLogin() || request
     .post(`/weapi/playlist/delete?csrf_token=${csrf}`, encryptedRequest({
       id: pid,
       pid
-    }))
+    })))
 }
 
 export async function subscribePlaylist(pid: string, subscribe = true) {
   const csrf = getCsrfFromCookies()
-  if (!csrf) {
-    return null
-  }
   const prefix = subscribe ? '' : 'un'
-  return await request
+  return await (needLogin() || request
     .post(`/weapi/playlist/${prefix}subscribe/?csrf_token=${csrf}`, encryptedRequest({
       id: pid,
       pid
-    }))
+    })))
 }
 
 export interface IComments {
@@ -371,16 +358,13 @@ export async function getComments(
   total = 'true'
 ) {
   const csrf = getCsrfFromCookies()
-  if (!csrf) {
-    return null
-  }
-  return await request
+  return await (needLogin() || request
     .post(`/weapi/v1/resource/comments/${commentId}/?csrf_token=${csrf}`, encryptedRequest({
       rid: commentId,
       offset,
       limit,
       total
-    }))
+    })))
 }
 
 // export async function updatePlaylist (

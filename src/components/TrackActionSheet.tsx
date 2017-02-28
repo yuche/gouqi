@@ -73,7 +73,6 @@ class PopupContent extends React.Component<IProps, any> {
     return (
       <TouchableHighlight
         style={styles.action}
-        // tslint:disable-next-line:jsx-no-lambda
         onPress={onPress}
         underlayColor='white'
       >

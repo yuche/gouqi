@@ -6,8 +6,10 @@ import {
   Animated,
   Dimensions,
   Text,
-  Platform
+  Platform,
+  StatusBar
 } from 'react-native'
+import { centering } from '../styles'
 // tslint:disable-next-line
 const Icon = require('react-native-vector-icons/FontAwesome')
 
@@ -101,10 +103,15 @@ class Toast extends React.Component<IProps, IState> {
         <Animated.View
           style={[typeStyleFilter(this.props.kind), styles.wrapper, transform]}
         >
-          <View style={{position: 'absolute', left: 15}}>
-            <Icon size={17} color={'white'} name={this.iconNameFilter()}/>
+          <View style={{ height: 12 }} />
+          <View style={{ flexDirection: 'row', flex: 1}}>
+            <View style={[centering, { width: 30 }]}>
+              <Icon size={18} color={'white'} name={this.iconNameFilter()}/>
+            </View>
+            <View style={[centering, { flex: 1, position: 'relative', right: 15}]}>
+              <Text style={[{ color: 'white' }]}>{this.props.text}</Text>
+            </View>
           </View>
-          <Text style={[{ color: 'white' }]}>{this.props.text}</Text>
         </Animated.View>
       </View> :
       null
@@ -149,21 +156,19 @@ const styles = StyleSheet.create({
     height: 64
   } as ViewStyle,
   wrapper: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center'
+    flex: 1
   } as ViewStyle,
   success: {
     backgroundColor: 'rgba(81, 163, 81, 0.9)'
   } as ViewStyle,
   info: {
-    backgroundColor: '#2f96b4'
+    backgroundColor: 'rgba(47, 150, 180, 0.9)'
   } as ViewStyle,
   warning : {
-    backgroundColor: '#f89406'
+    backgroundColor: 'rgba(248, 148, 6, 0.9)'
   } as ViewStyle,
   error: {
-    backgroundColor: '#bd362f'
+    backgroundColor: 'rgba(189, 54, 47, 0.9)'
   } as ViewStyle
 })
 

@@ -83,8 +83,7 @@ class Comments extends React.Component<IProps, any> {
           renderRow={this.renderComment}
           onEndReachedThreshold={15}
           renderFooter={this.renderFooter}
-          // tslint:disable-next-line:jsx-no-lambda
-          renderHeader={() => this.renderHeader(route, isLoading)}
+          renderHeader={this.renderHeader(route, isLoading)}
           renderSectionHeader={this.renderSectionHeader}
           onEndReached={this.onEndReached}
         />
@@ -94,7 +93,7 @@ class Comments extends React.Component<IProps, any> {
 
   renderHeader (route: ICommentRoute, isLoading: boolean) {
     const { playlist } = route
-    return (
+    return () => (
       <View>
         <ListItem
           picURI={playlist.coverImgUrl}
@@ -113,8 +112,7 @@ class Comments extends React.Component<IProps, any> {
               <Icon size={15} color='#ddd' name='chevron-right'/>
             </View>
           }
-          // tslint:disable-next-line:jsx-no-lambda
-          onPress={() => Router.toPlayList({ route: playlist })}
+          onPress={Router.toPlayList({ route: playlist })}
         />
         {isLoading && <ActivityIndicator animating style={{paddingVertical: 15}}/>}
       </View>

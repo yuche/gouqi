@@ -229,7 +229,6 @@ class PlayList extends React.Component<IProps, IState> {
         titleStyle={{ fontSize: 14 }}
         // tslint:disable-next-line:jsx-no-multiline-js
         renderRight={
-          // tslint:disable-next-line:jsx-no-lambda
           <TouchableOpacity style={{ justifyContent: 'center', paddingLeft: 10}} onPress={this.moreIconOnClick(track)}>
             <Ionic size={22} name='ios-more' color='#777'/>
           </TouchableOpacity>

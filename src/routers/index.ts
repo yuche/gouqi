@@ -11,7 +11,7 @@ function toHome (passProps?: IRouterPassProps) {
 }
 
 function toLogin (passProps?: IRouterPassProps) {
-  navigator['login'](passProps)
+  return () => navigator['login'](passProps)
 }
 
 function toSearch (passProps?: IRouterPassProps) {
@@ -19,7 +19,7 @@ function toSearch (passProps?: IRouterPassProps) {
 }
 
 function toPlayList (passProps?: IRouterPassProps) {
-  navigator['playlist'](passProps)
+  return () => navigator['playlist'](passProps)
 }
 
 function toComment (passProps?: IRouterPassProps) {

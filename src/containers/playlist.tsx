@@ -17,6 +17,15 @@ interface IProps extends IPlaylistsProps {
   }
 }
 
+function playCount (num: number) {
+  const n = num || 0
+  if (n < 100000) {
+    return n + ' 次播放' // space matters
+  } else {
+    return Math.round(n / 10000) + ' 万次播放'
+  }
+}
+
 class PlayList extends React.Component<
   IProps,
   { ds: React.ListViewDataSource }
@@ -46,10 +55,9 @@ class PlayList extends React.Component<
       <ListItem
         title={playlist.name}
         picURI={playlist.coverImgUrl}
-        subTitle={playlist.subscribedCount + ' 人订阅'}
+        subTitle={playCount(playlist.playCount)}
         key={playlist.id}
-        // tslint:disable-next-line:jsx-no-lambda
-        onPress={() => Router.toPlayList({ route: playlist })}
+        onPress={Router.toPlayList({ route: playlist })}
       />
     )
   }

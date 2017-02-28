@@ -22,7 +22,7 @@ class RecommendScene extends React.Component<any, any> {
       type: 'ui/toast',
       payload: {
         kind: 'success',
-        text: '我操你妈',
+        text: '',
         id: Math.random()
       }
     })
@@ -43,7 +43,7 @@ class RecommendScene extends React.Component<any, any> {
           Press Cmd+R to reload,{'\n'}
           Cmd+D or shake for dev menu
         </Text>
-        <Text onPress={Router.toPlayList}>
+        <Text onPress={Router.toLogin()}>
           Go to Login Page
         </Text>
         <Text onPress={this.showToast}>
