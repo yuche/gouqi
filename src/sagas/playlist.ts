@@ -149,7 +149,7 @@ function* collectTrackToPlayliast () {
     if (response.code === 200) {
       yield put(toastAction('success', '已收藏到歌单'))
     } else if (response.code === 502) {
-      yield put(toastAction('info', '歌曲已存在'))
+      yield put(toastAction('warning', '歌曲已存在'))
     }
   }
 }

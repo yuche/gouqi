@@ -38,32 +38,37 @@ export function* syncSearchResource (
 
     const offsetState = state.offset + 15
 
-    const { result } = yield call(
+    const response = yield call(
       api.search, query, type.toString(), '15',
       state.offset
     )
 
-    const resource: any[] = result[resourceKey]
+    yield* ajaxErrorHandler(response)
 
-    if (resource) {
-      yield put({
-        type: `search/${reducerType}/save`,
-        payload: picUrlKey ? state[resourceKey].concat(resource.map((p) => {
-          return Object.assign({}, p, {
-            [picUrlKey]: p[picUrlKey] === null ?
-            // TODO:
-            // placeholder image. maybe use local image instead 
-            'http://p4.music.126.net/VnZiScyynLG7atLIZ2YPkw==/18686200114669622.jpg?param=100y100' :
-            p[picUrlKey] + `?param=${picSize}`
-          })
-        })) : state[resourceKey].concat(resource),
-        meta: {
-          more: result[counterKey] > offsetState ? true : false,
-          offset: offsetState
-        }
-      })
-    } else {
-      yield put(toastAction('info', '什么也找不到'))
+    if (response.code === 200) {
+      const result = response.result
+      const resource: any[] = result[resourceKey]
+
+      if (resource) {
+        yield put({
+          type: `search/${reducerType}/save`,
+          payload: picUrlKey ? state[resourceKey].concat(resource.map((p) => {
+            return Object.assign({}, p, {
+              [picUrlKey]: p[picUrlKey] === null ?
+              // TODO:
+              // placeholder image. maybe use local image instead 
+              'http://p4.music.126.net/VnZiScyynLG7atLIZ2YPkw==/18686200114669622.jpg?param=100y100' :
+              p[picUrlKey] + `?param=${picSize}`
+            })
+          })) : state[resourceKey].concat(resource),
+          meta: {
+            more: result[counterKey] > offsetState ? true : false,
+            offset: offsetState
+          }
+        })
+      } else {
+        yield put(toastAction('info', '什么也找不到'))
+      }
     }
 
   }
@@ -106,6 +111,10 @@ export function* syncMoreResource (
       caller, '15',
       state.offset === 0 ? state.offset.toString()  : offsetState.toString()
     )
+
+    if (result.error) {
+      yield put(toastAction())
+    }
 
     yield put({
       type: `${action}/save`,

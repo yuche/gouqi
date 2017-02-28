@@ -43,7 +43,9 @@ function checkStatusFilter (response: IResponse) {
   } else {
     let error = new Error(response.statusText)
     error.name = 'http'
-    throw error
+    return {
+      error
+    }
   }
 }
 

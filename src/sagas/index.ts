@@ -14,6 +14,7 @@ import {
 import watchSearch from './search'
 import watchComment from './comment'
 import watchPlaylist from './playlist'
+import Router from '../routers'
 
 export function* loginFlow () {
   while (true) {
@@ -60,7 +61,8 @@ export function* init() {
             type: 'personal/playlist'
           })
         } else {
-          console.log('过期')
+          yield put(toastAction('info', '登录凭证已过期'))
+          yield Router.toLogin()
         }
       }
     }

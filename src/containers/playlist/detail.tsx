@@ -230,8 +230,8 @@ class PlayList extends React.Component<IProps, IState> {
         // tslint:disable-next-line:jsx-no-multiline-js
         renderRight={
           // tslint:disable-next-line:jsx-no-lambda
-          <TouchableOpacity style={{ justifyContent: 'center'}} onPress={() => this.moreIconOnClick(track)}>
-            <Ionic size={20} name='ios-more' color='#999'/>
+          <TouchableOpacity style={{ justifyContent: 'center', paddingLeft: 10}} onPress={this.moreIconOnClick(track)}>
+            <Ionic size={22} name='ios-more' color='#777'/>
           </TouchableOpacity>
         }
         key={track.id}
@@ -240,8 +240,7 @@ class PlayList extends React.Component<IProps, IState> {
   }
 
   moreIconOnClick = (track: ITrack) => {
-    // tslint:disable-next-line:jsx-no-lambda
-    this.props.popup(track)
+    return () => this.props.popup(track)
   }
 
   renderPlayList = (
