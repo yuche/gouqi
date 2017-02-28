@@ -6,11 +6,8 @@ import {
   Animated,
   Dimensions,
   Text,
-  LayoutChangeEvent
+  Platform
 } from 'react-native'
-import {
-  assign
-} from '../utils'
 // tslint:disable-next-line
 const Icon = require('react-native-vector-icons/FontAwesome')
 
@@ -21,36 +18,37 @@ interface IProps {
   position?: 'top' | 'center' | 'bottom',
   duration?: number,
   timeout?: number,
+  text?: string,
+  kind?: styleType,
+  visible: boolean
 }
 
 type styleType = 'success' | 'info' | 'warning' | 'error'
 
 interface IState {
-  isShow: boolean,
-  text: string,
+  visable: boolean,
   slideAnim: Animated.Value,
-  kind: styleType,
 }
 
+const NAVBAR_HEIGHT = Platform.OS === 'ios' ? 64 : 32
 
 class Toast extends React.Component<IProps, IState> {
   public static defaultProps: IProps = {
     entry: 'top',
     position: 'top',
     duration: 300,
-    timeout: 2300
+    timeout: 2300,
+    text: '',
+    kind: 'success',
+    visible: false
   }
   private timer: number
-  private height = height
-  private width = width
 
   constructor (props: IProps) {
     super(props)
     this.state = {
-      slideAnim: new Animated.Value(-this.height),
-      isShow: false,
-      text: 'this is a test text',
-      kind: 'success'
+      slideAnim: new Animated.Value(-NAVBAR_HEIGHT),
+      visable: false
     }
   }
 
@@ -58,31 +56,42 @@ class Toast extends React.Component<IProps, IState> {
     this.clearTimer()
   }
 
-  public success (text: string) {
-    this.show(text, 'success')
+  componentWillReceiveProps(nextProps: IProps) {
+    this.show()
   }
 
-  public error (text: string) {
-    this.show(text, 'error')
-  }
+  public show () {
+    this.clearTimer()
 
-  public info (text: string) {
-    this.show(text, 'info')
-  }
+    if (this.state.visable) {
+      this.hide()
+    }
+    this.setState({
+      visable: true
+    } as IState)
 
-  public warning (text: string) {
-    this.show(text, 'warning')
+    const { duration, timeout } = this.props
+
+    this.animation().start()
+
+    this.timer = setTimeout(() => {
+      this.animation(-NAVBAR_HEIGHT).start(() => {
+        this.setState({
+          visable: false
+        } as IState)
+      })
+    }, timeout - duration)
   }
 
   public hide () {
     this.setState({
-      isShow: false
+      visable: false
     } as IState)
-    this.state.slideAnim.setValue(-this.height)
+    this.state.slideAnim.setValue(-NAVBAR_HEIGHT)
   }
 
   render () {
-    const visible = this.state.isShow
+    const visible = this.state.visable
     const transform = {transform: [{translateY: this.state.slideAnim}]}
 
     return visible ?
@@ -90,20 +99,19 @@ class Toast extends React.Component<IProps, IState> {
         style={styles.container}
       >
         <Animated.View
-          onLayout={this.onViewLayout}
-          style={[typeStyleFilter(this.state.kind), styles.wrapper, transform]}
+          style={[typeStyleFilter(this.props.kind), styles.wrapper, transform]}
         >
           <View style={{position: 'absolute', left: 15}}>
             <Icon size={17} color={'white'} name={this.iconNameFilter()}/>
           </View>
-          <Text style={[{ color: 'white' }]}>{this.state.text}</Text>
+          <Text style={[{ color: 'white' }]}>{this.props.text}</Text>
         </Animated.View>
       </View> :
-      <View />
+      null
   }
 
   private iconNameFilter () {
-    switch (this.state.kind) {
+    switch (this.props.kind) {
       case 'success':
         return 'check-circle'
       case 'info':
@@ -115,30 +123,6 @@ class Toast extends React.Component<IProps, IState> {
       default:
         return null
     }
-  }
-
-  private show (text: string, kind: styleType) {
-    this.clearTimer()
-
-    if (this.state.isShow) {
-      this.hide()
-    }
-    this.setState({
-      isShow: true,
-      text,
-      kind
-    } as IState)
-
-    const { duration, timeout } = this.props
-
-    this.animation().start()
-    this.timer = setTimeout(() => {
-      this.animation(-this.height).start(() => {
-        this.setState({
-          isShow: false
-        } as IState)
-      })
-    }, timeout - duration)
   }
 
   private clearTimer () {
@@ -154,26 +138,20 @@ class Toast extends React.Component<IProps, IState> {
       toValue
     })
   }
-
-  private onViewLayout = ({ nativeEvent: { layout } }: LayoutChangeEvent) => {
-    this.height = layout.height
-    this.width = layout.width
-  }
 }
 
 const styles = StyleSheet.create({
   container: {
     position: 'absolute',
     top: 0,
-    bottom: 0,
-    left: 0,
-    right: 0,
-    height: 60
+    // zIndex: 9999,
+    width,
+    height: 64
   } as ViewStyle,
   wrapper: {
+    flex: 1,
     justifyContent: 'center',
-    alignItems: 'center',
-    height: 60
+    alignItems: 'center'
   } as ViewStyle,
   success: {
     backgroundColor: 'rgba(81, 163, 81, 0.9)'

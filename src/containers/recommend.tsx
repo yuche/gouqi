@@ -8,16 +8,9 @@ import {
 } from 'react-native'
 import { connect } from 'react-redux'
 import Router from '../routers'
-import Toast from '../components/toast'
 import Icon  from '../components/icon'
 
 class RecommendScene extends React.Component<any, any> {
-
-  refs: {
-    toast: Toast
-  }
-
-  private toast: Toast
 
   constructor(props: any) {
     super(props)
@@ -29,7 +22,8 @@ class RecommendScene extends React.Component<any, any> {
       type: 'ui/toast',
       payload: {
         kind: 'success',
-        text: '我操你妈'
+        text: '我操你妈',
+        id: Math.random()
       }
     })
     // this.toast.warning('错误的帐号或密码')
@@ -39,9 +33,8 @@ class RecommendScene extends React.Component<any, any> {
   render () {
     return (
       <View style={styles.container}>
-        <Toast ref={this.mapToast}/>
         <Text style={styles.welcome}>
-          Welcome to React Native!
+          Welcome to React nima!
         </Text>
         <Text style={styles.instructions}>
           To get started, edit index.ios.js
@@ -59,10 +52,6 @@ class RecommendScene extends React.Component<any, any> {
         <Icon name='comment' size={18}  color='black'/>
       </View>
     )
-  }
-
-  private mapToast = (view: Toast) => {
-    this.toast = view
   }
 }
 

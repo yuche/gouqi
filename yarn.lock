@@ -5750,6 +5750,10 @@ react-native-navbar@^1.5.4:
   version "1.5.4"
   resolved "http://registry.npm.taobao.org/react-native-navbar/download/react-native-navbar-1.5.4.tgz#9e8b1cfb6a02eee89abdf631f7ac3af3174a61b1"
 
+react-native-root-siblings:
+  version "1.1.2"
+  resolved "https://registry.npmjs.org/react-native-root-siblings/-/react-native-root-siblings-1.1.2.tgz#fc1e7310f4f9f8b080331ff5d173db840d6b9e1f"
+
 react-native-router-flux:
   version "3.37.0"
   resolved "https://registry.npmjs.org/react-native-router-flux/-/react-native-router-flux-3.37.0.tgz#18e8fd3e1e6dbdc4d8340cd47313c28bb9bb1caf"

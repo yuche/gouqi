@@ -1,6 +1,10 @@
-import Toast from '../components/toast'
+import Toast from './toast'
 import * as React from 'react'
 import { connect } from 'react-redux'
+import { View } from 'react-native'
+
+// tslint:disable-next-line:no-var-requires
+const RootSiblings = require('react-native-root-siblings').default
 
 import {
   IToastPayload
@@ -14,16 +18,23 @@ class ToastContainer extends React.Component<IToastPayload, any> {
   }
 
   componentWillReceiveProps({ kind, text }: IToastPayload) {
-    this.toast[kind](text)
+    this.toast.update(
+      <Toast kind={kind} text={text} visible={true}/>
+    )
+  }
+
+  componentWillMount() {
+    this.toast = new RootSiblings(<Toast visible={false}/>)
+  }
+
+  componentWillUnmount() {
+    this.toast.destroy()
   }
 
   render () {
-    return <Toast ref={this.mapToast}/>
+    return null
   }
 
-  private mapToast = (toast: Toast) => {
-    this.toast = toast
-  }
 }
 
 export default connect(
