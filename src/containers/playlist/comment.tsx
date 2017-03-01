@@ -103,7 +103,7 @@ class Comments extends React.Component<IProps, any> {
       subTitle = playlist.creator.nickname
     }
     if (track) {
-      url = track.album.picUrl
+      url = track.album.picUrl + '?param=75y75'
       title = track.name
       subTitle = track.artists[0].name
     }

@@ -5,7 +5,8 @@ import {
   Platform,
   TouchableOpacity,
   Animated,
-  TextStyle
+  TextStyle,
+  Text
 } from 'react-native'
 import * as React from 'react'
 // tslint:disable-next-line
@@ -21,7 +22,17 @@ interface IProps {
   title: string,
   style?: ViewStyle,
   hideBorder?: boolean,
-  titleStyle?: Object
+  titleStyle?: Object,
+  textColor?: string,
+  rightConfig?: IBtnProps,
+  hideLeft?: boolean
+}
+
+interface IBtnProps {
+  iconName?: string,
+  text?: string,
+  fontSize?: number,
+  onPress?: any
 }
 
 class NavBar extends React.Component<IProps, any> {
@@ -34,30 +45,38 @@ class NavBar extends React.Component<IProps, any> {
   render () {
     const {
       hideBorder = true,
+      hideLeft = false,
       style,
       titleStyle,
-      title
+      title,
+      textColor,
+      rightConfig = {}
     } = this.props
+    const colorStyle = textColor && { color: textColor }
     return (
       <View style={[styles.container, style && style, !hideBorder && styles.border]}>
-        {this.renderBtn()}
+        {!hideLeft && this.renderBtn({ iconName: 'chevron-left', onPress: this.back })}
         <View style={{ flex: 1, alignItems: 'center' }}>
           <Animated.Text
             numberOfLines={1}
-            style={[styles.title, titleStyle && titleStyle]}
+            style={[styles.title, titleStyle && titleStyle, colorStyle]}
           >
             {title}
           </Animated.Text>
         </View>
-        <View style={styles.btn}/>
+        {this.renderBtn(rightConfig)}
       </View>
     )
   }
 
-  renderBtn () {
+  renderBtn = (config: IBtnProps) => {
+    const { textColor } = this.props
+    const color = textColor || 'white'
+    const fontSize = config.fontSize || 16
     return (
-      <TouchableOpacity onPress={this.back} style={styles.btn}>
-        <Icon name='chevron-left' size={16} color='#fff'/>
+      <TouchableOpacity onPress={config.onPress} style={styles.btn}>
+        {config.iconName && <Icon name={config.iconName} size={fontSize} color={color}/>}
+        {config.text && <Text style={[{ fontSize }, { color }]}>{config.text}</Text>}
       </TouchableOpacity>
     )
   }

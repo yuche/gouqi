@@ -4,8 +4,7 @@ import {
   Text,
   ViewStyle,
   TouchableHighlight,
-  Dimensions,
-  InteractionManager
+  Dimensions
 } from 'react-native'
 import { centering } from '../styles'
 import CustomIcon from '../components/icon'
@@ -13,7 +12,6 @@ import { ITrack } from '../services/api'
 import { connect, Dispatch } from 'react-redux'
 import { popupCollectActionSheet, hideTrackActionSheet } from '../actions'
 import Popup from './PopupContainer'
-import Router from '../routers'
 
 const { width } = Dimensions.get('window')
 
@@ -136,7 +134,7 @@ export default connect(
       visible
     }
   },
-  (dispatch: Dispatch<Redux.Action>) => ({
+  (dispatch) => ({
     popup() {
       return dispatch(popupCollectActionSheet())
     },

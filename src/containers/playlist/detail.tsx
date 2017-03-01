@@ -16,7 +16,7 @@ import {
 } from 'react-native'
 import Navbar from '../../components/navbar'
 import { ILoadingProps } from '../../interfaces'
-import { connect, Dispatch } from 'react-redux'
+import { connect } from 'react-redux'
 import { syncPlaylistDetail, subscribePlaylist, popupTrackActionSheet } from '../../actions'
 import ListItem from '../../components/listitem'
 import {
@@ -145,7 +145,7 @@ class PlayList extends React.Component<IProps, IState> {
           <Text style={{ color: 'white' }}>{commentCount}</Text>
         </View>
         <View style={styles.btnContainer}>
-          {this.renderBtn('info-circle')}
+          {this.renderBtn('info-circle', Router.toPlaylistDetail({ route: playlist }))}
         </View>
         <View style={styles.btnContainer}>
           {this.renderBtn('download', this.downloadTrack)}
@@ -156,8 +156,8 @@ class PlayList extends React.Component<IProps, IState> {
 
   downloadTrack = () => {
     Alert.alert(
-      '确定下载全部吗？',
       '',
+      '确定下载全部吗？',
       [{
         text: '取消'
       }, {
@@ -223,13 +223,16 @@ class PlayList extends React.Component<IProps, IState> {
     return (
       <ListItem
         title={track.name}
-        picURI={track.album.picUrl + '?param=50y50'}
+        picURI={track.album.picUrl + '?param=75y75'}
         subTitle={subTitle}
         picStyle={{ width: 30, height: 30 }}
         titleStyle={{ fontSize: 14 }}
         // tslint:disable-next-line:jsx-no-multiline-js
         renderRight={
-          <TouchableOpacity style={{ justifyContent: 'center', paddingLeft: 10}} onPress={this.moreIconOnClick(track)}>
+          <TouchableOpacity
+            style={{ justifyContent: 'center', paddingLeft: 10}}
+            onPress={this.moreIconOnClick(track)}
+          >
             <Ionic size={22} name='ios-more' color='#777'/>
           </TouchableOpacity>
         }
@@ -275,7 +278,7 @@ class PlayList extends React.Component<IProps, IState> {
                 showsVerticalScrollIndicator={false}
               />
               {isLoading && <ActivityIndicator animating style={{marginTop: 15}}/>}
-              </Animated.View>
+            </Animated.View>
           </ScrollView>
         </View>
       </Animated.View>
@@ -371,7 +374,7 @@ function mapStateToProps (
 
 export default connect(
   mapStateToProps,
-  (dispatch: Dispatch<Redux.Action>, ownProps: IProps) => ({
+  (dispatch, ownProps: IProps) => ({
     sync() {
       return dispatch(syncPlaylistDetail(ownProps.route.id))
     },

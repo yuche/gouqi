@@ -1,5 +1,4 @@
 import { Actions } from 'react-native-router-flux'
-import { InteractionManager } from 'react-native'
 
 interface IRouterPassProps {
   route?: Object | undefined
@@ -27,6 +26,10 @@ function toComment (passProps?: IRouterPassProps) {
   return () => navigator['comment'](passProps)
 }
 
+function toPlaylistDetail (passProps?: IRouterPassProps) {
+  return () => navigator['playlistDetail'](passProps)
+}
+
 function pop (passProps?: IRouterPassProps) {
   navigator.pop(passProps)
 }
@@ -37,6 +40,7 @@ const Router = {
   toSearch,
   toPlayList,
   toComment,
+  toPlaylistDetail,
   pop
 }
 

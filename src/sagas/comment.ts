@@ -52,7 +52,7 @@ function* syncMoreComments () {
 
     const commentsState: api.IComments  = yield select((state: any) => state.comment.comments[payload])
 
-    if (commentsState.more) {
+    if (commentsState && commentsState.more) {
       yield put({
         type: 'comments/more/start'
       })

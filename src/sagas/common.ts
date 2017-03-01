@@ -31,7 +31,7 @@ export function* syncSearchResource (
 
   const counterKey = `${reducerType}Count`
 
-  if (state.more && query) {
+  if (state && state.more && query) {
     yield put({
       type: `search/${reducerType}/start`
     })
@@ -57,7 +57,7 @@ export function* syncSearchResource (
               [picUrlKey]: p[picUrlKey] === null ?
               // TODO:
               // placeholder image. maybe use local image instead 
-              'http://p4.music.126.net/VnZiScyynLG7atLIZ2YPkw==/18686200114669622.jpg?param=100y100' :
+              'http://p4.music.126.net/VnZiScyynLG7atLIZ2YPkw==/18686200114669622.jpg?param=30y30' :
               p[picUrlKey] + `?param=${picSize}`
             })
           })) : state[resourceKey].concat(resource),
@@ -114,18 +114,20 @@ export function* syncMoreResource (
 
     yield* ajaxErrorHandler(result)
 
-    yield put({
-      type: `${action}/save`,
-      payload: state[resourceKey].concat(resultSelector(result).map(p => {
-        return Object.assign({}, p, {
-          coverImgUrl: p.coverImgUrl + `?param=${picSize}`
-        })
-      })),
-      meta: {
-        more: result.more,
-        offset: offsetState
-      }
-    })
+    if (result.code === 200) {
+      yield put({
+        type: `${action}/save`,
+        payload: state[resourceKey].concat(resultSelector(result).map(p => {
+          return Object.assign({}, p, {
+            coverImgUrl: p.coverImgUrl + `?param=${picSize}`
+          })
+        })),
+        meta: {
+          more: result.more,
+          offset: offsetState
+        }
+      })
+    }
   } else {
     yield put(toastAction('info', '没有更多资源了'))
   }
