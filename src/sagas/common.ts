@@ -112,9 +112,7 @@ export function* syncMoreResource (
       state.offset === 0 ? state.offset.toString()  : offsetState.toString()
     )
 
-    if (result.error) {
-      yield put(toastAction())
-    }
+    yield* ajaxErrorHandler(result)
 
     yield put({
       type: `${action}/save`,

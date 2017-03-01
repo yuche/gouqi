@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { IComemnt, IPlaylist } from '../../services/api'
+import { IComemnt, IPlaylist, ITrack } from '../../services/api'
 import Navbar from '../../components/navbar'
 import { ILoadingProps } from '../../interfaces'
 import { connect, Dispatch } from 'react-redux'
@@ -38,7 +38,8 @@ interface IProps extends ILoadingProps {
 
 interface ICommentRoute {
   id: number,
-  playlist: IPlaylist
+  playlist?: IPlaylist,
+  track?: ITrack
 }
 
 class Comments extends React.Component<IProps, any> {
@@ -92,13 +93,26 @@ class Comments extends React.Component<IProps, any> {
   }
 
   renderHeader (route: ICommentRoute, isLoading: boolean) {
-    const { playlist } = route
+    const { playlist, track } = route
+    let url = ''
+    let title = ''
+    let subTitle = ''
+    if (playlist) {
+      url = playlist.coverImgUrl
+      title = playlist.name
+      subTitle = playlist.creator.nickname
+    }
+    if (track) {
+      url = track.album.picUrl
+      title = track.name
+      subTitle = track.artists[0].name
+    }
     return () => (
       <View>
         <ListItem
-          picURI={playlist.coverImgUrl}
-          title={playlist.name}
-          subTitle={playlist.creator.nickname}
+          picURI={url}
+          title={title}
+          subTitle={subTitle}
           picStyle={{ width: 75, height : 75 }}
           titleStyle={{fontSize: 15}}
           numeberOfLines={0}
@@ -109,10 +123,10 @@ class Comments extends React.Component<IProps, any> {
           // tslint:disable-next-line:jsx-no-multiline-js
           renderRight={
             <View style={[centering, { marginLeft: 10 }]}>
-              <Icon size={15} color='#ddd' name='chevron-right'/>
+              {playlist && <Icon size={15} color='#ddd' name='chevron-right'/>}
             </View>
           }
-          onPress={Router.toPlayList({ route: playlist })}
+          onPress={playlist && Router.toPlayList({ route: playlist })}
         />
         {isLoading && <ActivityIndicator animating style={{paddingVertical: 15}}/>}
       </View>

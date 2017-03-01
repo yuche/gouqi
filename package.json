@@ -1,13 +1,13 @@
 {
   "name": "gouqi",
-  "version": "0.0.1",
+  "version": "0.1.1",
   "private": true,
   "scripts": {
     "start": "NODE_ENV=development node node_modules/react-native/local-cli/cli.js start",
     "ios": "NODE_ENV=development node node_modules/react-native/local-cli/cli.js run-ios",
     "link": "node node_modules/react-native/local-cli/cli.js link",
     "quickbuild": "tsc",
-    "dev": "node_modules/.bin/tsc  -w",
+    "dev": "rm -rf ./lib/* && node_modules/.bin/tsc  -w",
     "test": "ava --verbose",
     "test:watch": "ava --watch --verbose",
     "coverage": "nyc ava --verbose && nyc report --reporter=html",
@@ -39,7 +39,7 @@
     "redux-saga": "^0.11.1",
     "timeago.js": "^2.0.5",
     "tough-cookie-no-native": "yuche/tough-cookie-no-native",
-    "typescript": "^2.1.6"
+    "typescript": "2.2.0"
   },
   "devDependencies": {
     "@types/isomorphic-fetch": "0.0.31",

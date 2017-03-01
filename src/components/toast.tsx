@@ -72,7 +72,7 @@ class Toast extends React.Component<IProps, IState> {
       visable: true
     } as IState)
 
-    const { duration, timeout } = this.props
+    const { duration = 300, timeout = 2300 } = this.props
 
     this.animation().start()
 

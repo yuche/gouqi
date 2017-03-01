@@ -10,6 +10,7 @@ import {
 import {
   syncMoreResource
 } from './common'
+import Router from '../routers'
 
 function* syncPlaylists () {
   while (true) {
@@ -154,6 +155,22 @@ function* collectTrackToPlayliast () {
   }
 }
 
+function* toCommentPage () {
+  while (true) {
+    yield take('playlists/router/comment')
+
+    yield put({
+      type: 'ui/popup/track/hide'
+    })
+
+    const track: api.ITrack = yield select(((state: any) => state.playlist.track))
+
+    yield call(InteractionManager.runAfterInteractions)
+
+    yield Router.toComment({ route: { track, id: track.commentThreadId } })()
+  }
+}
+
 export default function* rootSaga () {
   yield fork(syncPlaylists)
   yield fork(syncPlaylistDetail)
@@ -161,4 +178,5 @@ export default function* rootSaga () {
   yield fork(popupTrackActionSheet)
   yield fork(popupCollectActionSheet)
   yield fork(collectTrackToPlayliast)
+  yield fork(toCommentPage)
 }

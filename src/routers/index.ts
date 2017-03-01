@@ -1,4 +1,5 @@
-import { Actions, RNRFActions } from 'react-native-router-flux'
+import { Actions } from 'react-native-router-flux'
+import { InteractionManager } from 'react-native'
 
 interface IRouterPassProps {
   route?: Object | undefined
@@ -23,7 +24,7 @@ function toPlayList (passProps?: IRouterPassProps) {
 }
 
 function toComment (passProps?: IRouterPassProps) {
-  navigator['comment'](passProps)
+  return () => navigator['comment'](passProps)
 }
 
 function pop (passProps?: IRouterPassProps) {
