@@ -18,9 +18,10 @@ const Icon = require('react-native-vector-icons/FontAwesome')
 type Ref = string | ((instance: any) => any)
 
 interface IForm extends TextInputProperties {
-  icon: string,
+  icon?: string,
   containerStyle?: ViewStyle,
   wrapperStyle?: ViewStyle,
+  textStyle?: TextStyle,
   inputRef?: Ref,
   onClear?: () => void
  }
@@ -48,25 +49,28 @@ export class Form extends React.Component<IForm, IFormStates> {
       onSubmitEditing,
       autoCorrect = false,
       autoCapitalize,
+      textStyle,
       autoFocus = false,
       inputRef
     } = this.props
 
-    const clearIcon = <View style={[styles.formIcon, { marginRight: 5}]}>
-      <Icon name='times-circle' size={14} color='#bbb' onPress={onClear}/>
+    const clearIcon = <View style={[styles.formIcon, { marginRight: 10}]}>
+      <Icon name='times-circle' size={16} color='#bbb' onPress={onClear}/>
+    </View>
+
+    const IconView = icon && <View style={styles.formIcon}>
+      <Icon name={icon} size={16} color='#ccc'/>
     </View>
 
     return <View style={[styles.formContainer, containerStyle]}>
         <View style={[styles.formInnerWrapper, wrapperStyle]}>
-          <View style={styles.formIcon}>
-            <Icon name={icon} size={14} color='#ccc'/>
-          </View>
+          {IconView}
           <TextInput
             ref={inputRef}
             autoCapitalize={autoCapitalize}
             autoCorrect={autoCorrect}
             autoFocus={autoFocus}
-            style={styles.searchInput}
+            style={[styles.searchInput, textStyle && textStyle]}
             placeholder={placeholder}
             editable={editable}
             onChangeText={onChangeText}
@@ -121,18 +125,18 @@ const styles = StyleSheet.create({
     paddingBottom: 5
   } as ViewStyle,
   formInnerWrapper: {
-      flexDirection: 'row',
-      height: 30,
+    flexDirection: 'row',
+    height: 30,
     backgroundColor: '#FFFFFF',
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: '#E6E6EA',
     borderRadius: 5
   } as ViewStyle,
   searchInput: {
-    marginLeft: 5,
+    marginLeft: 10,
     flex: 1,
     height: 30,
-    fontSize: 14
+    fontSize: 16
   } as TextStyle,
   formIcon: {
     height: 30,

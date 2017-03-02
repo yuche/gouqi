@@ -64,7 +64,7 @@ class ListItem extends React.Component<IListItem, any> {
       >
         <View style={[styles.wrapper, wrapperStyle && wrapperStyle]}>
           { this.renderLeft(picURI, roundPic, picStyle, renderLeft) }
-          <View style={styles.titleContainer}>
+          <View style={[styles.titleContainer, !subTitle && { justifyContent: 'center' }]}>
             <View style={[mainTitleContainerStyle && mainTitleContainerStyle]}>
               <Text style={[styles.title, titleStyle && titleStyle]} numberOfLines={numeberOfLines} onPress={onPress}>
                 { title }

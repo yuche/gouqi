@@ -43,10 +43,10 @@ class RecommendScene extends React.Component<any, any> {
           Press Cmd+R to reload,{'\n'}
           Cmd+D or shake for dev menu
         </Text>
-        <Text onPress={Router.toLogin()}>
+        <Text onPress={() => Router.toCreatePlaylist()}>
           Go to Login Page
         </Text>
-        <Text onPress={this.showToast}>
+        <Text onPress={Router.toLogin()}>
           Go to fck Page
         </Text>
         <Icon name='comment' size={18}  color='black'/>

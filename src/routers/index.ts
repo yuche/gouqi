@@ -30,6 +30,10 @@ function toPlaylistDetail (passProps?: IRouterPassProps) {
   return () => navigator['playlistDetail'](passProps)
 }
 
+function toCreatePlaylist (passProps?: IRouterPassProps) {
+  navigator['createPlaylist'](passProps)
+}
+
 function pop (passProps?: IRouterPassProps) {
   navigator.pop(passProps)
 }
@@ -41,6 +45,7 @@ const Router = {
   toPlayList,
   toComment,
   toPlaylistDetail,
+  toCreatePlaylist,
   pop
 }
 

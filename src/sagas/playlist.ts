@@ -30,34 +30,32 @@ function* syncPlaylistDetail () {
 
     const playlist: api.IPlaylist = yield select((state: any) => state.details.playlist[payload])
 
-    const isCached = !isEmpty(playlist)
-
-    if ( !isCached ) {
+    if ( !playlist ) {
       yield put({
         type: 'details/playlist/start'
       })
-    }
 
-    try {
-      const response = yield call(api.playListDetail, payload.toString())
+      try {
+        const response = yield call(api.playListDetail, payload.toString())
 
-      yield call(InteractionManager.runAfterInteractions)
+        yield call(InteractionManager.runAfterInteractions)
 
-      if (response.code === 200) {
-        const { result }: { result: api.IPlaylist } = response
+        if (response.code === 200) {
+          const { result }: { result: api.IPlaylist } = response
+          yield put({
+            type: 'details/playlist/save',
+            payload: {
+              [payload]: result
+            }
+          })
+        }
+      } catch (error) {
+        yield put(toastAction('error', '网络出现错误...'))
+      } finally {
         yield put({
-          type: 'details/playlist/save',
-          payload: {
-            [payload]: result
-          }
+          type: 'details/playlist/end'
         })
       }
-    } catch (error) {
-      yield put(toastAction('error', '网络出现错误...'))
-    } finally {
-      yield put({
-        type: 'details/playlist/end'
-      })
     }
 
   }
@@ -171,6 +169,54 @@ function* toCommentPage () {
   }
 }
 
+function* toCreatePlaylistPage () {
+  while (true) {
+    const { payload } = yield take('playlists/router/create')
+
+    if (payload) {
+      yield put({
+        type: 'ui/popup/collect/hide'
+      })
+
+      yield call(InteractionManager.runAfterInteractions)
+    }
+
+    yield Router.toCreatePlaylist({ route: { trackId: payload } })
+  }
+}
+
+function* createPlaylist () {
+  while (true) {
+    const { payload } = yield take('playlists/create')
+
+    const { trackId, name } = payload
+
+    if (name) {
+      yield Router.pop()
+
+      const response = yield call(api.createPlaylist, name)
+
+      if (response.code === 200) {
+        if (trackId) {
+          const pid = response.id
+          yield put({
+            type: 'playlists/collect',
+            payload: {
+              pid,
+              trackIds: trackId
+            }
+          })
+        } else {
+          yield put(toastAction('success', '成功创建歌单'))
+        }
+      }
+
+    } else {
+      yield put(toastAction('warning', '歌单名称不能为空'))
+    }
+  }
+}
+
 export default function* rootSaga () {
   yield fork(syncPlaylists)
   yield fork(syncPlaylistDetail)
@@ -179,4 +225,6 @@ export default function* rootSaga () {
   yield fork(popupCollectActionSheet)
   yield fork(collectTrackToPlayliast)
   yield fork(toCommentPage)
+  yield fork(toCreatePlaylistPage)
+  yield fork(createPlaylist)
 }

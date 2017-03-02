@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { IPlaylist, ITrack } from '../services/api'
 import ListItem from '../components/listitem'
-import { connect, Dispatch } from 'react-redux'
+import { connect } from 'react-redux'
 import {
   ScrollView,
   Dimensions,
@@ -9,8 +9,15 @@ import {
   ViewStyle,
   Text
 } from 'react-native'
-import { hideCollectActionSheet, collectTrackToPlayliast } from '../actions'
-import PopuoContainer from './PopupContainer'
+import {
+  hideCollectActionSheet,
+  collectTrackToPlayliast,
+  toCreatePlaylistAction
+} from '../actions'
+import PopupContainer from './PopupContainer'
+import { centering, Color } from '../styles'
+// tslint:disable-next-line
+const Icon = require('react-native-vector-icons/Ionicons')
 
 const { height } = Dimensions.get('window')
 
@@ -19,7 +26,8 @@ interface IProps {
   created: IPlaylist[],
   visible: boolean,
   hide: () => Redux.Action,
-  collect: (trackIds: number, pid: number) => Redux.Action
+  collect: (trackIds: number, pid: number) => Redux.Action,
+  toCreatePlaylist: (trackId: number) => Redux.Action
 }
 
 class Collect extends React.Component<IProps, any> {
@@ -31,10 +39,11 @@ class Collect extends React.Component<IProps, any> {
   render() {
     const {
       created,
-      visible
+      visible,
+      track
     } = this.props
     return (
-      <PopuoContainer
+      <PopupContainer
         animationType='slide-up'
         visible={visible}
         onMaskClose={this.hide}
@@ -46,10 +55,20 @@ class Collect extends React.Component<IProps, any> {
             </Text>
           </View>
           <ScrollView>
+            <ListItem
+              title='新建歌单'
+              // tslint:disable-next-line:jsx-no-multiline-js
+              renderLeft={
+                <View style={styles.leftIcon}>
+                  <Icon name='md-add' size={20} color={Color.main}/>
+                </View>
+              }
+              onPress={this.toCreatePlaylist(track.id)}
+            />
             {created.map(this.renderPlaylist)}
           </ScrollView>
         </View>
-      </PopuoContainer>
+      </PopupContainer>
     )
   }
 
@@ -57,10 +76,17 @@ class Collect extends React.Component<IProps, any> {
     this.props.hide()
   }
 
+  toCreatePlaylist = (trackId: number) => {
+    return () => this.props.toCreatePlaylist(trackId)
+  }
+
+  collect = (trackId: number, pid: number) => {
+    return () => this.props.collect(trackId, pid)
+  }
+
   renderPlaylist = (playlist: IPlaylist) => {
     const {
-      track,
-      collect
+      track
     } = this.props
     return (
       <ListItem
@@ -68,8 +94,7 @@ class Collect extends React.Component<IProps, any> {
         picURI={playlist.coverImgUrl + '?param=50y50'}
         subTitle={playlist.trackCount + ' 首'}
         key={playlist.id}
-        // tslint:disable-next-line:jsx-no-lambda
-        onPress={() => collect(track.id, playlist.id)}
+        onPress={this.collect(track.id, playlist.id)}
       />
     )
   }
@@ -78,6 +103,12 @@ class Collect extends React.Component<IProps, any> {
 const styles = {
   container: {
     maxHeight: height / 2
+  } as ViewStyle,
+  leftIcon: {
+    width: 40,
+    height: 40,
+    backgroundColor: '#e2e3e4',
+    ...centering
   } as ViewStyle
 }
 
@@ -107,7 +138,7 @@ export default connect(
       visible
     }
   },
-  (dispatch: Dispatch<Redux.Action>) => ({
+  (dispatch) => ({
     hide() {
       return dispatch(hideCollectActionSheet())
     },
@@ -116,6 +147,10 @@ export default connect(
         trackIds,
         pid
       }))
+    },
+    toCreatePlaylist(trackId: number) {
+      return dispatch(toCreatePlaylistAction(trackId))
     }
   })
 )(Collect)
+
