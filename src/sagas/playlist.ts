@@ -3,12 +3,12 @@ import {
   toastAction
 } from '../actions'
 import * as api from '../services/api'
-import { isEmpty } from 'lodash'
 import {
   InteractionManager
 } from 'react-native'
 import {
-  syncMoreResource
+  syncMoreResource,
+  ajaxCall
 } from './common'
 import Router from '../routers'
 
@@ -35,27 +35,23 @@ function* syncPlaylistDetail () {
         type: 'details/playlist/start'
       })
 
-      try {
-        const response = yield call(api.playListDetail, payload.toString())
+      const response = yield* ajaxCall(api.playListDetail, payload.toString())
 
-        yield call(InteractionManager.runAfterInteractions)
+      yield call(InteractionManager.runAfterInteractions)
 
-        if (response.code === 200) {
-          const { result }: { result: api.IPlaylist } = response
-          yield put({
-            type: 'details/playlist/save',
-            payload: {
-              [payload]: result
-            }
-          })
-        }
-      } catch (error) {
-        yield put(toastAction('error', '网络出现错误...'))
-      } finally {
+      if (response.code === 200) {
+        const { result }: { result: api.IPlaylist } = response
         yield put({
-          type: 'details/playlist/end'
+          type: 'details/playlist/save',
+          payload: {
+            [payload]: result
+          }
         })
       }
+
+      yield put({
+        type: 'details/playlist/end'
+      })
     }
 
   }
@@ -73,23 +69,20 @@ function* subscribePlaylist () {
       type: 'details/subscribe/start'
     })
 
-    try {
-      const response = yield call(api.subscribePlaylist, payload.toString(), !subscribed)
-      if (response.code === 200) {
-        const count = subscribed ? subscribedCount - 1 : subscribedCount + 1
-        yield put({
-          type: 'details/playlist/save',
-          payload: {
-            [payload]: {
-              ...playlist,
-              subscribedCount: count,
-              subscribed: !subscribed
-            }
+    const response = yield* ajaxCall(api.subscribePlaylist, payload.toString(), !subscribed)
+
+    if (response.code === 200) {
+      const count = subscribed ? subscribedCount - 1 : subscribedCount + 1
+      yield put({
+        type: 'details/playlist/save',
+        payload: {
+          [payload]: {
+            ...playlist,
+            subscribedCount: count,
+            subscribed: !subscribed
           }
-        })
-      }
-    } catch (error) {
-      yield put(toastAction('error', '网络出现错误...'))
+        }
+      })
     }
 
     yield put({
@@ -138,7 +131,7 @@ function* collectTrackToPlayliast () {
       type: 'ui/popup/collect/hide'
     })
 
-    const response = yield call(
+    const response = yield* ajaxCall(
       api.opMuiscToPlaylist,
       payload.trackIds.toString(),
       payload.pid.toString(),
@@ -194,7 +187,7 @@ function* createPlaylist () {
     if (name) {
       yield Router.pop()
 
-      const response = yield call(api.createPlaylist, name)
+      const response = yield* ajaxCall(api.createPlaylist, name)
 
       if (response.code === 200) {
         if (trackId) {

@@ -76,7 +76,7 @@ class NavBar extends React.Component<IProps, any> {
     return (
       <TouchableOpacity onPress={config.onPress} style={styles.btn}>
         {config.iconName && <Icon name={config.iconName} size={fontSize} color={color}/>}
-        {config.text && <Text style={[{ fontSize, fontWeight: 'bold' }, { color }]}>{config.text}</Text>}
+        {config.text && <Text style={[{ fontSize}, { color }]}>{config.text}</Text>}
       </TouchableOpacity>
     )
   }
@@ -90,7 +90,7 @@ class NavBar extends React.Component<IProps, any> {
 const styles = StyleSheet.create({
   container: {
     height: NavBar.HEIGHT,
-    backgroundColor: 'white',
+    backgroundColor: '#f8f8f8',
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -106,7 +106,6 @@ const styles = StyleSheet.create({
   } as ViewStyle,
   title: {
     color: 'white',
-    fontWeight: 'bold',
     fontSize: 16
     // position: 'relative',
     // right: 20

@@ -24,6 +24,7 @@ import {
 } from '../../reducers/detail'
 import { get } from 'lodash'
 import Router from '../../routers'
+import ParallaxScroll from '../../components/ParallaxScroll'
 // tslint:disable-next-line:no-var-requires
 const { BlurView } = require('react-native-blur')
 const { width, height } = Dimensions.get('window')
@@ -44,10 +45,11 @@ interface IState {
   scrollY: Animated.Value
 }
 
-const MARGIN_TOP = 160
+const HEADER_HEIGHT = 160
 
 class PlayList extends React.Component<IProps, IState> {
   private ds: React.ListViewDataSource
+  private scrollComponent: any
 
   constructor(props: IProps) {
     super(props)
@@ -59,9 +61,9 @@ class PlayList extends React.Component<IProps, IState> {
 
   componentDidMount () {
     this.props.sync()
-    // InteractionManager.runAfterInteractions(() => {
-    //   this.props.sync()
-    // })
+    this.setState({
+      scrollY: this.scrollComponent.state.scrollY
+    })
   }
 
   render () {
@@ -84,7 +86,7 @@ class PlayList extends React.Component<IProps, IState> {
 
   renderNavbar (playlist: IPlaylist, scrollY: Animated.Value ) {
     const opacity = scrollY.interpolate({
-      inputRange: [0, 100, MARGIN_TOP],
+      inputRange: [0, 100, HEADER_HEIGHT],
       outputRange: [0, 0, 1]
     })
     return (
@@ -100,7 +102,7 @@ class PlayList extends React.Component<IProps, IState> {
     const uri = playlist.coverImgUrl
     const { creator } = playlist
     const opacity = scrollY.interpolate({
-      inputRange: [0, 50, MARGIN_TOP],
+      inputRange: [0, 50, HEADER_HEIGHT],
       outputRange: [1, 1, 0]
     })
     const avatarUrl = creator.avatarUrl + '?param=30y30'
@@ -196,13 +198,13 @@ class PlayList extends React.Component<IProps, IState> {
     const transform = [
       {
         translateY: scrollY.interpolate({
-          inputRange: [-MARGIN_TOP, 0, MARGIN_TOP, MARGIN_TOP],
-          outputRange: [MARGIN_TOP / 2, 0, -MARGIN_TOP / 3, -MARGIN_TOP / 3]
+          inputRange: [-HEADER_HEIGHT, 0, HEADER_HEIGHT, HEADER_HEIGHT],
+          outputRange: [HEADER_HEIGHT / 2, 0, -HEADER_HEIGHT / 3, -HEADER_HEIGHT / 3]
         })
       },
       {
         scale: scrollY.interpolate({
-          inputRange: [-MARGIN_TOP, 0, MARGIN_TOP],
+          inputRange: [-HEADER_HEIGHT, 0, HEADER_HEIGHT],
           outputRange: [2, 1, 1]
         })
       }
@@ -251,12 +253,8 @@ class PlayList extends React.Component<IProps, IState> {
     tracks: ITrack[]
   ) => {
     const containerY = scrollY.interpolate({
-      inputRange: [0 , MARGIN_TOP, MARGIN_TOP],
-      outputRange: [0, -MARGIN_TOP, -MARGIN_TOP]
-    })
-    const playlistY = scrollY.interpolate({
-      inputRange: [0, MARGIN_TOP, MARGIN_TOP],
-      outputRange: [0, MARGIN_TOP, MARGIN_TOP]
+      inputRange: [0 , HEADER_HEIGHT, HEADER_HEIGHT],
+      outputRange: [0, -HEADER_HEIGHT, -HEADER_HEIGHT]
     })
     if (tracks) {
       this.ds = this.ds.cloneWithRows(tracks)
@@ -264,25 +262,34 @@ class PlayList extends React.Component<IProps, IState> {
     return (
       <Animated.View style={[styles.playlistContainer, { transform: [{ translateY: containerY }] }]}>
         <View style={{ height: height - Navbar.HEIGHT, backgroundColor: 'white'}}>
-          <ScrollView
-            onScroll={Animated.event([{nativeEvent: {contentOffset: {y: scrollY}}}])}
-            scrollEventThrottle={16}
-          >
-            <Animated.View style={{transform: [{ translateY :playlistY }], paddingBottom: MARGIN_TOP}}>
-              <ListView
-                enableEmptySections
-                scrollRenderAheadDistance={90}
-                initialListSize={15}
-                dataSource={this.ds}
-                renderRow={this.renderTrack}
-                showsVerticalScrollIndicator={false}
-              />
-              {isLoading && <ActivityIndicator animating style={{marginTop: 15}}/>}
-            </Animated.View>
-          </ScrollView>
+          <ListView
+            enableEmptySections
+            removeClippedSubviews={false}
+            scrollRenderAheadDistance={90}
+            initialListSize={20}
+            dataSource={this.ds}
+            renderRow={this.renderTrack}
+            showsVerticalScrollIndicator={true}
+            renderScrollComponent={this.renderScrollComponent(isLoading)}
+          />
         </View>
       </Animated.View>
     )
+  }
+
+  renderScrollComponent = (isLoading: boolean) => {
+    return (props: React.ScrollViewProperties) => (
+      <ParallaxScroll
+        {...props}
+        onScroll={props.onScroll}
+        isLoading={isLoading}
+        ref={this.mapScrollComponentToRef}
+      />
+    )
+  }
+
+  mapScrollComponentToRef = (component: any) => {
+    this.scrollComponent = component
   }
 
 }
@@ -304,7 +311,7 @@ const styles = {
   playlistContainer: {
     position: 'absolute',
     left: 0,
-    top: Navbar.HEIGHT + MARGIN_TOP,
+    top: Navbar.HEIGHT + HEADER_HEIGHT,
     right: 0,
     bottom: 0
   } as ViewStyle,

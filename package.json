@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start": "NODE_ENV=development node node_modules/react-native/local-cli/cli.js start",
-    "ios": "NODE_ENV=development node node_modules/react-native/local-cli/cli.js run-ios",
+    "ios": "node node_modules/react-native/local-cli/cli.js run-ios --configuration Release",
     "link": "node node_modules/react-native/local-cli/cli.js link",
     "quickbuild": "tsc",
     "dev": "rm -rf ./lib/* && node_modules/.bin/tsc  -w",
@@ -30,6 +30,7 @@
     "react-native-navbar": "^1.5.4",
     "react-native-root-siblings": "^1.1.2",
     "react-native-router-flux": "^3.37.0",
+    "react-native-scrollable-decorator": "^0.0.2",
     "react-native-scrollable-tab-view": "^0.6.0",
     "react-native-vector-icons": "^2.1.0",
     "react-native-video": "^0.9.0",

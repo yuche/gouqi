@@ -38,12 +38,10 @@ export function* syncSearchResource (
 
     const offsetState = state.offset + 15
 
-    const response = yield call(
+    const response = yield* ajaxCall(
       api.search, query, type.toString(), '15',
       state.offset
     )
-
-    yield* ajaxErrorHandler(response)
 
     if (response.code === 200) {
       const result = response.result
@@ -89,6 +87,19 @@ export function* ajaxErrorHandler (res: any) {
   }
 }
 
+export function* ajaxCall (fn: (...args: any[]) => Promise<any>, ...args: any[]) {
+  const res = yield call(fn, ...args)
+  if (res.error) {
+    if (res.error.message === '未登录') {
+      yield put(toastAction('info', '请先登录'))
+      yield Router.toLogin()()
+    } else {
+      yield put(toastAction('error', '网络出现错误...'))
+    }
+  }
+  return res
+}
+
 export function* syncMoreResource (
   action: string,
   resourceKey: string,
@@ -107,12 +118,10 @@ export function* syncMoreResource (
     })
 
     const offsetState = state.offset + 15
-    const result = yield call(
+    const result = yield* ajaxCall(
       caller, '15',
       state.offset === 0 ? state.offset.toString()  : offsetState.toString()
     )
-
-    yield* ajaxErrorHandler(result)
 
     if (result.code === 200) {
       yield put({

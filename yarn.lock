@@ -5763,6 +5763,10 @@ react-native-router-flux:
     react-native-tabs "^1.0.9"
     react-static-container "1.0.1"
 
+react-native-scrollable-decorator:
+  version "0.0.2"
+  resolved "https://registry.npmjs.org/react-native-scrollable-decorator/-/react-native-scrollable-decorator-0.0.2.tgz#057ecc99a242f2f722a2b90c3b7265190963d462"
+
 react-native-scrollable-tab-view, react-native-scrollable-tab-view@^0.6.0:
   version "0.6.0"
   resolved "http://registry.npm.taobao.org/react-native-scrollable-tab-view/download/react-native-scrollable-tab-view-0.6.0.tgz#36050cf72dae0dc00b6b8d7f9a570955d99a213b"

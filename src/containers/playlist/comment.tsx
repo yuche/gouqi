@@ -76,12 +76,17 @@ class Comments extends React.Component<IProps, any> {
 
     return (
       <View style={{ flex: 1 }}>
-        <Navbar title={title}/>
+        <Navbar
+          title={title}
+          hideBorder={false}
+          textColor='#333'
+        />
         <ListView
           dataSource={this.ds}
           enableEmptySections
           scrollRenderAheadDistance={90}
           renderRow={this.renderComment}
+          initialListSize={20}
           onEndReachedThreshold={15}
           renderFooter={this.renderFooter}
           renderHeader={this.renderHeader(route, isLoading)}
@@ -154,7 +159,7 @@ class Comments extends React.Component<IProps, any> {
   }
 
   onEndReached = () => {
-    if (!this.props.isLoadingMore && !this.props.isLoading) {
+    if (!this.props.isLoadingMore && !this.props.isLoading && this.props.commentCount) {
       this.props.more()
     }
   }

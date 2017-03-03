@@ -37,6 +37,7 @@ export function* loginFlow () {
 
       if (userInfo.code === 200) {
         yield put(toastAction('success', '您已成功登录'))
+        yield Router.pop()
         yield AsyncStorage.setItem('Cookies', getCookies())
       } else {
         yield put(toastAction('warning', '帐号或密码错误'))

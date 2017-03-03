@@ -3,7 +3,7 @@ import {
   toastAction
 } from '../actions'
 import * as api from '../services/api'
-import { ajaxErrorHandler } from './common'
+import { ajaxCall } from './common'
 import {
   InteractionManager
 } from 'react-native'
@@ -16,14 +16,12 @@ function* syncComments () {
       type: 'comments/sync/start'
     })
 
-    const response: api.IComments = yield call(
+    const response: api.IComments = yield* ajaxCall(
       api.getComments,
       payload,
       '30',
       '0'
     )
-
-    yield* ajaxErrorHandler(response)
 
     yield call(InteractionManager.runAfterInteractions)
 
@@ -59,14 +57,12 @@ function* syncMoreComments () {
 
       const offset = commentsState.offset + 30
 
-      const response: api.IComments = yield call(
+      const response: api.IComments = yield* ajaxCall(
         api.getComments,
         payload,
         '30',
         offset.toString()
       )
-
-      yield* ajaxErrorHandler(response)
 
       if (response.code === 200) {
         yield put({
