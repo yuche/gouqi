@@ -54,7 +54,7 @@ class Collect extends React.Component<IProps, any> {
               收藏到歌单
             </Text>
           </View>
-          <ScrollView>
+          <ScrollView showsVerticalScrollIndicator={true}>
             <ListItem
               title='新建歌单'
               // tslint:disable-next-line:jsx-no-multiline-js
@@ -102,7 +102,7 @@ class Collect extends React.Component<IProps, any> {
 
 const styles = {
   container: {
-    maxHeight: height / 2
+    maxHeight: Math.round(height * 3 / 5)
   } as ViewStyle,
   leftIcon: {
     width: 40,

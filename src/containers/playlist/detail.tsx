@@ -4,7 +4,6 @@ import {
   View,
   ViewStyle,
   Animated,
-  ScrollView,
   ActivityIndicator,
   Text,
   TextStyle,
@@ -53,7 +52,7 @@ class PlayList extends React.Component<IProps, IState> {
 
   constructor(props: IProps) {
     super(props)
-    this.ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2})
+    this.ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1.id !== r2.id})
     this.state = {
       scrollY: new Animated.Value(0)
     }
@@ -264,8 +263,8 @@ class PlayList extends React.Component<IProps, IState> {
         <View style={{ height: height - Navbar.HEIGHT, backgroundColor: 'white'}}>
           <ListView
             enableEmptySections
-            removeClippedSubviews={false}
-            scrollRenderAheadDistance={90}
+            removeClippedSubviews={true}
+            scrollRenderAheadDistance={120}
             initialListSize={20}
             dataSource={this.ds}
             renderRow={this.renderTrack}

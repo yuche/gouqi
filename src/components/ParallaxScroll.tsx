@@ -103,4 +103,3 @@ class ParallaxScroll extends React.Component<any, IState> {
 }
 
 export default ParallaxScroll
-

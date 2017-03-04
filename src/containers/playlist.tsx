@@ -55,7 +55,7 @@ class PlayList extends React.Component<
       <ListItem
         title={playlist.name}
         picURI={playlist.coverImgUrl}
-        subTitle={playlist.trackCount.toString()}
+        subTitle={playCount(playlist.playCount)}
         key={playlist.id}
         onPress={Router.toPlayList({ route: playlist })}
       />

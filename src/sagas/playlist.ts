@@ -34,25 +34,25 @@ function* syncPlaylistDetail () {
       yield put({
         type: 'details/playlist/start'
       })
+    }
 
-      const response = yield* ajaxCall(api.playListDetail, payload.toString())
+    const response = yield* ajaxCall(api.playListDetail, payload.toString())
 
-      yield call(InteractionManager.runAfterInteractions)
+    yield call(InteractionManager.runAfterInteractions)
 
-      if (response.code === 200) {
-        const { result }: { result: api.IPlaylist } = response
-        yield put({
-          type: 'details/playlist/save',
-          payload: {
-            [payload]: result
-          }
-        })
-      }
-
+    if (response.code === 200) {
+      const { result }: { result: api.IPlaylist } = response
       yield put({
-        type: 'details/playlist/end'
+        type: 'details/playlist/save',
+        payload: {
+          [payload]: result
+        }
       })
     }
+
+    yield put({
+      type: 'details/playlist/end'
+    })
 
   }
 }

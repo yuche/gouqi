@@ -1,7 +1,11 @@
 import * as tough from 'tough-cookie-no-native'
 import * as qs from 'qs'
 
-export const API_BASE_URL = 'http://music.163.com'
+
+declare const process: any
+export const API_BASE_URL = process.env.NODE_ENV === 'production'
+  ? 'https://music.163.com'
+  : 'http://music.163.com'
 
 const cookieJar = new tough.CookieJar()
 
@@ -12,7 +16,7 @@ const defaultHeaders = {
   'Connection': 'keep-alive',
   'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
   'Host': 'music.163.com',
-  'Referer': 'http://music.163.com/',
+  'Referer': API_BASE_URL,
   'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64; rv:39.0) Gecko/20100101 Firefox/39.0'
 }
 

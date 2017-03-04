@@ -40,14 +40,14 @@ export interface IProfile {
 
 export async function login(username: string, password: string) {
   const patten = /^0\d{2,3}\d{7,8}$|^1[34578]\d{9}$/
-  let url = '/weapi/login/'
+  let url = '/weapi/login'
   let body: ILoginBody = {
     password: encryptedMD5(password),
     rememberLogin: 'true'
   }
   if (patten.test(username)) {
     body.phone = username
-    url = '/weapi/login/cellphone/'
+    url = '/weapi/login/cellphone'
   } else {
     body.username = username
   }

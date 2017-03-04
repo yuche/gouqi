@@ -11,18 +11,18 @@ import { Platform } from 'react-native'
 let composeEnhancers = compose
 declare const __DEV__: boolean
 
-// if (__DEV__) {
-//   // tslint:disable-next-line:no-var-requires
-//   const { composeWithDevTools } = require('remote-redux-devtools')
-//   const config = {
-//       // realtime: true,
-//       name: Platform.OS,
-//       hostname: 'localhost',
-//       port: 5678
-//   }
+if (__DEV__) {
+  // tslint:disable-next-line:no-var-requires
+  const { composeWithDevTools } = require('remote-redux-devtools')
+  const config = {
+      // realtime: true,
+      name: Platform.OS,
+      hostname: 'localhost',
+      port: 5678
+  }
 
-//   composeEnhancers = composeWithDevTools(config)
-// }
+  composeEnhancers = composeWithDevTools(config)
+}
 
 const sagaMiddleware = createSagaMiddleware()
 

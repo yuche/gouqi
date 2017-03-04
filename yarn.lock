@@ -1070,6 +1070,10 @@ babel-plugin-transform-regenerator@^6.16.0, babel-plugin-transform-regenerator@^
     babel-types "^6.16.0"
     private "~0.1.5"
 
+babel-plugin-transform-remove-console:
+  version "6.8.1"
+  resolved "https://registry.npmjs.org/babel-plugin-transform-remove-console/-/babel-plugin-transform-remove-console-6.8.1.tgz#38f6a6ca1581e76b75fc2c6fdcf909deadee7d6a"
+
 babel-plugin-transform-runtime@^6.3.13:
   version "6.15.0"
   resolved "http://registry.npm.taobao.org/babel-plugin-transform-runtime/download/babel-plugin-transform-runtime-6.15.0.tgz#3d75b4d949ad81af157570273846fb59aeb0d57c"
@@ -5762,10 +5766,6 @@ react-native-router-flux:
     react-native-experimental-navigation "0.26.x"
     react-native-tabs "^1.0.9"
     react-static-container "1.0.1"
-
-react-native-scrollable-decorator:
-  version "0.0.2"
-  resolved "https://registry.npmjs.org/react-native-scrollable-decorator/-/react-native-scrollable-decorator-0.0.2.tgz#057ecc99a242f2f722a2b90c3b7265190963d462"
 
 react-native-scrollable-tab-view, react-native-scrollable-tab-view@^0.6.0:
   version "0.6.0"
