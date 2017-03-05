@@ -1,5 +1,4 @@
 import { handleActions, Action } from 'redux-actions'
-import { assign } from '../utils'
 import {
   IToastPayload
 } from '../interfaces'

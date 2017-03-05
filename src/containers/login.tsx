@@ -1,7 +1,5 @@
 import * as React from 'react'
 import {
-  Text,
-  TextInput,
   ScrollView,
   View,
   TextInputStatic
@@ -9,8 +7,7 @@ import {
 import { connect, Dispatch } from 'react-redux'
 import * as Actions from '../actions'
 import {
-  IUserInfo,
-  IRouterProps
+  IUserInfo
 } from '../interfaces'
 import {
   Form,
@@ -70,7 +67,11 @@ class Login extends React.Component<IProps, IUserInfo> {
     const { username, password } = this.state
     return (
       <View style={{flex: 1}}>
-        <NavBar title={this.props.title} />
+        <NavBar
+          title={this.props.title}
+          textColor='#333'
+          hideBorder={false}
+        />
         <ScrollView
           style={{marginTop: 10}}
           keyboardShouldPersistTaps={true}

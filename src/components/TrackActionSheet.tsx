@@ -9,7 +9,7 @@ import {
 import { centering } from '../styles'
 import CustomIcon from '../components/icon'
 import { ITrack } from '../services/api'
-import { connect, Dispatch } from 'react-redux'
+import { connect } from 'react-redux'
 import { popupCollectActionSheet, hideTrackActionSheet } from '../actions'
 import Popup from './PopupContainer'
 

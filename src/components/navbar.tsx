@@ -14,7 +14,6 @@ const NavigationBar = require('react-native-navbar')
 // tslint:disable-next-line
 const Icon = require('react-native-vector-icons/FontAwesome')
 import { Actions } from 'react-native-router-flux'
-import Router from '../routers'
 
 type Ianimation = 'fade' | 'slide' | 'none'
 

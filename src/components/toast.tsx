@@ -6,14 +6,13 @@ import {
   Animated,
   Dimensions,
   Text,
-  Platform,
-  StatusBar
+  Platform
 } from 'react-native'
 import { centering } from '../styles'
 // tslint:disable-next-line
 const Icon = require('react-native-vector-icons/FontAwesome')
 
-const { height, width } = Dimensions.get('window')
+const { width } = Dimensions.get('window')
 
 interface IProps {
   entry?: 'top' | 'bottom',
@@ -171,7 +170,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(189, 54, 47, 0.9)'
   } as ViewStyle
 })
-
 
 /** 
  * [TODO]

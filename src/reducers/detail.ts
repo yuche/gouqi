@@ -50,5 +50,5 @@ export default handleActions({
       ...state,
       subscribing: false
     }
-  },
+  }
 }, initialState)

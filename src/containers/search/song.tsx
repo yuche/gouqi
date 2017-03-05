@@ -5,7 +5,6 @@ import {
   View
 } from 'react-native'
 import { connect, Dispatch } from 'react-redux'
-import * as api from '../../services/api'
 import { ISearchState, ILoadingProps } from '../../interfaces'
 import ListItem from '../../components/listitem'
 import * as actions from '../../actions'

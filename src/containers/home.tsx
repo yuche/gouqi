@@ -4,8 +4,7 @@ import { connect } from 'react-redux'
 import * as React from 'react'
 import { createAction } from 'redux-actions'
 import {
-  View,
-  AsyncStorage
+  View
 } from 'react-native'
 import TabBar from '../components/homeNavBar'
 const ScrollableTabView = require('react-native-scrollable-tab-view') // tslint:disable-line
