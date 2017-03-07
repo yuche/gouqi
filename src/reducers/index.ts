@@ -6,6 +6,7 @@ import search from './search'
 import details from './detail'
 import comment from './comment'
 import personal from './personal'
+import player from './player'
 
 export default combineReducers({
   login,
@@ -14,5 +15,6 @@ export default combineReducers({
   search,
   details,
   comment,
-  personal
+  personal,
+  player
 })

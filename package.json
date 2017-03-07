@@ -27,6 +27,7 @@
     "react": "^15.4.2",
     "react-native": "0.39.0",
     "react-native-blur": "1.2.0",
+    "react-native-music-control": "^0.3.4",
     "react-native-navbar": "^1.5.4",
     "react-native-root-siblings": "^1.1.2",
     "react-native-router-flux": "^3.37.0",

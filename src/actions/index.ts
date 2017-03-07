@@ -4,6 +4,8 @@ import {
   IUserInfo,
   styleType
 } from '../interfaces'
+import { IPlayPayload } from '../reducers/player'
+import { ITrack } from '../services/api'
 
 export type IuserLogin = (userInfo: IUserInfo) => Action<IUserInfo>
 export const userLogin: IuserLogin = createAction('user/login')
@@ -41,6 +43,21 @@ export const toCreatePlaylistAction = createAction('playlists/router/create')
 export const collectTrackToPlayliast = createAction('playlists/collect')
 
 export const createPlayliastAction = createAction('playlists/create')
+
+export const playTrackAction: IPlayTrackAction = createAction('player/play',
+  ({playingTrack, playlist, prev}: IPlayPayload) => {
+    let obj: any
+    obj.playingTrack = playingTrack
+    if (playlist) {
+      obj.playlist = playlist
+    }
+    obj.history = prev
+    return obj
+  }
+)
+export type IPlayTrackAction = (payload: IPlayPayload) => Action<IPlayPayload>
+
+export const playAcion = createAction('player/play')
 
 export type ISearchActiveTab = (activeTab: number) => Action<number>
 export const changeSearchActiveTab: ISearchActiveTab = createAction('search/activeTab',

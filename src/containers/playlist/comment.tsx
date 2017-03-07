@@ -2,7 +2,7 @@ import * as React from 'react'
 import { IComemnt, IPlaylist, ITrack } from '../../services/api'
 import Navbar from '../../components/navbar'
 import { ILoadingProps } from '../../interfaces'
-import { connect, Dispatch } from 'react-redux'
+import { connect } from 'react-redux'
 import { ICommentState } from '../../reducers/comment'
 import { getComments, getMoreComments } from '../../actions'
 import ListItem from '../../components/listitem'
@@ -285,7 +285,7 @@ function mapStateToProps (
 
 export default connect(
   mapStateToProps,
-  (dispatch: Dispatch<Redux.Action>, ownProps: IProps) => ({
+  (dispatch, ownProps: IProps) => ({
     sync() {
       return dispatch(getComments(ownProps.route.id))
     },

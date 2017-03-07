@@ -14,6 +14,7 @@ import {
 import watchSearch from './search'
 import watchComment from './comment'
 import watchPlaylist from './playlist'
+import watchPlayer from './player'
 import Router from '../routers'
 
 export function* loginFlow () {
@@ -108,6 +109,7 @@ export default function* root () {
     fork(watchPlaylist),
     fork(watchSearch),
     fork(watchComment),
-    fork(syncPersonnalPlaylist)
+    fork(syncPersonnalPlaylist),
+    fork(watchPlayer)
   ]
 }

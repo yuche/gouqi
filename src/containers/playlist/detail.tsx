@@ -10,13 +10,19 @@ import {
   Image,
   Dimensions,
   TouchableOpacity,
+  TouchableWithoutFeedback,
   ListView,
   Alert
 } from 'react-native'
 import Navbar from '../../components/navbar'
 import { ILoadingProps } from '../../interfaces'
 import { connect } from 'react-redux'
-import { syncPlaylistDetail, subscribePlaylist, popupTrackActionSheet } from '../../actions'
+import {
+  syncPlaylistDetail,
+  subscribePlaylist,
+  popupTrackActionSheet,
+  playTrackAction
+} from '../../actions'
 import ListItem from '../../components/listitem'
 import {
   IinitialState as IDetailState
@@ -24,20 +30,24 @@ import {
 import { get } from 'lodash'
 import Router from '../../routers'
 import ParallaxScroll from '../../components/ParallaxScroll'
+import { Color } from '../../styles'
 // tslint:disable-next-line:no-var-requires
 const { BlurView } = require('react-native-blur')
-const { width, height } = Dimensions.get('window')
-// tslint:disable-next-line
+// tslint:disable-next-line:no-var-requires
 const Icon = require('react-native-vector-icons/FontAwesome')
 // tslint:disable-next-line:no-var-requires
 const Ionic = require('react-native-vector-icons/Ionicons')
+
+const { width, height } = Dimensions.get('window')
 
 interface IProps extends ILoadingProps {
   route: IPlaylist,
   playlist: IPlaylist,
   subscribing: boolean,
+  playingTrack: number,
   subscribe: () => Redux.Action,
-  popup: (track: ITrack) => Redux.Action
+  popup: (track: ITrack) => Redux.Action,
+  play: (playingTrack: number, tracks: ITrack[]) => Redux.Action
 }
 
 interface IState {
@@ -65,10 +75,17 @@ class PlayList extends React.Component<IProps, IState> {
     })
   }
 
+  componentWillReceiveProps (nextProps: IProps) {
+    if (nextProps.playingTrack !== this.props.playingTrack) {
+      this.ds = this.ds.cloneWithRows([])
+    }
+  }
+
   render () {
     const {
       isLoading,
-      playlist
+      playlist,
+      playingTrack
     } = this.props
     const {
       scrollY
@@ -78,7 +95,7 @@ class PlayList extends React.Component<IProps, IState> {
         {this.renderBlur(playlist, scrollY)}
         {this.renderNavbar(playlist, scrollY)}
         {this.renderHeader(playlist, scrollY)}
-        {this.renderPlayList(isLoading, scrollY, playlist.tracks || [])}
+        {this.renderPlayList(isLoading, scrollY, playlist.tracks || [], playingTrack)}
       </View>
     )
   }
@@ -215,41 +232,53 @@ class PlayList extends React.Component<IProps, IState> {
     )
   }
 
-  renderTrack = (track: ITrack) => {
-    const artistName = get(track, 'artists[0].name', null)
-    const albumName = get(track, 'album.name', '')
-    const subTitle = artistName ?
-      `${artistName} - ${albumName}` :
-      albumName
-    return (
-      <ListItem
+  renderTrack = (playingTrack: number) => {
+    return (track: ITrack) => {
+      const isPlaying = playingTrack === track.id
+      const artistName = get(track, 'artists[0].name', null)
+      const albumName = get(track, 'album.name', '')
+      const subTitle = artistName ?
+        `${artistName} - ${albumName}` :
+        albumName
+      const colorStyle = isPlaying && { color: Color.main }
+      return <ListItem
         title={track.name}
         picURI={track.album.picUrl + '?param=75y75'}
         subTitle={subTitle}
         picStyle={{ width: 30, height: 30 }}
-        titleStyle={{ fontSize: 14 }}
+        titleStyle={[{ fontSize: 14 }, colorStyle]}
+        subTitleStyle={colorStyle}
+        onPress={this.listItemOnPress(track.id)}
         // tslint:disable-next-line:jsx-no-multiline-js
         renderRight={
-          <TouchableOpacity
-            style={{ justifyContent: 'center', paddingLeft: 10}}
-            onPress={this.moreIconOnClick(track)}
+          <TouchableWithoutFeedback
+            style={{ justifyContent: 'center'}}
+            onPress={this.moreIconOnPress(track)}
           >
-            <Ionic size={22} name='ios-more' color='#777'/>
-          </TouchableOpacity>
+            <View style={{flexDirection: 'row' }}>
+            {isPlaying && <Ionic size={22} name='md-volume-up' color={Color.main} style={{ paddingLeft: 10 }}/>}
+            <Ionic size={22} name='ios-more' color='#777' style={{ paddingLeft: 10 }}/>
+            </View>
+          </TouchableWithoutFeedback>
         }
         key={track.id}
       />
-    )
+    }
   }
 
-  moreIconOnClick = (track: ITrack) => {
-    return () => this.props.popup(track)
+  listItemOnPress = (id: number) => () => {
+    this.props.play(id, this.props.playlist.tracks)
+  }
+
+  moreIconOnPress = (track: ITrack) => () => {
+    this.props.popup(track)
   }
 
   renderPlayList = (
     isLoading: boolean,
     scrollY: Animated.Value,
-    tracks: ITrack[]
+    tracks: ITrack[],
+    playingTrack: number
   ) => {
     const containerY = scrollY.interpolate({
       inputRange: [0 , HEADER_HEIGHT, HEADER_HEIGHT],
@@ -267,7 +296,7 @@ class PlayList extends React.Component<IProps, IState> {
             scrollRenderAheadDistance={120}
             initialListSize={20}
             dataSource={this.ds}
-            renderRow={this.renderTrack}
+            renderRow={this.renderTrack(playingTrack)}
             showsVerticalScrollIndicator={true}
             renderScrollComponent={this.renderScrollComponent(isLoading)}
           />
@@ -361,8 +390,16 @@ function mapStateToProps (
       playlist,
       isLoading,
       subscribing
+    },
+    player: {
+      playingTrack
     }
-  }: { details: IDetailState },
+  }: {
+      details: IDetailState,
+      player: {
+      playingTrack: number
+    }
+  },
   ownProps: IProps
 ) {
   const { route } = ownProps
@@ -373,6 +410,7 @@ function mapStateToProps (
       creator: route.creator,
       coverImgUrl: route.coverImgUrl
     },
+    playingTrack,
     isLoading,
     subscribing
   }
@@ -389,6 +427,12 @@ export default connect(
     },
     popup(track: ITrack) {
       return dispatch(popupTrackActionSheet(track))
+    },
+    play (playingTrack: number, tracks: ITrack[]) {
+      return dispatch(playTrackAction({
+        playingTrack,
+        playlist: tracks
+      }))
     }
   })
 )(PlayList)

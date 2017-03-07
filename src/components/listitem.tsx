@@ -78,7 +78,10 @@ class ListItem extends React.Component<IListItem, any> {
     )
   }
 
-  renderLeft (picURI?: string, roundPic?: boolean, picStyle?: ViewStyle, renderLeft?: JSX.Element) {
+  renderLeft (picURI?: string, roundPic?: boolean, picStyle?: ViewStyle, renderLeft?: JSX.Element | false) {
+    if (renderLeft) {
+      return renderLeft
+    }
     const borderRadius = { borderRadius : picStyle && picStyle.height ? picStyle.height / 2 : 20 }
     if (picURI) {
       return <Image
@@ -86,9 +89,6 @@ class ListItem extends React.Component<IListItem, any> {
         source={{uri: picURI}}
         style={[styles.pic, roundPic && borderRadius, picStyle && picStyle]}
       />
-    }
-    if (renderLeft) {
-      return renderLeft
     }
   }
 
