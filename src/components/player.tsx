@@ -5,7 +5,7 @@ import { emitter } from '../utils'
 import { IPlayerProps as IProps } from '../interfaces'
 
 // tslint:disable-next-line:no-var-requires
-const Video = require('react-native-video')
+const Video = require('react-native-video').default
 
 // tslint:disable-next-line:no-var-requires
 const MusicControl = require('react-native-music-control')
@@ -66,7 +66,7 @@ class Player extends React.Component<IProps, IState> {
 
     const paused = status === 'PAUSED'
     const repeat = mode === 'REPEAT'
-    const uri = get(track, 'mp3url', false)
+    const uri = get(track, 'mp3Url', false)
     return (
       uri ? <Video
         style={{ height: 0, width: 0 }}
@@ -99,6 +99,7 @@ class Player extends React.Component<IProps, IState> {
     this.setState({
       duration
     } as IState)
+    console.log(duration)
     MusicControl.setNowPlaying({
       title: track.name,
       artwork: track.album.picUrl,
@@ -111,6 +112,7 @@ class Player extends React.Component<IProps, IState> {
     this.setState({
       currentTime
     } as IState)
+    console.log(currentTime)
   }
 
   onEnd = () => {

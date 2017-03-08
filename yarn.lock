@@ -5750,9 +5750,9 @@ react-native-mock@^0.2.6:
     react-timer-mixin "=0.13.3"
     warning "=2.1.0"
 
-react-native-music-control:
-  version "0.3.4"
-  resolved "https://registry.npmjs.org/react-native-music-control/-/react-native-music-control-0.3.4.tgz#a0db72ca6459ac2ce1000032aade1222168c529f"
+react-native-music-control@0.2.3:
+  version "0.2.3"
+  resolved "https://registry.npmjs.org/react-native-music-control/-/react-native-music-control-0.2.3.tgz#bded7069c17f00dbe6a18b2a73e37d110e19e05c"
 
 react-native-navbar@^1.5.4:
   version "1.5.4"

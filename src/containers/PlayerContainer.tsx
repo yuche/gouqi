@@ -29,7 +29,9 @@ class PlayerContainer extends React.Component<IProps, any> {
     super(props)
   }
 
-  componentDidMount () {
+
+  componentWillReceiveProps (nextProps: any) {
+    console.log(nextProps)
   }
 
   render () {
@@ -51,7 +53,7 @@ class PlayerContainer extends React.Component<IProps, any> {
   }
 
   renderImage = (picUrl: string) => {
-    const uri = picUrl || ''
+    const uri = picUrl || 'http://p4.music.126.net/YhnGyy3LtMFhoCvDI59JNA==/2589349883413112.jpg?param=50y50'
     return (
       <View style={centering}>
         <Image

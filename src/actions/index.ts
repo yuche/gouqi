@@ -46,7 +46,7 @@ export const createPlayliastAction = createAction('playlists/create')
 
 export const playTrackAction: IPlayTrackAction = createAction('player/play',
   ({playingTrack, playlist, prev}: IPlayPayload) => {
-    let obj: any
+    let obj = Object.create(null)
     obj.playingTrack = playingTrack
     if (playlist) {
       obj.playlist = playlist

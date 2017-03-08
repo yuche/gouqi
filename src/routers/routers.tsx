@@ -12,7 +12,6 @@ import Comment from '../containers/playlist/comment'
 import UIContainer from '../containers/UIContainer'
 import DetailModal from '../components/DetailModal'
 import CreatePlaylist from '../containers/CreatePlaylistScene'
-import PlayerContainer from '../containers/PlayerContainer'
 
 const scenes = Actions.create(
   <Scene key='root'>
@@ -30,7 +29,6 @@ const Routers = () => (
   <View style={{flex: 1}}>
       <Router scenes={scenes}/>
       <UIContainer />
-      <PlayerContainer />
   </View>
 )
 
