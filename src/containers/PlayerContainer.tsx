@@ -31,7 +31,6 @@ class PlayerContainer extends React.Component<IProps, any> {
 
 
   componentWillReceiveProps (nextProps: any) {
-    console.log(nextProps)
   }
 
   render () {

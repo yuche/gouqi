@@ -99,7 +99,6 @@ class Player extends React.Component<IProps, IState> {
     this.setState({
       duration
     } as IState)
-    console.log(duration)
     MusicControl.setNowPlaying({
       title: track.name,
       artwork: track.album.picUrl,
@@ -112,7 +111,6 @@ class Player extends React.Component<IProps, IState> {
     this.setState({
       currentTime
     } as IState)
-    console.log(currentTime)
   }
 
   onEnd = () => {

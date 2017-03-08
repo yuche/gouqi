@@ -5795,9 +5795,9 @@ react-native-vector-icons@^2.1.0:
     lodash "^4.0.0"
     yargs "^4.7.0"
 
-react-native-video@^0.9.0:
-  version "0.9.0"
-  resolved "http://registry.npm.taobao.org/react-native-video/download/react-native-video-0.9.0.tgz#684f8fcc4e8ba6cd73226c70845bee8ee85a8b3b"
+react-native-video:
+  version "1.0.0"
+  resolved "https://registry.npmjs.org/react-native-video/-/react-native-video-1.0.0.tgz#ba92b9e1a114c2c1f3a6144b0639ca3f69a0cc74"
   dependencies:
     keymirror "0.1.1"
 
