@@ -91,7 +91,6 @@ export function* ajaxCall (fn: (...args: any[]) => Promise<any>, ...args: any[])
   const res = yield call(fn, ...args)
   if (res.error) {
     if (res.error.message === '未登录') {
-      yield put(toastAction('info', '请先登录'))
       yield Router.toLogin()()
     } else {
       yield put(toastAction('error', '网络出现错误...'))

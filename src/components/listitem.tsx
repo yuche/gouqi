@@ -119,7 +119,7 @@ const styles = StyleSheet.create({
   container: {
     padding: 10,
     borderBottomColor: '#ededed',
-    borderBottomWidth: 1,
+    borderBottomWidth: StyleSheet.hairlineWidth,
     backgroundColor: 'white'
   } as ViewStyle,
   wrapper: {

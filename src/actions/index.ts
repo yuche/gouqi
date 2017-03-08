@@ -55,6 +55,13 @@ export const playTrackAction: IPlayTrackAction = createAction('player/play',
     return obj
   }
 )
+
+export const changeStatusAction = createAction('player/status')
+
+export const nextTrackAction = createAction('player/track/next')
+
+export const prevTrackAction = createAction('player/track/prev')
+
 export type IPlayTrackAction = (payload: IPlayPayload) => Action<IPlayPayload>
 
 export const playAcion = createAction('player/play')

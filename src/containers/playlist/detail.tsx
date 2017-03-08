@@ -248,7 +248,7 @@ class PlayList extends React.Component<IProps, IState> {
         picStyle={{ width: 30, height: 30 }}
         titleStyle={[{ fontSize: 14 }, colorStyle]}
         subTitleStyle={colorStyle}
-        onPress={this.listItemOnPress(track.id)}
+        onPress={!isPlaying ? this.listItemOnPress(track.id) : undefined}
         // tslint:disable-next-line:jsx-no-multiline-js
         renderRight={
           <TouchableWithoutFeedback
@@ -397,8 +397,8 @@ function mapStateToProps (
   }: {
       details: IDetailState,
       player: {
-      playingTrack: number
-    }
+        playingTrack: number
+      }
   },
   ownProps: IProps
 ) {

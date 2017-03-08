@@ -2,19 +2,13 @@ import * as api from '../services/api'
 import {
   Route
 } from 'react'
+import { ITrack } from '../services/api'
+import { IPlayerMode, IPlayerStatus } from '../reducers/player'
+
+
 export interface IUserInfo {
   username: string,
   password: string
-}
-
-/**
- * Flux Standard Action created by redux-actions
- * https://github.com/acdlite/flux-standard-action
- */
-export interface IFSA<T> {
-  type: string,
-  payload: T,
-  error?: boolean
 }
 
 export type styleType = 'success' | 'info' | 'warning' | 'error'
@@ -68,4 +62,14 @@ export interface ISearchState {
   song: ISongsProps,
   album: IAlbumsProps,
   artist: IArtistProps
+}
+
+
+export interface IPlayerProps {
+  prev: () => Redux.Action,
+  next: () => Redux.Action,
+  track: ITrack,
+  status: IPlayerStatus,
+  mode: IPlayerMode,
+  changeStatus: (status: IPlayerStatus) => Redux.Action
 }

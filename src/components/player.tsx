@@ -1,23 +1,14 @@
 import * as React from 'react'
 import { ITrack } from '../services/api'
-import { IPlayerMode, IPlayerStatus } from '../reducers/player'
 import { get } from 'lodash'
 import { emitter } from '../utils'
+import { IPlayerProps as IProps } from '../interfaces'
 
 // tslint:disable-next-line:no-var-requires
 const Video = require('react-native-video')
 
 // tslint:disable-next-line:no-var-requires
 const MusicControl = require('react-native-music-control')
-
-interface IProps {
-  prev: () => Redux.Action,
-  next: () => Redux.Action,
-  track: ITrack,
-  status: IPlayerStatus,
-  mode: IPlayerMode,
-  changeStatus: (status: IPlayerStatus) => void
-}
 
 interface IState {
   duration: number
@@ -78,6 +69,7 @@ class Player extends React.Component<IProps, IState> {
     const uri = get(track, 'mp3url', false)
     return (
       uri ? <Video
+        style={{ height: 0, width: 0 }}
         ref={this.mapAudio}
         source={{ uri }}
         volume={1.0}
@@ -86,6 +78,7 @@ class Player extends React.Component<IProps, IState> {
         repeat={repeat}
         playInBackground={true}
         playWhenInactive={true}
+        onError={this.onError}
         onLoad={this.onLoad(track)}
         onProgress={this.onProgress}
         onEnd={this.onEnd}
@@ -95,6 +88,11 @@ class Player extends React.Component<IProps, IState> {
 
   mapAudio = (component: any) => {
     this.audio = component
+  }
+
+  onError = (e: any) => {
+    console.log(e)
+    this.props.changeStatus('ERROR')
   }
 
   onLoad = (track: ITrack) => ({ duration }: { duration: number }) => {
