@@ -36,6 +36,7 @@ export default handleActions({
     return {
       ...state,
       ...payload,
+      status: 'PLAYING',
       history: state.history.concat(track || [])
     }
   },

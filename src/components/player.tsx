@@ -27,6 +27,9 @@ class Player extends React.Component<IProps, IState> {
     }
   }
 
+  componentWillReceiveProps(nextProps: IProps) {
+  }
+
   componentDidMount() {
     MusicControl.enableBackgroundMode(true)
     MusicControl.enableControl('play', true)
@@ -45,7 +48,6 @@ class Player extends React.Component<IProps, IState> {
       this.props.next()
     })
     MusicControl.on('previousTrack', () => {
-      console.log('event prev')
       this.props.prev()
     })
     emitter.addListener('song.change', () => {
@@ -85,7 +87,10 @@ class Player extends React.Component<IProps, IState> {
         playWhenInactive={true}
         onTimedMetadata={this.onTimedMetadata}
         onError={this.onError}
+        progressUpdateInterval={1000.0}
+        onLoadStart={() => console.log('start load')}
         onLoad={this.onLoad(track)}
+        onBuffer={() => console.log('buffering')}
         onProgress={this.onProgress}
         onEnd={this.onEnd}
       /> : null
@@ -105,6 +110,15 @@ class Player extends React.Component<IProps, IState> {
     console.log(param)
   }
 
+  togglePlay = () => {
+    const { status } = this.props
+    if (status === 'PLAYING') {
+      this.props.changeStatus('PAUSED')
+    } else {
+      this.props.changeStatus('PLAYING')
+    }
+  }
+
   onLoad = (track: ITrack) => ({ duration }: { duration: number }) => {
     this.setState({
       duration
@@ -121,6 +135,9 @@ class Player extends React.Component<IProps, IState> {
     this.setState({
       currentTime
     } as IState)
+    MusicControl.updatePlayback({
+      elapsedTime: currentTime
+    })
   }
 
   onEnd = () => {

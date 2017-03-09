@@ -93,7 +93,7 @@ class ParallaxScroll extends React.Component<any, IState> {
     })
 
     return (
-      <Animated.View style={{transform: [{ translateY :playlistY }], paddingBottom: MARGIN_TOP}}>
+      <Animated.View style={{transform: [{ translateY :playlistY }], paddingBottom: MARGIN_TOP + 60}}>
         {children}
         {isLoading && <ActivityIndicator animating style={{marginTop: 15}}/>}
       </Animated.View>

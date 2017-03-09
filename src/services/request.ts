@@ -40,7 +40,7 @@ export function getCsrfFromCookies (): string | null {
   return csrfReg ? csrfReg[1] : null
 }
 
-function checkStatusFilter (response: IResponse) {
+function checkStatusFilter (response: any) {
   if (response.status >= 200 && response.status < 300) {
     return response
   } else {

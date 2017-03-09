@@ -5697,6 +5697,10 @@ react-mixin@^3.0.5:
     object-assign "^4.0.1"
     smart-mixin "^2.0.0"
 
+react-native-audio-streamer:
+  version "0.0.7"
+  resolved "https://registry.npmjs.org/react-native-audio-streamer/-/react-native-audio-streamer-0.0.7.tgz#82ab5b6abd7a60f61504635648dc4e6f82aa4edc"
+
 react-native-blur@1.2.0:
   version "1.2.0"
   resolved "https://registry.npmjs.org/react-native-blur/-/react-native-blur-1.2.0.tgz#4479a1efdb3666768835767accb9475b27af4ab3"
@@ -5795,9 +5799,9 @@ react-native-vector-icons@^2.1.0:
     lodash "^4.0.0"
     yargs "^4.7.0"
 
-react-native-video:
-  version "1.0.0"
-  resolved "https://registry.npmjs.org/react-native-video/-/react-native-video-1.0.0.tgz#ba92b9e1a114c2c1f3a6144b0639ca3f69a0cc74"
+"react-native-video@git://github.com/react-native-community/react-native-video.git#9bcf70cbb513402622bc114f93da751c28f15303":
+  version "0.9.0"
+  resolved "git://github.com/react-native-community/react-native-video.git#9bcf70cbb513402622bc114f93da751c28f15303"
   dependencies:
     keymirror "0.1.1"
 

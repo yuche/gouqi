@@ -15,13 +15,13 @@ import {
   Image,
   Text,
   TextStyle,
-  TouchableOpacity
+  TouchableOpacity,
+  TouchableWithoutFeedback
 } from 'react-native'
 import { centering, Color } from '../styles'
 import { get } from 'lodash'
 // tslint:disable-next-line:no-var-requires
-const Icon = require('react-native-vector-icons/FontAwesome')
-import { emitter } from '../utils'
+const Icon = require('react-native-vector-icons/MaterialIcons')
 
 class PlayerContainer extends React.Component<IProps, any> {
 
@@ -31,6 +31,11 @@ class PlayerContainer extends React.Component<IProps, any> {
 
 
   componentWillReceiveProps (nextProps: any) {
+    
+  }
+
+  componentDidMount() {
+
   }
 
   render () {
@@ -46,6 +51,7 @@ class PlayerContainer extends React.Component<IProps, any> {
         <View style={styles.wrapper}>
           {this.renderImage(picUrl)}
           {this.renderText(trackName, albumName)}
+          {this.renderBtns()}
         </View>
       </View>
     )
@@ -87,16 +93,16 @@ class PlayerContainer extends React.Component<IProps, any> {
     } = this.props
     const playIcon = () => {
       return status === 'PLAYING'
-        ? <Icon name='pause-circle-o' size={25} color='#eee'/>
-        : <Icon name='play-circle-o' size={25} color='#eee'/>
+        ? <Icon name='pause-circle-outline' size={32} color='#ccc'/>
+        : <Icon name='play-circle-outline' size={32} color='#ccc'/>
     }
     return (
-      <View style={{ flexDirection: 'column' }}>
+      <View style={{ flexDirection: 'row' }}>
         <TouchableOpacity style={[styles.btn, styles.component]} onPress={this.changeStatus}>
           {playIcon()}
         </TouchableOpacity>
         <TouchableOpacity style={[styles.btn, styles.component]} onPress={this.nextTrack}>
-          <Icon name='step-forward' size={25} color='#eee'/>
+          <Icon name='skip-next' size={32} color='#ccc'/>
         </TouchableOpacity>
       </View>
     )
@@ -124,8 +130,9 @@ class PlayerContainer extends React.Component<IProps, any> {
 const styles = {
   container: {
     padding: 10,
+    height: 60,
     borderTopColor: '#ededed',
-    backgroundColor: 'white',
+    backgroundColor: 'rgba(249, 249, 249, 0.9)',
     borderTopWidth: StyleSheet.hairlineWidth
   } as ViewStyle,
   wrapper: {
@@ -151,7 +158,8 @@ const styles = {
   } as TextStyle,
   subtitle: {
     marginLeft: 10,
-    fontSize: 14
+    fontSize: 12,
+    color: '#777'
   } as TextStyle
 }
 
@@ -187,5 +195,4 @@ export default connect(
     }
   })
 )(PlayerContainer)
-
 
