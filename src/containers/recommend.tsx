@@ -34,7 +34,7 @@ class RecommendScene extends React.Component<any, any> {
     return (
       <View style={styles.container}>
         <Text style={styles.welcome}>
-          Welcome to React nima!
+          Welcome to React wocao!
         </Text>
         <Text style={styles.instructions}>
           To get started, edit index.ios.js

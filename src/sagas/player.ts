@@ -7,9 +7,7 @@ import { get } from 'lodash'
 import { emitter } from '../utils'
 import { changeStatusAction } from '../actions'
 import { Action } from 'redux-actions'
-
-// tslint:disable-next-line:no-var-requires
-const MusicControl = require('react-native-music-control')
+import MusicControl from 'react-native-music-control/index.ios.js'
 
 function* nextTrack () {
   const playerState: IPlayerState = yield select((state: any) => state.player)
@@ -83,17 +81,14 @@ function* prevTrack () {
 
 // function* watchStatus ({ payload }: Action<IPlayerStatus>) {
 //   if (payload === 'PLAYING') {
-//     console.log('playing')
 //     yield MusicControl.updatePlayback({
-//       state: MusicControl.STATE_PLAYING,
-//       elapsedTime: 0
+//       state: MusicControl.STATE_PLAYING
 //     })
 //   }
 //   if (payload === 'PAUSED') {
-//     console.log('pause')
+//     console.log('PAUSED')
 //     yield MusicControl.updatePlayback({
-//       state: MusicControl.STATE_PAUSED,
-//       elapsedTime: 0
+//       state: MusicControl.STATE_PAUSED
 //     })
 //   }
 // }
@@ -101,8 +96,8 @@ function* prevTrack () {
 export default function* watchPlayer () {
   yield [
     takeLatest('player/track/next', nextTrack),
-    takeLatest('player/track/prev', prevTrack),
-    // takeLatest('player/status', watchStatus),
+    takeLatest('player/track/prev', prevTrack)
+    // takeLatest('player/status', watchStatus)
     // fork(playTrack)
   ]
 }

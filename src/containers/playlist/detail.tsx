@@ -31,12 +31,9 @@ import { get } from 'lodash'
 import Router from '../../routers'
 import ParallaxScroll from '../../components/ParallaxScroll'
 import { Color } from '../../styles'
-// tslint:disable-next-line:no-var-requires
-const { BlurView } = require('react-native-blur')
-// tslint:disable-next-line:no-var-requires
-const Icon = require('react-native-vector-icons/FontAwesome')
-// tslint:disable-next-line:no-var-requires
-const Ionic = require('react-native-vector-icons/Ionicons')
+import { BlurView } from 'react-native-blur'
+import Icon from 'react-native-vector-icons/FontAwesome'
+import Ionic from 'react-native-vector-icons/Ionicons'
 
 const { width, height } = Dimensions.get('window')
 

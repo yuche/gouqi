@@ -14,9 +14,7 @@ import {
 } from 'react-native'
 import Navbar from './navbar'
 import Router from '../routers'
-
-// tslint:disable-next-line:no-var-requires
-const { BlurView } = require('react-native-blur')
+import { BlurView } from 'react-native-blur'
 
 const { width, height } = Dimensions.get('window')
 

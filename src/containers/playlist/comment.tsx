@@ -18,10 +18,8 @@ import {
 } from 'react-native'
 import { isEmpty } from 'lodash'
 import Router from '../../routers'
-// tslint:disable-next-line
-const Icon = require('react-native-vector-icons/FontAwesome')
-// tslint:disable-next-line:no-var-requires
-const timeago = require('timeago.js')
+import Icon from 'react-native-vector-icons/FontAwesome'
+import timeago from 'timeago.js'
 const timeagoInstance = new timeago(new Date(), 'zh_CN')
 
 const { width } = Dimensions.get('window')

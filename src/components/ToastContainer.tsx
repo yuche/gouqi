@@ -1,9 +1,7 @@
 import Toast from './toast'
 import * as React from 'react'
 import { connect } from 'react-redux'
-
-// tslint:disable-next-line:no-var-requires
-const RootSiblings = require('react-native-root-siblings').default
+import RootSiblings from 'react-native-root-siblings'
 
 import {
   IToastPayload

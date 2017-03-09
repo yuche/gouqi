@@ -13,7 +13,7 @@ import {
   Color
 } from '../styles'
 // tslint:disable-next-line
-const Icon = require('react-native-vector-icons/FontAwesome')
+import Icon from 'react-native-vector-icons/FontAwesome'
 
 type Ref = string | ((instance: any) => any)
 

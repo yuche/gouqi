@@ -1,5 +1,4 @@
-// tslint:disable-next-line:no-var-requires
-const { createIconSet } = require('react-native-vector-icons')
+import { createIconSet } from 'react-native-vector-icons'
 
 const glyphMap = {
   artist: '\ue61d',

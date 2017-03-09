@@ -20,8 +20,7 @@ import {
 } from 'react-native'
 import { centering, Color } from '../styles'
 import { get } from 'lodash'
-// tslint:disable-next-line:no-var-requires
-const Icon = require('react-native-vector-icons/MaterialIcons')
+import Icon from 'react-native-vector-icons/MaterialIcons'
 
 class PlayerContainer extends React.Component<IProps, any> {
 

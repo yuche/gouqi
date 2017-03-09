@@ -9,16 +9,13 @@ import {
 import { ISearchQuery, startSearch, ISearchActiveTab, changeSearchActiveTab } from '../actions'
 import { Form } from '../components/base'
 import { IRouterProps } from '../interfaces'
-import * as api from '../services/api'
 import TabBar from '../components/homeNavBar'
 import PlayList from './search/playlist'
 import Song from './search/song'
 import Album from './search/album'
 import Artist from './search/artist'
 import { Actions } from 'react-native-router-flux'
-
-const { SearchType } = api
-const ScrollableTabView = require('react-native-scrollable-tab-view') // tslint:disable-line
+import ScrollableTabView from 'react-native-scrollable-tab-view'
 
 interface IProps extends IRouterProps {
   startSearch: ISearchQuery,

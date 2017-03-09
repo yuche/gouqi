@@ -1,5 +1,4 @@
-// tslint:disable-next-line:no-var-requires
-const EventEmitter = require('react-native/Libraries/EventEmitter/EventEmitter')
+import EventEmitter from 'react-native/Libraries/EventEmitter/EventEmitter'
 
 export const emitter = new EventEmitter()
 

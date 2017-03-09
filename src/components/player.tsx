@@ -4,11 +4,9 @@ import { get } from 'lodash'
 import { emitter } from '../utils'
 import { IPlayerProps as IProps } from '../interfaces'
 
-// tslint:disable-next-line:no-var-requires
-const Video = require('react-native-video').default
+import Video from 'react-native-video'
 
-// tslint:disable-next-line:no-var-requires
-const MusicControl = require('react-native-music-control')
+import MusicControl from 'react-native-music-control/index.ios.js'
 
 interface IState {
   duration: number

@@ -3,8 +3,8 @@ package com.gouqi;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
-import com.brentvatne.react.ReactVideoPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
+import com.brentvatne.react.ReactVideoPackage;
 import com.tanguyantoine.react.MusicControl;
 import com.cmcewen.blurview.BlurViewPackage;
 import fm.indiecast.rnaudiostreamer.RNAudioStreamerPackage;
@@ -28,8 +28,8 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
-            new ReactVideoPackage(),
             new VectorIconsPackage(),
+            new ReactVideoPackage(),
             new MusicControl(),
             new BlurViewPackage(),
             new RNAudioStreamerPackage()

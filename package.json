@@ -3,7 +3,7 @@
   "version": "0.1.1",
   "private": true,
   "scripts": {
-    "start": "NODE_ENV=development node node_modules/react-native/local-cli/cli.js start",
+    "start": "node node_modules/react-native/local-cli/cli.js start",
     "ios": "node node_modules/react-native/local-cli/cli.js run-ios --configuration Release",
     "link": "node node_modules/react-native/local-cli/cli.js link",
     "quickbuild": "tsc",

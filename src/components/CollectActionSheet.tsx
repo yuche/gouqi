@@ -16,9 +16,7 @@ import {
 } from '../actions'
 import PopupContainer from './PopupContainer'
 import { centering, Color } from '../styles'
-// tslint:disable-next-line
-const Icon = require('react-native-vector-icons/Ionicons')
-
+import Icon from 'react-native-vector-icons/Ionicons'
 const { height } = Dimensions.get('window')
 
 interface IProps {
