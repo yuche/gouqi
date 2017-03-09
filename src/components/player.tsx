@@ -45,6 +45,7 @@ class Player extends React.Component<IProps, IState> {
       this.props.next()
     })
     MusicControl.on('previousTrack', () => {
+      console.log('event prev')
       this.props.prev()
     })
     emitter.addListener('song.change', () => {
@@ -55,6 +56,10 @@ class Player extends React.Component<IProps, IState> {
         currentTime: 0
       } as IState)
     })
+  }
+
+  componentWillUnmount () {
+    MusicControl.resetNowPlaying()
   }
 
   render() {
@@ -78,6 +83,7 @@ class Player extends React.Component<IProps, IState> {
         repeat={repeat}
         playInBackground={true}
         playWhenInactive={true}
+        onTimedMetadata={this.onTimedMetadata}
         onError={this.onError}
         onLoad={this.onLoad(track)}
         onProgress={this.onProgress}
@@ -93,6 +99,10 @@ class Player extends React.Component<IProps, IState> {
   onError = (e: any) => {
     console.log(e)
     this.props.changeStatus('ERROR')
+  }
+
+  onTimedMetadata = (param: any) => {
+    console.log(param)
   }
 
   onLoad = (track: ITrack) => ({ duration }: { duration: number }) => {

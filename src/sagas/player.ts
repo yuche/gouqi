@@ -66,6 +66,8 @@ function* prevTrack () {
 }
 
 export default function* watchPlayer () {
-  yield* takeLatest('player/track/next', nextTrack)
-  yield* takeLatest('player/track/prev', prevTrack)
+  yield [
+    takeLatest('player/track/next', nextTrack),
+    takeLatest('player/track/prev', prevTrack)
+  ]
 }
