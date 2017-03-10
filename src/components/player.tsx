@@ -37,10 +37,10 @@ class Player extends React.Component<IProps, IState> {
     MusicControl.enableControl('seekForward', false)
     MusicControl.enableControl('seekBackward', false)
     MusicControl.on('play', () => {
-      this.props.changeStatus('PLAYING')
+      this.props.changeStatus('PLAYING', this.state.currentTime)
     })
     MusicControl.on('pause', () => {
-      this.props.changeStatus('PAUSED')
+      this.props.changeStatus('PAUSED', this.state.currentTime)
     })
     MusicControl.on('nextTrack', () => {
       this.props.next()
@@ -69,7 +69,7 @@ class Player extends React.Component<IProps, IState> {
       mode
     } = this.props
 
-    const paused = status === 'PAUSED'
+    const paused = status !== 'PLAYING'
     const repeat = mode === 'REPEAT'
     const uri = get(track, 'mp3Url', false)
     return (
@@ -83,9 +83,7 @@ class Player extends React.Component<IProps, IState> {
         repeat={repeat}
         playInBackground={true}
         playWhenInactive={true}
-        onTimedMetadata={this.onTimedMetadata}
         onError={this.onError}
-        progressUpdateInterval={1000.0}
         onLoadStart={() => console.log('start load')}
         onLoad={this.onLoad(track)}
         onBuffer={() => console.log('buffering')}
@@ -101,20 +99,11 @@ class Player extends React.Component<IProps, IState> {
 
   onError = (e: any) => {
     console.log(e)
-    this.props.changeStatus('ERROR')
+    this.props.changeStatus('PAUSED', this.state.currentTime)
   }
 
   onTimedMetadata = (param: any) => {
     console.log(param)
-  }
-
-  togglePlay = () => {
-    const { status } = this.props
-    if (status === 'PLAYING') {
-      this.props.changeStatus('PAUSED')
-    } else {
-      this.props.changeStatus('PLAYING')
-    }
   }
 
   onLoad = (track: ITrack) => ({ duration }: { duration: number }) => {
@@ -133,9 +122,10 @@ class Player extends React.Component<IProps, IState> {
     this.setState({
       currentTime
     } as IState)
-    MusicControl.updatePlayback({
-      elapsedTime: currentTime
-    })
+    // MusicControl.updatePlayback({
+    //   state: MusicControl.STATE_PLAYING,
+    //   elapsedTime: currentTime
+    // })
   }
 
   onEnd = () => {

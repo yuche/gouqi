@@ -40,10 +40,10 @@ export default handleActions({
       history: state.history.concat(track || [])
     }
   },
-  'player/status' (state, { payload }: Action<IPlayerStatus>) {
+  'player/status' (state, { payload }: any) {
     return {
       ...state,
-      status: payload
+      status: payload.status
     }
   },
   'player/mode' (state, { payload }: Action<IPlayerMode>) {

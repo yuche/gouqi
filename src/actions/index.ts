@@ -56,7 +56,10 @@ export const playTrackAction: IPlayTrackAction = createAction('player/play',
   }
 )
 
-export const changeStatusAction = createAction('player/status')
+export const changeStatusAction = createAction('player/status', (status, currentTime) => ({
+  status,
+  currentTime
+}))
 
 export const nextTrackAction = createAction('player/track/next')
 

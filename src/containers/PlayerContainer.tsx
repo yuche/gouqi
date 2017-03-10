@@ -22,11 +22,16 @@ import { centering, Color } from '../styles'
 import { get } from 'lodash'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 
-class PlayerContainer extends React.Component<IProps, any> {
+class PlayerContainer extends React.Component<IProps, { currentTime: number }> {
+  private player: any
 
   constructor(props: IProps) {
     super(props)
+    this.state = {
+      currentTime: 0
+    }
   }
+
 
 
   componentWillReceiveProps (nextProps: any) {
@@ -46,7 +51,7 @@ class PlayerContainer extends React.Component<IProps, any> {
     const albumName = get(track, 'album.name', '')
     return (
       <View style={styles.container}>
-        <Player {...this.props}/>
+        <Player {...this.props} ref={this.mapPlayer}/>
         <View style={styles.wrapper}>
           {this.renderImage(picUrl)}
           {this.renderText(trackName, albumName)}
@@ -54,6 +59,10 @@ class PlayerContainer extends React.Component<IProps, any> {
         </View>
       </View>
     )
+  }
+
+  mapPlayer = (component) => {
+    this.player = component
   }
 
   renderImage = (picUrl: string) => {
@@ -97,7 +106,7 @@ class PlayerContainer extends React.Component<IProps, any> {
     }
     return (
       <View style={{ flexDirection: 'row' }}>
-        <TouchableOpacity style={[styles.btn, styles.component]} onPress={this.changeStatus}>
+        <TouchableOpacity style={[styles.btn, styles.component]} onPress={this.togglePlayPause}>
           {playIcon()}
         </TouchableOpacity>
         <TouchableOpacity style={[styles.btn, styles.component]} onPress={this.nextTrack}>
@@ -107,12 +116,13 @@ class PlayerContainer extends React.Component<IProps, any> {
     )
   }
 
-  changeStatus = () => {
+  togglePlayPause = () => {
     const { status } = this.props
+    const { currentTime } = this.player.state
     if (status === 'PLAYING') {
-      this.props.changeStatus('PAUSED')
+      this.props.changeStatus('PAUSED', currentTime)
     } else {
-      this.props.changeStatus('PLAYING')
+      this.props.changeStatus('PLAYING', currentTime)
     }
   }
 
@@ -189,8 +199,8 @@ export default connect(
     next() {
       return dispatch(nextTrackAction())
     },
-    changeStatus(status: IPlayerStatus) {
-      return dispatch(changeStatusAction(status))
+    changeStatus(status: IPlayerStatus, currentTime?: number) {
+      return dispatch(changeStatusAction(status, currentTime))
     }
   })
 )(PlayerContainer)

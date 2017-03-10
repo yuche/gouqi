@@ -67,37 +67,32 @@ function* prevTrack () {
   }
 }
 
-// function* playTrack () {
-//   while (true) {
-//     const { payload: { playingTrack, playlist } }: { payload: IPlayPayload } = yield take('player/play')
+function* playTrack () {
+  while (true) {
+      yield put(changeStatusAction('PLAYING', 0))
+  }
+}
 
-//     if (playlist) {
-//       const track = playlist.find(t => t.id === playingTrack)
-//       const uri = get(track, 'mp3Url')
-//       yield put(changeStatusAction('PLAYING'))
-//     }
-//   }
-// }
-
-// function* watchStatus ({ payload }: Action<IPlayerStatus>) {
-//   if (payload === 'PLAYING') {
-//     yield MusicControl.updatePlayback({
-//       state: MusicControl.STATE_PLAYING
-//     })
-//   }
-//   if (payload === 'PAUSED') {
-//     console.log('PAUSED')
-//     yield MusicControl.updatePlayback({
-//       state: MusicControl.STATE_PAUSED
-//     })
-//   }
-// }
+function* watchStatus ({ payload: {status, currentTime} }) {
+  if (status === 'PLAYING') {
+    MusicControl.updatePlayback({
+      state: MusicControl.STATE_PLAYING,
+      elapsedTime: currentTime
+    })
+  }
+  if (status === 'PAUSED') {
+    MusicControl.updatePlayback({
+      state: MusicControl.STATE_PAUSED,
+      elapsedTime: currentTime
+    })
+  }
+}
 
 export default function* watchPlayer () {
   yield [
     takeLatest('player/track/next', nextTrack),
-    takeLatest('player/track/prev', prevTrack)
-    // takeLatest('player/status', watchStatus)
+    takeLatest('player/track/prev', prevTrack),
+    takeLatest('player/status', watchStatus)
     // fork(playTrack)
   ]
 }
