@@ -66,12 +66,12 @@ class Player extends React.Component<IProps, IState> {
     const {
       track,
       status,
-      mode
+      mode,
+      uri
     } = this.props
 
     const paused = status !== 'PLAYING'
     const repeat = mode === 'REPEAT'
-    const uri = get(track, 'mp3Url', false)
     return (
       uri ? <Video
         style={{ height: 0, width: 0 }}
@@ -122,10 +122,10 @@ class Player extends React.Component<IProps, IState> {
     this.setState({
       currentTime
     } as IState)
-    // MusicControl.updatePlayback({
-    //   state: MusicControl.STATE_PLAYING,
-    //   elapsedTime: currentTime
-    // })
+    MusicControl.updatePlayback({
+      state: MusicControl.STATE_PLAYING,
+      elapsedTime: currentTime
+    })
   }
 
   onEnd = () => {

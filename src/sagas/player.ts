@@ -6,6 +6,8 @@ import { takeLatest } from 'redux-saga'
 import { get } from 'lodash'
 import { emitter } from '../utils'
 import { changeStatusAction } from '../actions'
+import * as api from '../services/api'
+import { ajaxCall } from './common'
 import { Action } from 'redux-actions'
 import MusicControl from 'react-native-music-control/index.ios.js'
 
@@ -67,9 +69,24 @@ function* prevTrack () {
   }
 }
 
-function* playTrack () {
-  while (true) {
-      yield put(changeStatusAction('PLAYING', 0))
+function* playTrack ({ payload: { playingTrack } }) {
+  const { playlist }: IPlayerState = yield select((state: any) => state.player)
+  if (playlist.length) {
+    const track = playlist.find(t => t.id === playingTrack)
+    let uri = get(track, 'mp3Url', '')
+    if (uri.startsWith('http')) {
+      const response = yield* ajaxCall(api.batchSongDetailsNew, [playingTrack.toString()])
+      console.log(response)
+      if (response.code === 200) {
+        uri = response.data[0].url
+      }
+    }
+    yield put({
+      type: 'player/track/play',
+      payload: uri
+    })
+    yield put(changeStatusAction('PLAYING'))
+    emitter.emit('song.change')
   }
 }
 
@@ -92,7 +109,8 @@ export default function* watchPlayer () {
   yield [
     takeLatest('player/track/next', nextTrack),
     takeLatest('player/track/prev', prevTrack),
-    takeLatest('player/status', watchStatus)
+    takeLatest('player/status', watchStatus),
+    takeLatest('player/play', playTrack)
     // fork(playTrack)
   ]
 }

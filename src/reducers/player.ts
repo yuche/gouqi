@@ -6,7 +6,8 @@ export interface IPlayerState {
   status: IPlayerStatus,
   playlist: ITrack[],
   mode: IPlayerMode,
-  history: ITrack[]
+  history: ITrack[],
+  uri: string
 }
 
 export type IPlayerStatus = 'PLAYING' | 'PAUSED' | 'STOPPED' | 'FINISHED' | 'BUFFERING' | 'ERROR'
@@ -23,7 +24,8 @@ const initialState: IPlayerState = {
   status: 'STOPPED',
   playlist: [],
   mode: 'SEQUE',
-  history: []
+  history: [],
+  uri: ''
 }
 
 export default handleActions({
@@ -36,7 +38,6 @@ export default handleActions({
     return {
       ...state,
       ...payload,
-      status: 'PLAYING',
       history: state.history.concat(track || [])
     }
   },
@@ -50,6 +51,12 @@ export default handleActions({
     return {
       ...state,
       mode: payload
+    }
+  },
+  'player/track/play' (state, { payload }) {
+    return {
+      ...state,
+      uri: payload
     }
   }
 }, initialState)

@@ -71,5 +71,6 @@ export interface IPlayerProps {
   track: ITrack,
   status: IPlayerStatus,
   mode: IPlayerMode,
+  uri: string,
   changeStatus: (status: IPlayerStatus, currentTime?: number) => Redux.Action
 }

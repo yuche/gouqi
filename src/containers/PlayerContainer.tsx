@@ -178,7 +178,8 @@ function mapStateToProps (
       playlist,
       playingTrack,
       status,
-      mode
+      mode,
+      uri
     }
   }: { player: IPlayerState }
 ) {
@@ -186,7 +187,8 @@ function mapStateToProps (
   return {
     mode,
     status,
-    track
+    track,
+    uri
   }
 }
 
