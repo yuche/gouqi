@@ -7,7 +7,10 @@ export interface IPlayerState {
   playlist: ITrack[],
   mode: IPlayerMode,
   history: ITrack[],
-  uri: string
+  uri: string,
+  currentTime: any,
+  duration: any,
+  seconds: any
 }
 
 export type IPlayerStatus = 'PLAYING' | 'PAUSED' | 'STOPPED' | 'FINISHED' | 'BUFFERING' | 'ERROR'
@@ -25,7 +28,10 @@ const initialState: IPlayerState = {
   playlist: [],
   mode: 'SEQUE',
   history: [],
-  uri: ''
+  uri: '',
+  currentTime: 0,
+  duration: 0,
+  seconds: 0
 }
 
 export default handleActions({
@@ -57,6 +63,26 @@ export default handleActions({
     return {
       ...state,
       uri: payload
+    }
+  },
+  'player/currentTime' (state, { payload }) {
+    return {
+      ...state,
+      currentTime: payload
+    }
+  },
+  'player/duration' (state, { payload }) {
+    return {
+      ...state,
+      duration: payload
+    }
+  },
+  '🐸🐸🐸' (state, { payload }) {
+    return {
+      ...state,
+      seconds: typeof payload === 'number'
+        ? payload
+        : state.seconds + 250
     }
   }
 }, initialState)

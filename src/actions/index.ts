@@ -7,6 +7,8 @@ import {
 import { IPlayPayload } from '../reducers/player'
 import { ITrack } from '../services/api'
 
+export const addSecondsAction = createAction('🐸🐸🐸')
+
 export type IuserLogin = (userInfo: IUserInfo) => Action<IUserInfo>
 export const userLogin: IuserLogin = createAction('user/login')
 
@@ -58,10 +60,13 @@ export const playTrackAction: IPlayTrackAction = createAction('player/play',
 
 export const downloadTracksAction = createAction('download/tracks')
 
-export const changeStatusAction = createAction('player/status', (status, currentTime) => ({
-  status,
-  currentTime
+export const changeStatusAction = createAction('player/status', (status) => ({
+  status
 }))
+
+export const durationAction = createAction('player/duration')
+
+export const currentTimeAction = createAction('player/currentTime')
 
 export const nextTrackAction = createAction('player/track/next')
 

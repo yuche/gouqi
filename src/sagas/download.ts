@@ -1,12 +1,13 @@
 import {
-    AsyncStorage
+    AsyncStorage,
+    InteractionManager
 } from 'react-native'
 import RNFS from 'react-native-fs'
-import { put, call, fork, select } from 'redux-saga/effects'
+import { put, call, select } from 'redux-saga/effects'
 import { ITrack, batchSongDetailsNew, getUserId } from '../services/api'
 import { uniqBy } from 'lodash'
-import { toastAction } from '../actions'
-import { getDownloadedTracks, FILES_FOLDER, DOWNLOADED_TRACKS } from '../utils'
+import { toastAction, hideTrackActionSheet } from '../actions'
+import { FILES_FOLDER, DOWNLOADED_TRACKS } from '../utils'
 import { takeEvery, takeLatest } from 'redux-saga'
 
 const IS_LOGIN = !!getUserId()
@@ -29,36 +30,43 @@ export async function MergeDownloadedTracks (original, tracks) {
 }
 
 function* downloadTracksSaga ({ payload }: ITracksPayload) {
+  yield put(hideTrackActionSheet())
+  yield call(InteractionManager.runAfterInteractions)
   yield put(toastAction('success', '已开始下载'))
   const downloadedTracks: ITrack[] = yield select((state: any) => state.download.tracks)
-  let tasks = uniqBy(downloadedTracks.concat(payload), 'id')
+  const trackIds = payload.map(t => t.id)
+  let tasks = downloadedTracks.filter(t => trackIds.indexOf(t.id) === -1)
   let success: ITrack[] = []
   let fail = 0
 
-  if (IS_LOGIN) {
-    const response = yield call(batchSongDetailsNew, payload.map(t => t.id.toString()))
-    if (response.code === 200) {
-      tasks = response.data.map(data => ({...data, mp3Url: data.url}))
+  if (tasks.length > 0) {
+    if (IS_LOGIN) {
+      const response = yield call(batchSongDetailsNew, trackIds.map(t => t.toString()))
+      if (response.code === 200) {
+        tasks = response.data.map(data => ({...data, mp3Url: data.url}))
+      }
     }
-  }
 
-  for (let task of tasks) {
-    const isSuccess = yield call(donwloadSingleTrack, task.mp3Url, task.id)
-    if (isSuccess) {
-      success.push(task)
-      yield put({
-        type: 'download/tracks/merge',
-        payload: {
-          ...task,
-          mp3Url: `${FILES_FOLDER}/${task.id}.mp3`
-        }
-      })
-    } else {
-      fail += 1
+    for (let task of tasks) {
+      const isSuccess = yield call(donwloadSingleTrack, task.mp3Url, task.id)
+      if (isSuccess) {
+        success.push(task)
+        yield put({
+          type: 'download/tracks/merge',
+          payload: {
+            ...task,
+            mp3Url: `${FILES_FOLDER}/${task.id}.mp3`
+          }
+        })
+      } else {
+        fail += 1
+      }
     }
-  }
 
-  yield put(toastAction('info', `下载成功 ${success.length} 个，失败 ${fail} 个`))
+    yield put(toastAction('info', `下载成功 ${success.length} 个，失败 ${fail} 个`))
+  } else {
+    yield put(toastAction('info', '已经下载过了'))
+  }
 }
 
 function* mergeTracksSaga ({ payload }: ITracksPayload) {

@@ -1,4 +1,3 @@
-import EventEmitter from 'react-native/Libraries/EventEmitter/EventEmitter'
 import {
     AsyncStorage
 } from 'react-native'
@@ -8,8 +7,6 @@ import RNFS from 'react-native-fs'
 export const DOWNLOADED_TRACKS = 'DOWNLOADED_TRACKS'
 
 export const FILES_FOLDER = `${RNFS.DocumentDirectoryPath}/files`
-
-export const emitter = new EventEmitter()
 
 export async function getDownloadedTracks (): Promise<ITrack[]> {
   const tracks = await AsyncStorage.getItem(DOWNLOADED_TRACKS)

@@ -6,7 +6,9 @@ import { IPlayerState, IPlayerStatus } from '../reducers/player'
 import {
   changeStatusAction,
   nextTrackAction,
-  prevTrackAction
+  prevTrackAction,
+  currentTimeAction,
+  durationAction
 } from '../actions'
 import {
   View,
@@ -22,14 +24,10 @@ import { centering, Color } from '../styles'
 import { get } from 'lodash'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 
-class PlayerContainer extends React.Component<IProps, { currentTime: number }> {
-  private player: any
+class PlayerContainer extends React.Component<IProps, any> {
 
   constructor(props: IProps) {
     super(props)
-    this.state = {
-      currentTime: 0
-    }
   }
 
 
@@ -51,7 +49,7 @@ class PlayerContainer extends React.Component<IProps, { currentTime: number }> {
     const albumName = get(track, 'album.name', '')
     return (
       <View style={styles.container}>
-        <Player {...this.props} ref={this.mapPlayer}/>
+        <Player {...this.props} />
         <View style={styles.wrapper}>
           {this.renderImage(picUrl)}
           {this.renderText(trackName, albumName)}
@@ -59,10 +57,6 @@ class PlayerContainer extends React.Component<IProps, { currentTime: number }> {
         </View>
       </View>
     )
-  }
-
-  mapPlayer = (component) => {
-    this.player = component
   }
 
   renderImage = (picUrl: string) => {
@@ -118,11 +112,10 @@ class PlayerContainer extends React.Component<IProps, { currentTime: number }> {
 
   togglePlayPause = () => {
     const { status } = this.props
-    const { currentTime } = this.player.state
     if (status === 'PLAYING') {
-      this.props.changeStatus('PAUSED', currentTime)
+      this.props.changeStatus('PAUSED')
     } else {
-      this.props.changeStatus('PLAYING', currentTime)
+      this.props.changeStatus('PLAYING')
     }
   }
 
@@ -179,7 +172,9 @@ function mapStateToProps (
       playingTrack,
       status,
       mode,
-      uri
+      uri,
+      duration,
+      currentTime
     }
   }: { player: IPlayerState }
 ) {
@@ -188,7 +183,9 @@ function mapStateToProps (
     mode,
     status,
     track,
-    uri
+    uri,
+    duration,
+    currentTime
   }
 }
 
@@ -201,8 +198,14 @@ export default connect(
     next() {
       return dispatch(nextTrackAction())
     },
-    changeStatus(status: IPlayerStatus, currentTime?: number) {
-      return dispatch(changeStatusAction(status, currentTime))
+    changeStatus(status: IPlayerStatus) {
+      return dispatch(changeStatusAction(status))
+    },
+    setCurrentTime(currentTime) {
+      return dispatch(currentTimeAction(currentTime))
+    },
+    setDuration(duration) {
+      return dispatch(durationAction(duration))
     }
   })
 )(PlayerContainer)

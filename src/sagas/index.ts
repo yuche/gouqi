@@ -9,7 +9,8 @@ import {
   IUserInfo
 } from '../interfaces'
 import {
-  toastAction
+  toastAction,
+  addSecondsAction
 } from '../actions'
 import watchSearch from './search'
 import watchComment from './comment'
@@ -80,6 +81,11 @@ function* setDownloadTracksSaga () {
   yield call(RNFS.mkdir, FILES_FOLDER)
 }
 
+function* setSecondsSaga () {
+  const seconds = yield call(AsyncStorage.getItem, 'SECONDS')
+  yield put(addSecondsAction(Number(seconds)))
+}
+
 export function* init() {
   while (true) {
     yield take('app/init')
@@ -87,6 +93,9 @@ export function* init() {
     yield* setCookiesSaga()
 
     yield* setDownloadTracksSaga()
+
+    yield* setSecondsSaga()
+
   }
 }
 

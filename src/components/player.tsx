@@ -1,7 +1,6 @@
 import * as React from 'react'
 import { ITrack } from '../services/api'
 import { get } from 'lodash'
-import { emitter } from '../utils'
 import { IPlayerProps as IProps } from '../interfaces'
 import Video from 'react-native-video'
 import MusicControl from 'react-native-music-control/index.ios.js'
@@ -13,16 +12,12 @@ interface IState {
   currentTime: number
 }
 
-class Player extends React.Component<IProps, IState> {
+class Player extends React.Component<IProps, any> {
 
   private audio: any
 
   constructor(props: IProps) {
     super(props)
-    this.state = {
-      duration: 0,
-      currentTime: 0
-    }
   }
 
   componentDidMount() {
@@ -37,10 +32,10 @@ class Player extends React.Component<IProps, IState> {
     MusicControl.enableControl('seekForward', false)
     MusicControl.enableControl('seekBackward', false)
     MusicControl.on('play', () => {
-      this.props.changeStatus('PLAYING', this.state.currentTime)
+      this.props.changeStatus('PLAYING')
     })
     MusicControl.on('pause', () => {
-      this.props.changeStatus('PAUSED', this.state.currentTime)
+      this.props.changeStatus('PAUSED')
     })
     MusicControl.on('nextTrack', () => {
       this.props.next()
@@ -76,9 +71,8 @@ class Player extends React.Component<IProps, IState> {
         playInBackground={true}
         playWhenInactive={true}
         onError={this.onError}
-        onLoadStart={() => console.log('start load')}
         onLoad={this.onLoad(track)}
-        onBuffer={() => console.log('buffering')}
+        onTimedMetadata={this.onTimedMetadata}
         onProgress={this.onProgress}
         onEnd={this.onEnd}
       /> : null
@@ -90,19 +84,16 @@ class Player extends React.Component<IProps, IState> {
   }
 
   onError = (e: any) => {
-    console.log(e)
-    this.props.changeStatus('PAUSED', this.state.currentTime)
+    this.props.changeStatus('PAUSED')
   }
 
   onTimedMetadata = (param: any) => {
+    console.log('on meta')
     console.log(param)
   }
 
   onLoad = (track: ITrack) => ({ duration }: { duration: number }) => {
-    this.setState({
-      duration
-    } as IState)
-    console.log('on load')
+    this.props.setDuration(duration)
     MusicControl.setNowPlaying({
       title: track.name,
       artwork: track.album.picUrl,
@@ -112,9 +103,7 @@ class Player extends React.Component<IProps, IState> {
   }
 
   onProgress = ({ currentTime }: { currentTime: number }) => {
-    this.setState({
-      currentTime
-    } as IState)
+    this.props.setCurrentTime(currentTime)
   }
 
   onEnd = () => {

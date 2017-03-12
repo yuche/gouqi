@@ -1,20 +1,27 @@
 import { take, put, call, fork, select } from 'redux-saga/effects'
-import { IPlayerState, IPlayPayload, IPlayerStatus } from '../reducers/player'
+import { IPlayerState } from '../reducers/player'
 import { findIndex, sample } from 'lodash'
 import { playTrackAction } from '../actions'
-import { takeLatest } from 'redux-saga'
+import { takeLatest, takeEvery } from 'redux-saga'
 import { get } from 'lodash'
-import { emitter } from '../utils'
-import { changeStatusAction } from '../actions'
+import {
+  changeStatusAction,
+  currentTimeAction,
+  addSecondsAction
+} from '../actions'
+import {
+  AsyncStorage
+} from 'react-native'
 import * as api from '../services/api'
 import { ajaxCall } from './common'
-import { Action } from 'redux-actions'
 import MusicControl from 'react-native-music-control/index.ios.js'
 
 function* nextTrack () {
   const playerState: IPlayerState = yield select((state: any) => state.player)
 
-  const { mode, playingTrack, playlist } = playerState
+  const { mode, playingTrack, playlist, seconds } = playerState
+
+  yield fork(AsyncStorage.setItem, 'SECONDS', seconds.toString())
 
   const length = playlist.length
 
@@ -42,7 +49,9 @@ function* nextTrack () {
 function* prevTrack () {
   const playerState: IPlayerState = yield select((state: any) => state.player)
 
-  const { history, playlist, playingTrack } = playerState
+  const { history, playlist, playingTrack, seconds } = playerState
+
+  yield fork(AsyncStorage.setItem, 'SECONDS', seconds.toString())
 
   if (playlist.length) {
     const historyLength = history.length
@@ -82,11 +91,13 @@ function* playTrack ({ payload: { playingTrack } }) {
       type: 'player/track/play',
       payload: uri
     })
-    yield put(changeStatusAction('PLAYING', 0))
+    yield put(currentTimeAction(0))
+    yield put(changeStatusAction('PLAYING'))
   }
 }
 
-function* watchStatus ({ payload: {status, currentTime} }) {
+function* watchStatus ({ payload: {status} }) {
+  const currentTime = yield select((state: any) => state.player.currentTime)
   if (status === 'PLAYING') {
     MusicControl.updatePlayback({
       state: MusicControl.STATE_PLAYING,
@@ -101,12 +112,17 @@ function* watchStatus ({ payload: {status, currentTime} }) {
   }
 }
 
+function* watchCurrentTime({ payload }) {
+  yield put(addSecondsAction())
+}
+
 export default function* watchPlayer () {
   yield [
     takeLatest('player/track/next', nextTrack),
     takeLatest('player/track/prev', prevTrack),
-    takeLatest('player/status', watchStatus),
-    takeLatest('player/play', playTrack)
+    takeEvery('player/status', watchStatus),
+    takeLatest('player/play', playTrack),
+    takeEvery('player/currentTime', watchCurrentTime)
     // fork(playTrack)
   ]
 }

@@ -66,11 +66,15 @@ export interface ISearchState {
 
 
 export interface IPlayerProps {
-  prev: () => Redux.Action,
-  next: () => Redux.Action,
   track: ITrack,
   status: IPlayerStatus,
   mode: IPlayerMode,
+  currentTime: number,
+  duration: number,
   uri: string,
-  changeStatus: (status: IPlayerStatus, currentTime?: number) => Redux.Action
+  prev: () => Redux.Action,
+  next: () => Redux.Action,
+  changeStatus: (status: IPlayerStatus) => Redux.Action,
+  setCurrentTime: (currentTime) => Redux.Action,
+  setDuration: (duration) => Redux.Action
 }
