@@ -19,6 +19,7 @@ interface IListItem {
   titleStyle?: TextStyle,
   subTitle?: string | JSX.Element | null,
   subTitleStyle?: TextStyle,
+  textContainer?: ViewStyle,
   roundPic?: boolean,
   subTitleContainerStyle?: ViewStyle,
   mainTitleContainerStyle?: ViewStyle,
@@ -52,6 +53,7 @@ class ListItem extends React.Component<IListItem, any> {
       numeberOfLines = 1,
       renderLeft,
       renderRight,
+      textContainer,
       onPress
     } = this.props
     const Component = onPress ? TouchableHighlight : View
@@ -64,7 +66,7 @@ class ListItem extends React.Component<IListItem, any> {
       >
         <View style={[styles.wrapper, wrapperStyle && wrapperStyle]}>
           { this.renderLeft(picURI, roundPic, picStyle, renderLeft) }
-          <View style={[styles.titleContainer, !subTitle && { justifyContent: 'center' }]}>
+          <View style={[styles.titleContainer, !subTitle && { justifyContent: 'center' }, textContainer]}>
             <View style={[mainTitleContainerStyle && mainTitleContainerStyle]}>
               <Text style={[styles.title, titleStyle && titleStyle]} numberOfLines={numeberOfLines} onPress={onPress}>
                 { title }
@@ -84,11 +86,15 @@ class ListItem extends React.Component<IListItem, any> {
     }
     const borderRadius = { borderRadius : picStyle && picStyle.height ? picStyle.height / 2 : 20 }
     if (picURI) {
-      return <Image
-        resizeMode='contain'
-        source={{uri: picURI}}
-        style={[styles.pic, roundPic && borderRadius, picStyle && picStyle]}
-      />
+      return (
+        <View style={{ justifyContent: 'center' }}>
+          <Image
+            resizeMode='contain'
+            source={{uri: picURI}}
+            style={[styles.pic, roundPic && borderRadius, picStyle && picStyle]}
+          />
+        </View>
+      )
     }
   }
 

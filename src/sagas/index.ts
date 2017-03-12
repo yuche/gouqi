@@ -15,7 +15,10 @@ import watchSearch from './search'
 import watchComment from './comment'
 import watchPlaylist from './playlist'
 import watchPlayer from './player'
+import watchDownload from './download'
 import Router from '../routers'
+import RNFS from 'react-native-fs'
+import { getDownloadedTracks, FILES_FOLDER } from '../utils'
 
 export function* loginFlow () {
   while (true) {
@@ -49,25 +52,41 @@ export function* loginFlow () {
   }
 }
 
+function* setCookiesSaga () {
+  const Cookies: string = yield AsyncStorage.getItem('Cookies')
+
+  if (Cookies && Cookies.includes(';')) {
+    const expires = Cookies.split(';').find(c => c.includes('Expires'))
+    if (expires) {
+      if (new Date(expires) > new Date()) {
+        setCookies(Cookies)
+        yield put({
+          type: 'personal/playlist'
+        })
+      } else {
+        yield put(toastAction('info', '登录凭证已过期'))
+        yield Router.toLogin()
+      }
+    }
+  }
+}
+
+function* setDownloadTracksSaga () {
+  const tracks = yield call(getDownloadedTracks)
+  yield put({
+    type: 'download/tracks/set',
+    payload: tracks
+  })
+  yield call(RNFS.mkdir, FILES_FOLDER)
+}
+
 export function* init() {
   while (true) {
     yield take('app/init')
-    const Cookies: string = yield AsyncStorage.getItem('Cookies')
 
-    if (Cookies && Cookies.includes(';')) {
-      const expires = Cookies.split(';').find(c => c.includes('Expires'))
-      if (expires) {
-        if (new Date(expires) > new Date()) {
-          setCookies(Cookies)
-          yield put({
-            type: 'personal/playlist'
-          })
-        } else {
-          yield put(toastAction('info', '登录凭证已过期'))
-          yield Router.toLogin()
-        }
-      }
-    }
+    yield* setCookiesSaga()
+
+    yield* setDownloadTracksSaga()
   }
 }
 
@@ -110,6 +129,7 @@ export default function* root () {
     fork(watchSearch),
     fork(watchComment),
     fork(syncPersonnalPlaylist),
-    fork(watchPlayer)
+    fork(watchPlayer),
+    fork(watchDownload)
   ]
 }

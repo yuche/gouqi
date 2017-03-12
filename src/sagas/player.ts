@@ -19,7 +19,6 @@ function* nextTrack () {
   const length = playlist.length
 
   if (length) {
-    emitter.emit('song.change')
     if (mode === 'SEQUE') {
       const trackIndex = findIndex(playlist, { id: playingTrack })
       const track = trackIndex === length
@@ -47,7 +46,6 @@ function* prevTrack () {
 
   if (playlist.length) {
     const historyLength = history.length
-    emitter.emit('song.change')
     if (historyLength > 1) {
       yield put(playTrackAction({
         playingTrack: history[historyLength - 2].id,
@@ -76,7 +74,6 @@ function* playTrack ({ payload: { playingTrack } }) {
     let uri = get(track, 'mp3Url', '')
     if (uri.startsWith('http')) {
       const response = yield* ajaxCall(api.batchSongDetailsNew, [playingTrack.toString()])
-      console.log(response)
       if (response.code === 200) {
         uri = response.data[0].url
       }
@@ -85,8 +82,7 @@ function* playTrack ({ payload: { playingTrack } }) {
       type: 'player/track/play',
       payload: uri
     })
-    yield put(changeStatusAction('PLAYING'))
-    emitter.emit('song.change')
+    yield put(changeStatusAction('PLAYING', 0))
   }
 }
 

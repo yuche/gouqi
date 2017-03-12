@@ -10,7 +10,11 @@ import { centering } from '../styles'
 import CustomIcon from '../components/icon'
 import { ITrack } from '../services/api'
 import { connect } from 'react-redux'
-import { popupCollectActionSheet, hideTrackActionSheet } from '../actions'
+import {
+  popupCollectActionSheet,
+  hideTrackActionSheet,
+  downloadTracksAction
+} from '../actions'
 import Popup from './PopupContainer'
 
 const { width } = Dimensions.get('window')
@@ -20,7 +24,8 @@ interface IProps {
   visible: boolean,
   popup: () => Redux.Action,
   hide: () => Redux.Action,
-  toComment: () => Redux.Action
+  toComment: () => Redux.Action,
+  download: (tracks) => Redux.Action
 }
 
 class PopupContent extends React.Component<IProps, any> {
@@ -30,7 +35,9 @@ class PopupContent extends React.Component<IProps, any> {
 
   render () {
     const {
-      visible
+      visible,
+      download,
+      track
     } = this.props
     return (
       <Popup
@@ -42,7 +49,7 @@ class PopupContent extends React.Component<IProps, any> {
           <View style={styles.actionContainer}>
             {this.renderAction('收藏到歌单', 'collect', this.popup)}
             {this.renderAction('评论', 'comment', this.toComment)}
-            {this.renderAction('下载', 'download')}
+            {this.renderAction('下载', 'download', () => download(track))}
             {this.renderAction('艺术家', 'artist')}
             {this.renderAction('专辑', 'album')}
           </View>
@@ -71,6 +78,7 @@ class PopupContent extends React.Component<IProps, any> {
   toComment = () => {
     this.props.toComment()
   }
+
 
   renderAction (title: string, iconName: string, onPress?: any) {
     return (
@@ -143,6 +151,9 @@ export default connect(
     },
     toComment() {
       return dispatch({type: 'playlists/router/comment'})
+    },
+    download(track) {
+      return dispatch(downloadTracksAction([track]))
     }
   })
 )(PopupContent)

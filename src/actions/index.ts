@@ -56,6 +56,8 @@ export const playTrackAction: IPlayTrackAction = createAction('player/play',
   }
 )
 
+export const downloadTracksAction = createAction('download/tracks')
+
 export const changeStatusAction = createAction('player/status', (status, currentTime) => ({
   status,
   currentTime

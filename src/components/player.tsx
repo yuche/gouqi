@@ -3,10 +3,10 @@ import { ITrack } from '../services/api'
 import { get } from 'lodash'
 import { emitter } from '../utils'
 import { IPlayerProps as IProps } from '../interfaces'
-
 import Video from 'react-native-video'
-
 import MusicControl from 'react-native-music-control/index.ios.js'
+
+import RNFS from 'react-native-fs'
 
 interface IState {
   duration: number
@@ -25,10 +25,10 @@ class Player extends React.Component<IProps, IState> {
     }
   }
 
-  componentWillReceiveProps(nextProps: IProps) {
-  }
-
   componentDidMount() {
+    RNFS.readDir(RNFS.DocumentDirectoryPath + '/files').then(result => {
+      return console.log(result)
+    })
     MusicControl.enableBackgroundMode(true)
     MusicControl.enableControl('play', true)
     MusicControl.enableControl('pause', true)
@@ -47,14 +47,6 @@ class Player extends React.Component<IProps, IState> {
     })
     MusicControl.on('previousTrack', () => {
       this.props.prev()
-    })
-    emitter.addListener('song.change', () => {
-      if (this.audio) {
-        this.audio.seek(0)
-      }
-      this.setState({
-        currentTime: 0
-      } as IState)
     })
   }
 
@@ -110,6 +102,7 @@ class Player extends React.Component<IProps, IState> {
     this.setState({
       duration
     } as IState)
+    console.log('on load')
     MusicControl.setNowPlaying({
       title: track.name,
       artwork: track.album.picUrl,
@@ -122,10 +115,6 @@ class Player extends React.Component<IProps, IState> {
     this.setState({
       currentTime
     } as IState)
-    MusicControl.updatePlayback({
-      state: MusicControl.STATE_PLAYING,
-      elapsedTime: currentTime
-    })
   }
 
   onEnd = () => {

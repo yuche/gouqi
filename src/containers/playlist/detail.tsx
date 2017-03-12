@@ -21,7 +21,8 @@ import {
   syncPlaylistDetail,
   subscribePlaylist,
   popupTrackActionSheet,
-  playTrackAction
+  playTrackAction,
+  downloadTracksAction
 } from '../../actions'
 import ListItem from '../../components/listitem'
 import {
@@ -44,7 +45,8 @@ interface IProps extends ILoadingProps {
   playingTrack: number,
   subscribe: () => Redux.Action,
   popup: (track: ITrack) => Redux.Action,
-  play: (playingTrack: number, tracks: ITrack[]) => Redux.Action
+  play: (playingTrack: number, tracks: ITrack[]) => Redux.Action,
+  download: (tracks: ITrack[]) => Redux.Action
 }
 
 interface IState {
@@ -176,7 +178,8 @@ class PlayList extends React.Component<IProps, IState> {
       [{
         text: '取消'
       }, {
-        text: '确定'
+        text: '确定',
+        onPress: () => this.props.download(this.props.playlist.tracks)
       }]
     )
   }
@@ -240,21 +243,26 @@ class PlayList extends React.Component<IProps, IState> {
       const colorStyle = isPlaying && { color: Color.main }
       return <ListItem
         title={track.name}
+        containerStyle={{ paddingVertical: 0, paddingRight: 0 }}
         picURI={track.album.picUrl + '?param=75y75'}
         subTitle={subTitle}
-        picStyle={{ width: 30, height: 30 }}
+        textContainer={{ paddingVertical: 10 }}
+        picStyle={{ width: 30, height: 30}}
         titleStyle={[{ fontSize: 14 }, colorStyle]}
         subTitleStyle={colorStyle}
         onPress={!isPlaying ? this.listItemOnPress(track.id) : undefined}
         // tslint:disable-next-line:jsx-no-multiline-js
         renderRight={
           <TouchableWithoutFeedback
-            style={{ justifyContent: 'center'}}
             onPress={this.moreIconOnPress(track)}
           >
-            <View style={{flexDirection: 'row' }}>
-            {isPlaying && <Ionic size={22} name='md-volume-up' color={Color.main} style={{ paddingLeft: 10 }}/>}
-            <Ionic size={22} name='ios-more' color='#777' style={{ paddingLeft: 10 }}/>
+            <View style={{flexDirection: 'row', paddingRight: 10}}>
+              {isPlaying && <View style={{ justifyContent: 'center' }}>
+                <Ionic size={22} name='md-volume-up' color={Color.main} style={{ paddingLeft: 10 }}/>
+              </View>}
+              <View style={{ justifyContent: 'center' }}>
+                <Ionic size={22} name='ios-more' color='#777' style={{ paddingLeft: 10 }}/>
+              </View>
             </View>
           </TouchableWithoutFeedback>
         }
@@ -430,6 +438,9 @@ export default connect(
         playingTrack,
         playlist: tracks
       }))
+    },
+    download (track: ITrack[]) {
+      return dispatch(downloadTracksAction(track))
     }
   })
 )(PlayList)

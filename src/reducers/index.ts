@@ -7,6 +7,7 @@ import details from './detail'
 import comment from './comment'
 import personal from './personal'
 import player from './player'
+import download from './download'
 
 export default combineReducers({
   login,
@@ -16,5 +17,6 @@ export default combineReducers({
   details,
   comment,
   personal,
-  player
+  player,
+  download
 })
