@@ -251,7 +251,6 @@ class PlayList extends React.Component<IProps, IState> {
         titleStyle={[{ fontSize: 14 }, colorStyle]}
         subTitleStyle={colorStyle}
         onPress={!isPlaying ? this.listItemOnPress(track.id) : undefined}
-        // tslint:disable-next-line:jsx-no-multiline-js
         renderRight={
           <TouchableWithoutFeedback
             onPress={this.moreIconOnPress(track)}

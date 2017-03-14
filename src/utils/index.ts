@@ -6,6 +6,8 @@ import RNFS from 'react-native-fs'
 
 export const DOWNLOADED_TRACKS = 'DOWNLOADED_TRACKS'
 
+export const PLACEHOLDER_IMAGE = 'http://p4.music.126.net/VnZiScyynLG7atLIZ2YPkw==/18686200114669622.jpg?param=30y30'
+
 export const FILES_FOLDER = `${RNFS.DocumentDirectoryPath}/files`
 
 export async function getDownloadedTracks (): Promise<ITrack[]> {

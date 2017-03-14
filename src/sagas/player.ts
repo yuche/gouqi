@@ -112,7 +112,7 @@ function* watchStatus ({ payload: {status} }) {
   }
 }
 
-function* watchCurrentTime({ payload }) {
+function* watchCurrentTime() {
   yield put(addSecondsAction())
 }
 
@@ -123,6 +123,5 @@ export default function* watchPlayer () {
     takeEvery('player/status', watchStatus),
     takeLatest('player/play', playTrack),
     takeEvery('player/currentTime', watchCurrentTime)
-    // fork(playTrack)
   ]
 }

@@ -3,7 +3,7 @@ import {
     InteractionManager
 } from 'react-native'
 import RNFS from 'react-native-fs'
-import { put, call, select } from 'redux-saga/effects'
+import { put, call, select, fork } from 'redux-saga/effects'
 import { ITrack, batchSongDetailsNew, getUserId } from '../services/api'
 import { uniqBy } from 'lodash'
 import { toastAction, hideTrackActionSheet } from '../actions'
@@ -33,15 +33,14 @@ function* downloadTracksSaga ({ payload }: ITracksPayload) {
   yield put(hideTrackActionSheet())
   yield call(InteractionManager.runAfterInteractions)
   yield put(toastAction('success', '已开始下载'))
-  const downloadedTracks: ITrack[] = yield select((state: any) => state.download.tracks)
-  const trackIds = payload.map(t => t.id)
-  let tasks = downloadedTracks.filter(t => trackIds.indexOf(t.id) === -1)
+  const downloadedTracks: number[] = yield select((state: any) => state.download.tracks.map(t => t.id))
+  let tasks = payload.filter(t => downloadedTracks.indexOf(t.id) === -1)
   let success: ITrack[] = []
   let fail = 0
 
   if (tasks.length > 0) {
     if (IS_LOGIN) {
-      const response = yield call(batchSongDetailsNew, trackIds.map(t => t.toString()))
+      const response = yield call(batchSongDetailsNew, tasks.map(t => t.id.toString()))
       if (response.code === 200) {
         tasks = response.data.map(data => ({...data, mp3Url: data.url}))
       }
@@ -91,11 +90,25 @@ function* clearAllDownload () {
   yield put(toastAction('success', '所有下载项目都清除成功'))
 }
 
+function* deleteDownloadTrack ({ payload }) {
+  const tracks: ITrack[] = yield select((state: any) => state.download.tracks.filter(t => t.id !== payload))
+
+  yield put({
+    type: 'download/tracks/set',
+    payload: tracks
+  })
+
+  const path = `${FILES_FOLDER}/${payload}.mp3`
+
+  yield fork(RNFS.unlink, path)
+}
+
 export default function* watchDownload () {
   yield [
     takeEvery('download/tracks', downloadTracksSaga),
     takeEvery('download/tracks/merge', mergeTracksSaga),
     takeEvery('download/tracks/set', setTracksSaga),
-    takeLatest('download/clear', clearAllDownload)
+    takeLatest('download/clear', clearAllDownload),
+    takeEvery('download/tracks/delete', deleteDownloadTrack)
   ]
 }

@@ -72,6 +72,10 @@ export const nextTrackAction = createAction('player/track/next')
 
 export const prevTrackAction = createAction('player/track/prev')
 
+export const clearDownloadAction = createAction('download/clear')
+
+export const deleteDownloadTrack = createAction('download/tracks/delete')
+
 export type IPlayTrackAction = (payload: IPlayPayload) => Action<IPlayPayload>
 
 export const playAcion = createAction('player/play')

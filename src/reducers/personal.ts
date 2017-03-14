@@ -4,7 +4,8 @@ const initialState = {
   playlist: {
     created: [],
     collect: []
-  }
+  },
+  profile: {}
 }
 export default handleActions({
   'personal/playlist/save' (state, { payload }) {
@@ -14,6 +15,12 @@ export default handleActions({
         ...state.playlist,
         ...payload
       }
+    }
+  },
+  'personal/profile' (state, { payload }) {
+    return {
+      ...state,
+      profile: payload
     }
   }
 }, initialState)

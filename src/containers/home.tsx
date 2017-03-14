@@ -8,6 +8,7 @@ import {
 } from 'react-native'
 import TabBar from '../components/homeNavBar'
 import ScrollableTabView from 'react-native-scrollable-tab-view'
+import UserPage from '../containers/UserPage'
 
 class Home extends React.Component<any, any> {
   constructor(props: any) {
@@ -28,7 +29,7 @@ class Home extends React.Component<any, any> {
         <RecommendScene tabLabel='推荐' {...this.props}/>
         <View tabLabel='电台'/>
         <PlayList tabLabel='歌单'/>
-        <View tabLabel='我的'/>
+        <UserPage tabLabel='我的'/>
       </ScrollableTabView>
     )
   }

@@ -6,6 +6,7 @@
     "object-literal-sort-keys": false,
     "jsx-alignment": true,
     "jsx-self-close": true,
+    "jsx-no-multiline-js": false,
     "quotemark": [true, "single", "avoid-escape"],
     "semicolon": [true, "never"],
     "no-string-literal": false,

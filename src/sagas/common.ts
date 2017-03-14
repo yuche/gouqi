@@ -1,6 +1,7 @@
 import { take, put, call, select } from 'redux-saga/effects'
 import * as api from '../services/api'
 import Router from '../routers'
+import { PLACEHOLDER_IMAGE } from '../utils'
 
 import {
   toastAction
@@ -55,7 +56,7 @@ export function* syncSearchResource (
               [picUrlKey]: p[picUrlKey] === null ?
               // TODO:
               // placeholder image. maybe use local image instead 
-              'http://p4.music.126.net/VnZiScyynLG7atLIZ2YPkw==/18686200114669622.jpg?param=30y30' :
+              PLACEHOLDER_IMAGE :
               p[picUrlKey] + `?param=${picSize}`
             })
           })) : state[resourceKey].concat(resource),

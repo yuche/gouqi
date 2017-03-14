@@ -1,11 +1,8 @@
 import * as React from 'react'
 import { ITrack } from '../services/api'
-import { get } from 'lodash'
 import { IPlayerProps as IProps } from '../interfaces'
 import Video from 'react-native-video'
 import MusicControl from 'react-native-music-control/index.ios.js'
-
-import RNFS from 'react-native-fs'
 
 interface IState {
   duration: number
@@ -21,9 +18,6 @@ class Player extends React.Component<IProps, any> {
   }
 
   componentDidMount() {
-    RNFS.readDir(RNFS.DocumentDirectoryPath + '/files').then(result => {
-      return console.log(result)
-    })
     MusicControl.enableBackgroundMode(true)
     MusicControl.enableControl('play', true)
     MusicControl.enableControl('pause', true)
@@ -72,7 +66,6 @@ class Player extends React.Component<IProps, any> {
         playWhenInactive={true}
         onError={this.onError}
         onLoad={this.onLoad(track)}
-        onTimedMetadata={this.onTimedMetadata}
         onProgress={this.onProgress}
         onEnd={this.onEnd}
       /> : null
@@ -85,11 +78,6 @@ class Player extends React.Component<IProps, any> {
 
   onError = (e: any) => {
     this.props.changeStatus('PAUSED')
-  }
-
-  onTimedMetadata = (param: any) => {
-    console.log('on meta')
-    console.log(param)
   }
 
   onLoad = (track: ITrack) => ({ duration }: { duration: number }) => {

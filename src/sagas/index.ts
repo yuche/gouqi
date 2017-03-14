@@ -1,6 +1,7 @@
 import { take, put, call, fork } from 'redux-saga/effects'
 import {
-  AsyncStorage
+  AsyncStorage,
+  InteractionManager
 } from 'react-native'
 import * as api from '../services/api'
 import { getCookies, setCookies } from '../services/request'
@@ -20,6 +21,23 @@ import watchDownload from './download'
 import Router from '../routers'
 import RNFS from 'react-native-fs'
 import { getDownloadedTracks, FILES_FOLDER } from '../utils'
+
+function* setProfile (profile) {
+  yield AsyncStorage.setItem('PROFILE', JSON.stringify(profile))
+  yield AsyncStorage.setItem('Cookies', getCookies())
+  yield put({
+    type: 'personal/profile',
+    payload: profile
+  })
+}
+
+function* getProfile () {
+  const profile = yield call(AsyncStorage.getItem, 'PROFILE')
+  yield put({
+    type: 'personal/profile',
+    payload: JSON.parse(profile)
+  })
+}
 
 export function* loginFlow () {
   while (true) {
@@ -41,9 +59,10 @@ export function* loginFlow () {
       })
 
       if (userInfo.code === 200) {
-        yield put(toastAction('success', '您已成功登录'))
         yield Router.pop()
-        yield AsyncStorage.setItem('Cookies', getCookies())
+        yield call(InteractionManager.runAfterInteractions)
+        yield put(toastAction('success', '你已成功登录'))
+        yield fork(setProfile, userInfo.profile)
       } else {
         yield put(toastAction('warning', '帐号或密码错误'))
       }
@@ -96,6 +115,7 @@ export function* init() {
 
     yield* setSecondsSaga()
 
+    yield* getProfile()
   }
 }
 

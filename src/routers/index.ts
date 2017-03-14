@@ -34,6 +34,10 @@ function toCreatePlaylist (passProps?: IRouterPassProps) {
   navigator['createPlaylist'](passProps)
 }
 
+function toDownloads (passProps?: IRouterPassProps) {
+  return () => navigator['DownloadPlaylistScene'](passProps)
+}
+
 function pop (passProps?: IRouterPassProps) {
   navigator.pop(passProps)
 }
@@ -46,6 +50,7 @@ const Router = {
   toComment,
   toPlaylistDetail,
   toCreatePlaylist,
+  toDownloads,
   pop
 }
 
