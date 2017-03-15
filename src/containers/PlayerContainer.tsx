@@ -17,10 +17,9 @@ import {
   Image,
   Text,
   TextStyle,
-  TouchableOpacity,
-  TouchableWithoutFeedback
+  TouchableOpacity
 } from 'react-native'
-import { centering, Color } from '../styles'
+import { centering } from '../styles'
 import { get } from 'lodash'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 
@@ -28,16 +27,6 @@ class PlayerContainer extends React.Component<IProps, any> {
 
   constructor(props: IProps) {
     super(props)
-  }
-
-
-
-  componentWillReceiveProps (nextProps: any) {
-    
-  }
-
-  componentDidMount() {
-
   }
 
   render () {
@@ -209,4 +198,3 @@ export default connect(
     }
   })
 )(PlayerContainer)
-

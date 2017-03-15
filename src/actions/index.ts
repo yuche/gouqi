@@ -5,7 +5,6 @@ import {
   styleType
 } from '../interfaces'
 import { IPlayPayload } from '../reducers/player'
-import { ITrack } from '../services/api'
 
 export const addSecondsAction = createAction('🐸🐸🐸')
 
@@ -44,7 +43,9 @@ export const toCreatePlaylistAction = createAction('playlists/router/create')
 
 export const collectTrackToPlayliast = createAction('playlists/collect')
 
-export const createPlayliastAction = createAction('playlists/create')
+export const createPlayliastAction = createAction('personal/playlist/create')
+
+export const deletePlayliastAction = createAction('personal/playlist/delete')
 
 export const playTrackAction: IPlayTrackAction = createAction('player/play',
   ({playingTrack, playlist, prev}: IPlayPayload) => {

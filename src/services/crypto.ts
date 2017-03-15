@@ -1,6 +1,5 @@
 /* tslint:disable */
 /**
- * Created by kevin on 15-7-19.
  * from https://github.com/stkevintan/Cube/blob/master/src/model/Crypto.js
  */
 const bigInt = require('big-integer')

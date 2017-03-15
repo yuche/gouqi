@@ -1,4 +1,4 @@
-import { take, put, call, fork, select } from 'redux-saga/effects'
+import { put, fork, select } from 'redux-saga/effects'
 import { IPlayerState } from '../reducers/player'
 import { findIndex, sample } from 'lodash'
 import { playTrackAction } from '../actions'

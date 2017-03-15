@@ -18,6 +18,7 @@ import watchComment from './comment'
 import watchPlaylist from './playlist'
 import watchPlayer from './player'
 import watchDownload from './download'
+import watchPersonal from './personal'
 import Router from '../routers'
 import RNFS from 'react-native-fs'
 import { getDownloadedTracks, FILES_FOLDER } from '../utils'
@@ -119,37 +120,6 @@ export function* init() {
   }
 }
 
-export function* syncPersonnalPlaylist() {
-  while (true) {
-    yield take('personal/playlist')
-
-    const userId = api.getUserId()
-
-    if (userId) {
-      const res = yield call(api.userPlayList)
-      if (res.code === 200) {
-        const playlists: api.IPlaylist[] = res.playlist
-        let collect: api.IPlaylist[] = []
-        let created: api.IPlaylist[] = []
-        playlists.forEach(playlist => {
-          if (playlist.creator.userId.toString() === userId) {
-            created.push(playlist)
-          } else {
-            collect.push(playlist)
-          }
-        })
-        yield put({
-          type: 'personal/playlist/save',
-          payload: {
-            created,
-            collect
-          }
-        })
-      }
-    }
-  }
-}
-
 export default function* root () {
   yield [
     fork(init),
@@ -157,8 +127,8 @@ export default function* root () {
     fork(watchPlaylist),
     fork(watchSearch),
     fork(watchComment),
-    fork(syncPersonnalPlaylist),
     fork(watchPlayer),
-    fork(watchDownload)
+    fork(watchDownload),
+    fork(watchPersonal)
   ]
 }

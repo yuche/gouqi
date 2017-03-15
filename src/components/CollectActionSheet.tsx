@@ -128,7 +128,7 @@ export default connect(
           }
         }
       }
-    }: any
+    }
   ) => {
     return {
       created,

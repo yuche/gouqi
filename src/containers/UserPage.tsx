@@ -18,7 +18,6 @@ import Router from '../routers'
 
 import { get } from 'lodash'
 
-
 interface IProps {
   profile: IProfile,
   seconds: number
@@ -30,13 +29,31 @@ interface IListProps {
   onPress?: any
 }
 
-class UserPage extends React.Component<IProps, {list: IListProps[] }> {
+class UserPage extends React.Component<IProps, any> {
+  private list: IListProps[]
 
   constructor(props) {
     super(props)
-    this.state = {
-      list: []
-    }
+    this.list = [
+      {
+        title: '我的离线',
+        iconName: 'download',
+        onPress: Router.toDownloads()
+      },
+      {
+        title: '我的歌单',
+        iconName: 'list-alt',
+        onPress: Router.toPersonalPlaylist()
+      },
+      {
+        title: '播放历史',
+        iconName: 'history'
+      },
+      {
+        title: '每日歌曲',
+        iconName: 'calendar-check-o'
+      }
+    ]
   }
 
   renderHeader (nickname: string, uri: string, seconds) {
@@ -47,30 +64,6 @@ class UserPage extends React.Component<IProps, {list: IListProps[] }> {
         <Text>{seconds}</Text>
       </View>
     )
-  }
-
-  componentDidMount () {
-    this.setState({
-      list: [
-        {
-          title: '我的离线',
-          iconName: 'download',
-          onPress: Router.toDownloads()
-        },
-        {
-          title: '我的歌单',
-          iconName: 'list-alt'
-        },
-        {
-          title: '播放历史',
-          iconName: 'history'
-        },
-        {
-          title: '每日歌曲',
-          iconName: 'calendar-check-o'
-        }
-      ]
-    })
   }
 
   renderListItem = ({ title, iconName, onPress }: IListProps, index: number) => {
@@ -124,7 +117,7 @@ class UserPage extends React.Component<IProps, {list: IListProps[] }> {
             </View>
           }
         />
-        {this.state.list.map(this.renderListItem)}
+        {this.list.map(this.renderListItem)}
       </View>
     )
   }

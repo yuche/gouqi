@@ -5,7 +5,6 @@ import {
 import { ITrack } from '../services/api'
 import { IPlayerMode, IPlayerStatus } from '../reducers/player'
 
-
 export interface IUserInfo {
   username: string,
   password: string
@@ -63,7 +62,6 @@ export interface ISearchState {
   album: IAlbumsProps,
   artist: IArtistProps
 }
-
 
 export interface IPlayerProps {
   track: ITrack,

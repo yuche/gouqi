@@ -54,6 +54,7 @@ class Playlist extends React.Component<IProps, any> {
       const colorStyle = isPlaying && { color: Color.main }
       return <SwipeAction
         autoClose
+        style={{ backgroundColor: 'white' }}
         right={[{
           text: '删除',
           onPress: this.delete(track.id),
@@ -190,5 +191,3 @@ export default connect(
     }
   })
 )(Playlist)
-
-

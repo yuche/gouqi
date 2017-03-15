@@ -13,6 +13,7 @@ import UIContainer from '../containers/UIContainer'
 import DetailModal from '../components/DetailModal'
 import CreatePlaylist from '../containers/CreatePlaylistScene'
 import DownloadPlaylistScene from '../containers/DownloadPlaylistScene'
+import PersonalPlaylistScene from '../containers/PersonalPlaylistScene'
 
 const scenes = Actions.create(
   <Scene key='root'>
@@ -22,6 +23,7 @@ const scenes = Actions.create(
     <Scene key='search' component={Search} direction='vertical' hideNavBar panHandlers={null}/>
     <Scene key='comment' component={Comment} title='评论'/>
     <Scene key='DownloadPlaylistScene' component={DownloadPlaylistScene}/>
+    <Scene key='PersonalPlaylistScene' component={PersonalPlaylistScene}/>
     <Scene key='playlistDetail' component={DetailModal} direction='fade'/>
     <Scene key='createPlaylist' component={CreatePlaylist} direction='vertical'/>
   </Scene>

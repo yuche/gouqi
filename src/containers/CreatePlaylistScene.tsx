@@ -38,7 +38,7 @@ class CreatePlaylistScene extends React.Component<IProps, { value: string }> {
 
   render () {
     const rightConfig = {
-      text: '创建',
+      text: '完成',
       onPress: () => {
         this.props.createPlaylist(this.state.value)
       }

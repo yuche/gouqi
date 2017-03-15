@@ -12,9 +12,9 @@
   version "6.2.30"
   resolved "http://registry.npm.taobao.org/@types/qs/download/@types/qs-6.2.30.tgz#139e247511ee3b9be539cdd553c8fdb33c1f624e"
 
-"@types/react-native@0.29.35":
-  version "0.29.35"
-  resolved "https://registry.npmjs.org/@types/react-native/-/react-native-0.29.35.tgz#25224f9812a9d39bc730a9c3a01051ca5b2c1547"
+"@types/react-native@^0.29.35":
+  version "0.29.36"
+  resolved "https://registry.npmjs.org/@types/react-native/-/react-native-0.29.36.tgz#2e9c9f5fa2015a456ef0b5895bf59238c982266f"
   dependencies:
     "@types/react" "*"
 

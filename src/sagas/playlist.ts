@@ -178,39 +178,7 @@ function* toCreatePlaylistPage () {
   }
 }
 
-function* createPlaylist () {
-  while (true) {
-    const { payload } = yield take('playlists/create')
-
-    const { trackId, name } = payload
-
-    if (name) {
-      yield Router.pop()
-
-      const response = yield* ajaxCall(api.createPlaylist, name)
-
-      if (response.code === 200) {
-        if (trackId) {
-          const pid = response.id
-          yield put({
-            type: 'playlists/collect',
-            payload: {
-              pid,
-              trackIds: trackId
-            }
-          })
-        } else {
-          yield put(toastAction('success', '成功创建歌单'))
-        }
-      }
-
-    } else {
-      yield put(toastAction('warning', '歌单名称不能为空'))
-    }
-  }
-}
-
-export default function* rootSaga () {
+export default function* watchPlaylist () {
   yield fork(syncPlaylists)
   yield fork(syncPlaylistDetail)
   yield fork(subscribePlaylist)
@@ -219,5 +187,4 @@ export default function* rootSaga () {
   yield fork(collectTrackToPlayliast)
   yield fork(toCommentPage)
   yield fork(toCreatePlaylistPage)
-  yield fork(createPlaylist)
 }

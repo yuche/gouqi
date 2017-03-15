@@ -5,7 +5,6 @@ import {
 import RNFS from 'react-native-fs'
 import { put, call, select, fork } from 'redux-saga/effects'
 import { ITrack, batchSongDetailsNew, getUserId } from '../services/api'
-import { uniqBy } from 'lodash'
 import { toastAction, hideTrackActionSheet } from '../actions'
 import { FILES_FOLDER, DOWNLOADED_TRACKS } from '../utils'
 import { takeEvery, takeLatest } from 'redux-saga'
