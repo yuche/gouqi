@@ -76,8 +76,9 @@ function* prevTrack () {
   }
 }
 
-function* playTrack ({ payload: { playingTrack } }) {
-  const { playlist }: IPlayerState = yield select((state: any) => state.player)
+function* playTrack ({ payload: { playingTrack, prev } }) {
+  const playerState: IPlayerState = yield select((state: any) => state.player)
+  const { playlist } = playerState
   if (playlist.length) {
     const track = playlist.find(t => t.id === playingTrack)
     let uri = get(track, 'mp3Url', '')
@@ -93,7 +94,28 @@ function* playTrack ({ payload: { playingTrack } }) {
     })
     yield put(currentTimeAction(0))
     yield put(changeStatusAction('PLAYING'))
+    if (!prev) {
+      yield put({
+        type: 'player/history/merge',
+        payload: track
+      })
+    }
   }
+}
+
+function* setHisotrySaga () {
+  const history = yield select((state: any) => state.player.history)
+
+  yield fork(AsyncStorage.setItem, 'HISTORY', JSON.stringify(history))
+}
+
+function* delelteHistory ({ payload }) {
+  const history = yield select((state: any) => state.player.history.filter(h => h.id !== payload))
+
+  yield put({
+    type: 'player/history/save',
+    payload: history
+  })
 }
 
 function* watchStatus ({ payload: {status} }) {
@@ -122,6 +144,9 @@ export default function* watchPlayer () {
     takeLatest('player/track/prev', prevTrack),
     takeEvery('player/status', watchStatus),
     takeLatest('player/play', playTrack),
-    takeEvery('player/currentTime', watchCurrentTime)
+    takeEvery('player/currentTime', watchCurrentTime),
+    takeLatest('player/history/merge', setHisotrySaga),
+    takeLatest('player/history/save', setHisotrySaga),
+    takeLatest('player/history/delete', delelteHistory)
   ]
 }

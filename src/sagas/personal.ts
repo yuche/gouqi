@@ -2,6 +2,10 @@ import { take, put, fork, select, call } from 'redux-saga/effects'
 import {
   toastAction
 } from '../actions'
+import {
+  InteractionManager
+} from 'react-native'
+import { takeLatest } from 'redux-saga'
 import * as api from '../services/api'
 import Router from '../routers'
 import {
@@ -97,8 +101,30 @@ export function* syncPersonnalPlaylist() {
   }
 }
 
+function* syncDailyRecommend () {
+  yield put({
+    type: 'personal/daily/start'
+  })
+
+  yield call(InteractionManager.runAfterInteractions)
+
+  const response = yield* ajaxCall(api.DailyRecommend)
+
+  if (response.code === 200) {
+    yield put({
+      type: 'personal/daily/save',
+      payload: response.recommend
+    })
+  }
+
+  yield put({
+    type: 'personal/daily/end'
+  })
+}
+
 export default function* watchPersonal () {
   yield fork(createPlaylist)
   yield fork(deletePlaylist)
   yield fork(syncPersonnalPlaylist)
+  yield takeLatest('personal/daily', syncDailyRecommend)
 }

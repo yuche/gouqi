@@ -30,16 +30,20 @@ class CollectPlaylist extends React.Component<IProps, any> {
     })
   }
 
-  renderPlayList = (playlist: IPlaylist) => {
+  renderPlayList = (playlist: IPlaylist, sectionId, rowId) => {
+    const favoPlaylist = sectionId === 'created' && rowId === '0'
+    const rightConfig = favoPlaylist
+      ? []
+      : [{
+        text: '删除',
+        onPress: this.delete(playlist.id),
+        style: { backgroundColor: 'rgb(244, 51, 60)', color: 'white' }
+      }]
     return (
       <SwipeAction
         autoClose
         style={{ backgroundColor: 'white' }}
-        right={[{
-          text: '删除',
-          onPress: this.delete(playlist.id),
-          style: { backgroundColor: 'rgb(244, 51, 60)', color: 'white' }
-        }]}
+        right={rightConfig}
       >
         <ListItem
           title={playlist.name}

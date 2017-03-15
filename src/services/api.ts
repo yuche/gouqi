@@ -88,7 +88,7 @@ export async function search(
   })
 }
 
-export async function recommendPlayList(
+export async function DailyRecommend(
   offset = '0',
   limit = '20',
   total = 'true'

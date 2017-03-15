@@ -5,7 +5,9 @@ const initialState = {
     created: [],
     collect: []
   },
-  profile: {}
+  profile: {},
+  daily: [],
+  isLoading: false
 }
 export default handleActions({
   'personal/playlist/save' (state, { payload }) {
@@ -21,6 +23,24 @@ export default handleActions({
     return {
       ...state,
       profile: payload
+    }
+  },
+  'personal/daily/start' (state) {
+    return {
+      ...state,
+      isLoading: true
+    }
+  },
+  'personal/daily/end' (state) {
+    return {
+      ...state,
+      isLoading: false
+    }
+  },
+  'personal/daily/save' (state, { payload }: any) {
+    return {
+      ...state,
+      daily: payload
     }
   }
 }, initialState)

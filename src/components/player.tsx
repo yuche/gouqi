@@ -64,6 +64,8 @@ class Player extends React.Component<IProps, any> {
         repeat={repeat}
         playInBackground={true}
         playWhenInactive={true}
+        onLoadStart={() => console.log('load start')}
+        onBuffer={() => console.log('on buffer')}
         onError={this.onError}
         onLoad={this.onLoad(track)}
         onProgress={this.onProgress}
@@ -77,6 +79,7 @@ class Player extends React.Component<IProps, any> {
   }
 
   onError = (e: any) => {
+    console.log(e)
     this.props.changeStatus('PAUSED')
   }
 

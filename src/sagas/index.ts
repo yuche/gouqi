@@ -106,6 +106,14 @@ function* setSecondsSaga () {
   yield put(addSecondsAction(Number(seconds)))
 }
 
+function* getHistory () {
+  const history = yield call(AsyncStorage.getItem, 'HISTORY')
+  yield put({
+    type: 'player/history/save',
+    payload: history ? JSON.parse(history) : []
+  })
+}
+
 export function* init() {
   while (true) {
     yield take('app/init')
@@ -117,6 +125,8 @@ export function* init() {
     yield* setSecondsSaga()
 
     yield* getProfile()
+
+    yield* getHistory()
   }
 }
 

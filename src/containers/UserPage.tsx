@@ -36,22 +36,24 @@ class UserPage extends React.Component<IProps, any> {
     super(props)
     this.list = [
       {
-        title: '我的离线',
-        iconName: 'download',
-        onPress: Router.toDownloads()
-      },
-      {
         title: '我的歌单',
         iconName: 'list-alt',
         onPress: Router.toPersonalPlaylist()
       },
       {
+        title: '我的离线',
+        iconName: 'download',
+        onPress: Router.toDownloads()
+      },
+      {
         title: '播放历史',
-        iconName: 'history'
+        iconName: 'history',
+        onPress: Router.toHistoryScene()
       },
       {
         title: '每日歌曲',
-        iconName: 'calendar-check-o'
+        iconName: 'calendar-check-o',
+        onPress: Router.toDailyRecommend()
       }
     ]
   }

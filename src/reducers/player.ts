@@ -36,15 +36,25 @@ const initialState: IPlayerState = {
 
 export default handleActions({
   'player/play' (state, { payload }: any) {
-    let track
-    if (!payload.prev) {
-      const id: number = payload.playingTrack
-      track = state.playlist.find(t => t.id === id)
+    return {
+      ...state,
+      ...payload
+    }
+  },
+  'player/history/merge' (state, { payload }: any) {
+    let { history } = state
+    if (history.length >= 101) {
+      history.shift()
     }
     return {
       ...state,
-      ...payload,
-      history: state.history.concat(track || [])
+      history: history.concat(payload || [])
+    }
+  },
+  'player/history/save' (state, { payload }: any) {
+    return {
+      ...state,
+      history: payload
     }
   },
   'player/status' (state, { payload }: any) {

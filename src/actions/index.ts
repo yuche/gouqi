@@ -47,6 +47,10 @@ export const createPlayliastAction = createAction('personal/playlist/create')
 
 export const deletePlayliastAction = createAction('personal/playlist/delete')
 
+export const deleteHistoryAction = createAction('player/history/delete')
+
+export const setHistoryAction = createAction('player/history/save')
+
 export const playTrackAction: IPlayTrackAction = createAction('player/play',
   ({playingTrack, playlist, prev}: IPlayPayload) => {
     let obj = Object.create(null)
@@ -54,7 +58,6 @@ export const playTrackAction: IPlayTrackAction = createAction('player/play',
     if (playlist) {
       obj.playlist = playlist
     }
-    obj.history = prev
     return obj
   }
 )
