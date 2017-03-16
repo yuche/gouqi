@@ -52,13 +52,13 @@ export const deleteHistoryAction = createAction('player/history/delete')
 export const setHistoryAction = createAction('player/history/save')
 
 export const playTrackAction: IPlayTrackAction = createAction('player/play',
-  ({playingTrack, playlist, prev}: IPlayPayload) => {
-    let obj = Object.create(null)
-    obj.playingTrack = playingTrack
-    if (playlist) {
-      obj.playlist = playlist
+  ({playing, playlist, prev}: IPlayPayload) => {
+    let playingCopy = playing
+    playingCopy.index = Number(playing.index)
+    return {
+      playing: playingCopy,
+      playlist
     }
-    return obj
   }
 )
 
@@ -81,8 +81,6 @@ export const clearDownloadAction = createAction('download/clear')
 export const deleteDownloadTrack = createAction('download/tracks/delete')
 
 export type IPlayTrackAction = (payload: IPlayPayload) => Action<IPlayPayload>
-
-export const playAcion = createAction('player/play')
 
 export type ISearchActiveTab = (activeTab: number) => Action<number>
 export const changeSearchActiveTab: ISearchActiveTab = createAction('search/activeTab',

@@ -2,28 +2,40 @@ import { handleActions, Action } from 'redux-actions'
 import { ITrack } from '../services/api'
 
 export interface IPlayerState {
-  playingTrack: number,
+  playing: IPlaying,
   status: IPlayerStatus,
   playlist: ITrack[],
   mode: IPlayerMode,
   history: ITrack[],
   uri: string,
-  currentTime: any,
-  duration: any,
-  seconds: any
+  currentTime: number,
+  duration: number,
+  seconds: number
 }
 
+export interface IPlaying {
+  pid: IPlayingType,
+  index: number
+}
+
+export type IPlayingType = number | 'history' | 'radio' | 'fm' | 'download' | 'daily'
 export type IPlayerStatus = 'PLAYING' | 'PAUSED' | 'STOPPED' | 'FINISHED' | 'BUFFERING' | 'ERROR'
 export type IPlayerMode = 'SEQUE' | 'REPEAT' | 'RANDOM'
 
 export interface IPlayPayload {
   playlist?: ITrack[],
   prev?: boolean
-  playingTrack: number
+  playing: {
+    pid?: IPlayingType,
+    index: number
+  }
 }
 
 const initialState: IPlayerState = {
-  playingTrack: 0,
+  playing: {
+    pid: 0,
+    index: 0
+  },
   status: 'STOPPED',
   playlist: [],
   mode: 'SEQUE',
@@ -36,9 +48,26 @@ const initialState: IPlayerState = {
 
 export default handleActions({
   'player/play' (state, { payload }: any) {
+    const { playlist, playing } = payload
+    return playlist ? {
+      ...state,
+      playing: {
+        ...state.playing,
+        ...playing
+      },
+      playlist
+    } : {
+      ...state,
+      playing: {
+        ...state.playing,
+        ...playing
+      }
+    }
+  },
+  'player/playlist/merge' (state, { payload }: any) {
     return {
       ...state,
-      ...payload
+      playlist: state.playlist.concat(payload)
     }
   },
   'player/history/merge' (state, { payload }: any) {
@@ -75,13 +104,13 @@ export default handleActions({
       uri: payload
     }
   },
-  'player/currentTime' (state, { payload }) {
+  'player/currentTime' (state, { payload }: any) {
     return {
       ...state,
       currentTime: payload
     }
   },
-  'player/duration' (state, { payload }) {
+  'player/duration' (state, { payload }: any) {
     return {
       ...state,
       duration: payload

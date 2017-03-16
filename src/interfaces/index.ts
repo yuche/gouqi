@@ -4,7 +4,7 @@ import {
 } from 'react'
 import { ITrack } from '../services/api'
 import { IPlayerMode, IPlayerStatus } from '../reducers/player'
-
+import { IPlaying } from '../reducers/player'
 export interface IUserInfo {
   username: string,
   password: string
@@ -21,6 +21,14 @@ export interface IInfiList {
 
 export interface IPlaylistsProps extends IInfiList {
   playlists: api.IPlaylist[]
+}
+
+export interface IPlaylistProps {
+  tracks: ITrack[],
+  playing: IPlaying,
+  play: (index: number, tracks: ITrack[]) => Redux.Action,
+  popup: (track: ITrack) => Redux.Action,
+  isPlaylist: boolean
 }
 
 export interface ISongsProps extends IInfiList {

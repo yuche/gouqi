@@ -8,7 +8,7 @@ import {
 } from 'react-native'
 import Navbar from '../components/navbar'
 import ListItem from '../components/listitem'
-import { get } from 'lodash'
+import { get, isEqual } from 'lodash'
 import { Color } from '../styles'
 import Ionic from 'react-native-vector-icons/Ionicons'
 import { connect } from 'react-redux'
@@ -16,14 +16,11 @@ import {
   popupTrackActionSheet,
   playTrackAction
 } from '../actions'
+import { IPlaylistProps } from '../interfaces'
 
-interface IProps {
-  tracks: ITrack[]
-  playingTrack: number,
+interface IProps extends IPlaylistProps {
   isLoading: boolean,
-  sync: () => Redux.Action,
-  popup: (track: ITrack) => Redux.Action,
-  play: (playingTrack: number, tracks: ITrack[]) => Redux.Action,
+  sync: () => Redux.Action
 }
 
 class Playlist extends React.Component<IProps, any> {
@@ -39,14 +36,18 @@ class Playlist extends React.Component<IProps, any> {
   }
 
   componentWillReceiveProps (nextProps: IProps) {
-    if (nextProps.playingTrack !== this.props.playingTrack) {
+    console.log('nextProps')
+    console.log(nextProps.playing)
+    console.log(this.props.playing)
+    if (!isEqual(nextProps.playing, this.props.playing)) {
       this.ds = this.ds.cloneWithRows([])
     }
   }
 
-  renderTrack = (playingTrack: number) => {
-    return (track: ITrack) => {
-      const isPlaying = playingTrack === track.id
+  renderTrack = (playing, isPlaylist: boolean) => {
+    return (track: ITrack, sectionId, rowId) => {
+      const index = Number(rowId)
+      const isPlaying = playing.index === index && isPlaylist
       const artistName = get(track, 'artists[0].name', null)
       const albumName = get(track, 'album.name', '')
       const subTitle = artistName ?
@@ -62,7 +63,7 @@ class Playlist extends React.Component<IProps, any> {
         picStyle={{ width: 40, height: 40}}
         titleStyle={[{ fontSize: 15 }, colorStyle]}
         subTitleStyle={colorStyle}
-        onPress={!isPlaying ? this.listItemOnPress(track.id) : undefined}
+        onPress={!isPlaying ? this.listItemOnPress(index) : undefined}
         renderRight={
           <TouchableWithoutFeedback
             onPress={this.moreIconOnPress(track)}
@@ -97,7 +98,8 @@ class Playlist extends React.Component<IProps, any> {
   render() {
     const {
       tracks,
-      playingTrack,
+      playing,
+      isPlaylist,
       isLoading,
       sync
     } = this.props
@@ -118,7 +120,7 @@ class Playlist extends React.Component<IProps, any> {
           scrollRenderAheadDistance={120}
           initialListSize={10}
           dataSource={this.ds}
-          renderRow={this.renderTrack(playingTrack)}
+          renderRow={this.renderTrack(playing, isPlaylist)}
           showsVerticalScrollIndicator={true}
           refreshControl={
             <RefreshControl refreshing={isLoading} onRefresh={sync}/>
@@ -133,7 +135,7 @@ class Playlist extends React.Component<IProps, any> {
 function mapStateToProps (
   {
     player: {
-      playingTrack
+      playing
     },
     personal: {
       daily,
@@ -143,8 +145,9 @@ function mapStateToProps (
 ) {
   return {
     tracks: daily,
-    playingTrack,
-    isLoading
+    playing,
+    isLoading,
+    isPlaylist: playing.pid === 'daily'
   }
 }
 
@@ -157,9 +160,12 @@ export default connect(
     popup(track: ITrack) {
       return dispatch(popupTrackActionSheet(track))
     },
-    play(playingTrack: number, tracks: ITrack[]) {
+    play(index: number, tracks: ITrack[]) {
       return dispatch(playTrackAction({
-        playingTrack,
+        playing: {
+          index,
+          pid: 'daily'
+        },
         playlist: tracks
       }))
     }

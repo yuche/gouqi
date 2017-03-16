@@ -46,14 +46,14 @@ class UserPage extends React.Component<IProps, any> {
         onPress: Router.toDownloads()
       },
       {
-        title: '播放历史',
-        iconName: 'history',
-        onPress: Router.toHistoryScene()
-      },
-      {
         title: '每日歌曲',
         iconName: 'calendar-check-o',
         onPress: Router.toDailyRecommend()
+      },
+      {
+        title: '播放历史',
+        iconName: 'history',
+        onPress: Router.toHistoryScene()
       }
     ]
   }

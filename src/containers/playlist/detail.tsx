@@ -28,7 +28,7 @@ import ListItem from '../../components/listitem'
 import {
   IinitialState as IDetailState
 } from '../../reducers/detail'
-import { get } from 'lodash'
+import { get, isEqual } from 'lodash'
 import Router from '../../routers'
 import ParallaxScroll from '../../components/ParallaxScroll'
 import { Color } from '../../styles'
@@ -36,16 +36,19 @@ import { BlurView } from 'react-native-blur'
 import Icon from 'react-native-vector-icons/FontAwesome'
 import Ionic from 'react-native-vector-icons/Ionicons'
 
+import { IPlaying } from '../../reducers/player'
+
 const { width, height } = Dimensions.get('window')
 
 interface IProps extends ILoadingProps {
   route: IPlaylist,
   playlist: IPlaylist,
   subscribing: boolean,
-  playingTrack: number,
+  playing: IPlaying,
+  isPlaylist: boolean,
   subscribe: () => Redux.Action,
   popup: (track: ITrack) => Redux.Action,
-  play: (playingTrack: number, tracks: ITrack[]) => Redux.Action,
+  play: (index: number, tracks: ITrack[]) => Redux.Action,
   download: (tracks: ITrack[]) => Redux.Action
 }
 
@@ -75,7 +78,7 @@ class PlayList extends React.Component<IProps, IState> {
   }
 
   componentWillReceiveProps (nextProps: IProps) {
-    if (nextProps.playingTrack !== this.props.playingTrack) {
+    if (!isEqual(nextProps.playing, this.props.playing)) {
       this.ds = this.ds.cloneWithRows([])
     }
   }
@@ -84,7 +87,8 @@ class PlayList extends React.Component<IProps, IState> {
     const {
       isLoading,
       playlist,
-      playingTrack
+      playing,
+      isPlaylist
     } = this.props
     const {
       scrollY
@@ -94,7 +98,7 @@ class PlayList extends React.Component<IProps, IState> {
         {this.renderBlur(playlist, scrollY)}
         {this.renderNavbar(playlist, scrollY)}
         {this.renderHeader(playlist, scrollY)}
-        {this.renderPlayList(isLoading, scrollY, playlist.tracks || [], playingTrack)}
+        {this.renderPlayList(isLoading, scrollY, playlist.tracks || [], playing, isPlaylist)}
       </View>
     )
   }
@@ -232,9 +236,10 @@ class PlayList extends React.Component<IProps, IState> {
     )
   }
 
-  renderTrack = (playingTrack: number) => {
-    return (track: ITrack) => {
-      const isPlaying = playingTrack === track.id
+  renderTrack = (playing: IPlaying, isPlaylist: boolean) => {
+    return (track: ITrack, secionId, rowId) => {
+      const index = Number(rowId)
+      const isPlaying = playing.index === index && isPlaylist
       const artistName = get(track, 'artists[0].name', null)
       const albumName = get(track, 'album.name', '')
       const subTitle = artistName ?
@@ -250,7 +255,7 @@ class PlayList extends React.Component<IProps, IState> {
         picStyle={{ width: 30, height: 30}}
         titleStyle={[{ fontSize: 14 }, colorStyle]}
         subTitleStyle={colorStyle}
-        onPress={!isPlaying ? this.listItemOnPress(track.id) : undefined}
+        onPress={!isPlaying ? this.listItemOnPress(index) : undefined}
         renderRight={
           <TouchableWithoutFeedback
             onPress={this.moreIconOnPress(track)}
@@ -270,8 +275,8 @@ class PlayList extends React.Component<IProps, IState> {
     }
   }
 
-  listItemOnPress = (id: number) => () => {
-    this.props.play(id, this.props.playlist.tracks)
+  listItemOnPress = (index: number) => () => {
+    this.props.play(index, this.props.playlist.tracks)
   }
 
   moreIconOnPress = (track: ITrack) => () => {
@@ -282,7 +287,8 @@ class PlayList extends React.Component<IProps, IState> {
     isLoading: boolean,
     scrollY: Animated.Value,
     tracks: ITrack[],
-    playingTrack: number
+    playing: IPlaying,
+    isPlaylist: boolean
   ) => {
     const containerY = scrollY.interpolate({
       inputRange: [0 , HEADER_HEIGHT, HEADER_HEIGHT],
@@ -300,7 +306,7 @@ class PlayList extends React.Component<IProps, IState> {
             scrollRenderAheadDistance={120}
             initialListSize={20}
             dataSource={this.ds}
-            renderRow={this.renderTrack(playingTrack)}
+            renderRow={this.renderTrack(playing, isPlaylist)}
             showsVerticalScrollIndicator={true}
             renderScrollComponent={this.renderScrollComponent(isLoading)}
           />
@@ -396,13 +402,11 @@ function mapStateToProps (
       subscribing
     },
     player: {
-      playingTrack
+      playing
     }
   }: {
       details: IDetailState,
-      player: {
-        playingTrack: number
-      }
+      player: any
   },
   ownProps: IProps
 ) {
@@ -414,7 +418,8 @@ function mapStateToProps (
       creator: route.creator,
       coverImgUrl: route.coverImgUrl
     },
-    playingTrack,
+    playing,
+    isPlaylist: route.id === playing.pid,
     isLoading,
     subscribing
   }
@@ -432,9 +437,12 @@ export default connect(
     popup(track: ITrack) {
       return dispatch(popupTrackActionSheet(track))
     },
-    play (playingTrack: number, tracks: ITrack[]) {
+    play (index: number, tracks: ITrack[]) {
       return dispatch(playTrackAction({
-        playingTrack,
+        playing: {
+          index,
+          pid: ownProps.route.id
+        },
         playlist: tracks
       }))
     },

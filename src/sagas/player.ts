@@ -1,9 +1,8 @@
 import { put, fork, select } from 'redux-saga/effects'
 import { IPlayerState } from '../reducers/player'
-import { findIndex, sample } from 'lodash'
+import { random, get } from 'lodash'
 import { playTrackAction } from '../actions'
 import { takeLatest, takeEvery } from 'redux-saga'
-import { get } from 'lodash'
 import {
   changeStatusAction,
   currentTimeAction,
@@ -19,71 +18,60 @@ import MusicControl from 'react-native-music-control/index.ios.js'
 function* nextTrack () {
   const playerState: IPlayerState = yield select((state: any) => state.player)
 
-  const { mode, playingTrack, playlist, seconds } = playerState
-
-  yield fork(AsyncStorage.setItem, 'SECONDS', seconds.toString())
+  const { mode, playing, playlist, seconds } = playerState
 
   const length = playlist.length
 
   if (length) {
     if (mode === 'SEQUE') {
-      const trackIndex = findIndex(playlist, { id: playingTrack })
-      const track = trackIndex === length
-        ? playlist[0]
-        : playlist[trackIndex + 1]
+      const index = Number(playing.index)
       yield put(playTrackAction({
-        playingTrack: track.id
+        playing: {
+          index: index === length ? 0 : index + 1
+        }
       }))
     }
 
     if (mode === 'RANDOM') {
-      const track = sample(playlist)
+      const index = random(length)
       yield put(playTrackAction({
-        playingTrack: track.id
+        playing: {
+          index
+        }
       }))
     }
-
   }
+
+  yield fork(AsyncStorage.setItem, 'SECONDS', seconds.toString())
+
 }
 
 function* prevTrack () {
   const playerState: IPlayerState = yield select((state: any) => state.player)
 
-  const { history, playlist, playingTrack, seconds } = playerState
+  const { playlist, playing, seconds } = playerState
 
   yield fork(AsyncStorage.setItem, 'SECONDS', seconds.toString())
 
   if (playlist.length) {
-    const historyLength = history.length
-    if (historyLength > 1) {
-      yield put(playTrackAction({
-        playingTrack: history[historyLength - 2].id,
-        prev: true
-      }))
-    }
-
-    if (historyLength === 1) {
-      const trackIndex = findIndex(playlist, { id: playingTrack })
-      const track = trackIndex === 0
-        ? playlist[playlist.length - 1]
-        : playlist[trackIndex - 1]
-      yield put(playTrackAction({
-        playingTrack: track.id,
-        prev: true
-      }))
-    }
-
+    const { index } = playing
+    yield put(playTrackAction({
+      playing: {
+        index: index === 0 ? playlist.length - 1 : index - 1
+      },
+      prev: true
+    }))
   }
 }
 
-function* playTrack ({ payload: { playingTrack, prev } }) {
+function* playTrack ({ payload: { playing, prev } }) {
   const playerState: IPlayerState = yield select((state: any) => state.player)
   const { playlist } = playerState
   if (playlist.length) {
-    const track = playlist.find(t => t.id === playingTrack)
+    const track = playlist[playing.index]
     let uri = get(track, 'mp3Url', '')
     if (uri.startsWith('http')) {
-      const response = yield* ajaxCall(api.batchSongDetailsNew, [playingTrack.toString()])
+      const response = yield* ajaxCall(api.batchSongDetailsNew, [track.id])
       if (response.code === 200) {
         uri = response.data[0].url
       }
@@ -110,7 +98,7 @@ function* setHisotrySaga () {
 }
 
 function* delelteHistory ({ payload }) {
-  const history = yield select((state: any) => state.player.history.filter(h => h.id !== payload))
+  const history = yield select((state: any) => state.player.history.filter((_, index) => index !== payload))
 
   yield put({
     type: 'player/history/save',

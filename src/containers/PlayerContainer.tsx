@@ -158,7 +158,9 @@ function mapStateToProps (
   {
     player: {
       playlist,
-      playingTrack,
+      playing: {
+        index
+      },
       status,
       mode,
       uri,
@@ -167,11 +169,11 @@ function mapStateToProps (
     }
   }: { player: IPlayerState }
 ) {
-  const track = playlist.find(t => t.id === playingTrack)
+  const track = playlist[index]
   return {
     mode,
     status,
-    track,
+    track: track || {},
     uri,
     duration,
     currentTime
