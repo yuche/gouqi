@@ -15,12 +15,14 @@ import ListItem from '../components/listitem'
 import Icon from 'react-native-vector-icons/FontAwesome'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import Router from '../routers'
-
+import { Color } from '../styles'
 import { get } from 'lodash'
 
 interface IProps {
   profile: IProfile,
-  seconds: number
+  seconds: number,
+  isPlayingFM: boolean,
+  playFM: () => Redux.Action
 }
 
 interface IListProps {
@@ -90,13 +92,21 @@ class UserPage extends React.Component<IProps, any> {
     )
   }
 
+  playFM = () => {
+    this.props.playFM()
+  }
+
   render() {
     const {
       profile,
-      seconds
+      seconds,
+      isPlayingFM
     } = this.props
     const nickname = get(profile, 'nickname', false)
     const uri = get(profile, 'avatarUrl', PLACEHOLDER_IMAGE)
+    const fmIcon = isPlayingFM
+      ? <Ionicons name='md-volume-up' size={20} color={Color.main}/>
+      : <Icon name='angle-right' size={20} color='#ccc'/>
     return (
       <View style={{flex: 1}}>
         <View style={styles.header}>
@@ -108,6 +118,7 @@ class UserPage extends React.Component<IProps, any> {
           title='我的私人电台'
           titleStyle={styles.title}
           containerStyle={[styles.list, { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: '#ccc' }]}
+          onPress={isPlayingFM ? undefined : this.playFM}
           renderLeft={
             <View style={centering}>
               <Ionicons name='md-radio' size={20} color='#ccc'/>
@@ -115,7 +126,7 @@ class UserPage extends React.Component<IProps, any> {
           }
           renderRight={
             <View style={centering}>
-              <Icon name='angle-right' size={20} color='#ccc'/>
+              {fmIcon}
             </View>
           }
         />
@@ -152,13 +163,22 @@ function mapStateToProps ({
     profile
   },
   player: {
-    seconds
+    seconds,
+    playing
   }
 }) {
   return {
     profile,
+    isPlayingFM: playing.pid === 'fm',
     seconds: Math.round(seconds / 1000)
   }
 }
 
-export default connect(mapStateToProps)(UserPage) as React.ComponentClass<{tabLabel: string}>
+export default connect(
+  mapStateToProps,
+  (dispatch) => ({
+    playFM() {
+      return dispatch({type: 'player/fm/play'})
+    }
+  })
+)(UserPage) as React.ComponentClass<{tabLabel: string}>

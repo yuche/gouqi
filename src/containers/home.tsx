@@ -3,12 +3,10 @@ import PlayList from './playlist'
 import { connect } from 'react-redux'
 import * as React from 'react'
 import { createAction } from 'redux-actions'
-import {
-  View
-} from 'react-native'
-import TabBar from '../components/homeNavBar'
+import TabBar from '../components/HomeTabBar'
 import ScrollableTabView from 'react-native-scrollable-tab-view'
 import UserPage from '../containers/UserPage'
+import Toplist from '../containers/ToplistPage'
 
 class Home extends React.Component<any, any> {
   constructor(props: any) {
@@ -27,8 +25,8 @@ class Home extends React.Component<any, any> {
         renderTabBar={renderTabBar()}
       >
         <RecommendScene tabLabel='推荐' {...this.props}/>
-        <View tabLabel='电台'/>
         <PlayList tabLabel='歌单'/>
+        <Toplist tabLabel='排行榜'/>
         <UserPage tabLabel='我的'/>
       </ScrollableTabView>
     )

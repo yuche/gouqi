@@ -3,6 +3,7 @@ import { ITrack } from '../services/api'
 import { IPlayerProps as IProps } from '../interfaces'
 import Video from 'react-native-video'
 import MusicControl from 'react-native-music-control/index.ios.js'
+import * as api from '../services/api'
 
 interface IState {
   duration: number
@@ -18,6 +19,9 @@ class Player extends React.Component<IProps, any> {
   }
 
   componentDidMount() {
+    api.playListDetail('3779629').then(res => {
+      console.log(res)
+    })
     MusicControl.enableBackgroundMode(true)
     MusicControl.enableControl('play', true)
     MusicControl.enableControl('pause', true)

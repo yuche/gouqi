@@ -1,6 +1,6 @@
 import { put, fork, select } from 'redux-saga/effects'
 import { IPlayerState } from '../reducers/player'
-import { random, get } from 'lodash'
+import { random, get, findIndex } from 'lodash'
 import { playTrackAction } from '../actions'
 import { takeLatest, takeEvery } from 'redux-saga'
 import {
@@ -25,6 +25,15 @@ function* nextTrack () {
   if (length) {
     if (mode === 'SEQUE') {
       const index = Number(playing.index)
+      if (playing.pid === 'fm' && playlist.length - 1 === index) {
+        const response = yield* ajaxCall(api.personalFM)
+        if (response.code === 200) {
+          yield put({
+            type: 'player/playlist/merge',
+            payload: response.data
+          })
+        }
+      }
       yield put(playTrackAction({
         playing: {
           index: index === length ? 0 : index + 1
@@ -49,17 +58,52 @@ function* nextTrack () {
 function* prevTrack () {
   const playerState: IPlayerState = yield select((state: any) => state.player)
 
-  const { playlist, playing, seconds } = playerState
+  const { history, playlist, playing, seconds } = playerState
 
   yield fork(AsyncStorage.setItem, 'SECONDS', seconds.toString())
 
   if (playlist.length) {
-    const { index } = playing
+    const historyLength = history.length
+    const historyTrack = history[historyLength - 2]
+    const index = historyTrack && findIndex(playlist, t => t.id === historyTrack.id)
+    if (index) {
+      yield put(playTrackAction({
+        playing: {
+          index
+        },
+        prev: true
+      }))
+    } else {
+      const index = playing.index
+      yield put(playTrackAction({
+        playing: {
+          index: index === 0 ? playlist.length - 1 : index - 1
+        },
+        prev: true
+      }))
+    }
+  }
+}
+
+function* playPersonalFM() {
+  yield put(playTrackAction({
+    playing: {
+      index: 0,
+      pid: 'fm'
+    }
+  }))
+  const response = yield* ajaxCall(api.personalFM)
+  if (response.code === 200) {
+    yield put({
+      type: 'player/mode',
+      payload: 'SEQUE'
+    })
     yield put(playTrackAction({
       playing: {
-        index: index === 0 ? playlist.length - 1 : index - 1
+        index: 0,
+        pid: 'fm'
       },
-      prev: true
+      playlist: response.data
     }))
   }
 }
@@ -135,6 +179,7 @@ export default function* watchPlayer () {
     takeEvery('player/currentTime', watchCurrentTime),
     takeLatest('player/history/merge', setHisotrySaga),
     takeLatest('player/history/save', setHisotrySaga),
-    takeLatest('player/history/delete', delelteHistory)
+    takeLatest('player/history/delete', delelteHistory),
+    takeLatest('player/fm/play', playPersonalFM)
   ]
 }

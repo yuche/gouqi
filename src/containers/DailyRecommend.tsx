@@ -36,9 +36,6 @@ class Playlist extends React.Component<IProps, any> {
   }
 
   componentWillReceiveProps (nextProps: IProps) {
-    console.log('nextProps')
-    console.log(nextProps.playing)
-    console.log(this.props.playing)
     if (!isEqual(nextProps.playing, this.props.playing)) {
       this.ds = this.ds.cloneWithRows([])
     }
