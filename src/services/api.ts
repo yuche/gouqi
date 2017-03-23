@@ -219,7 +219,7 @@ export async function search(
   })
 }
 
-export async function DailyRecommend(
+export async function dailyRecommend(
   offset = '0',
   limit = '20',
   total = 'true'

@@ -77,17 +77,6 @@ export function* syncSearchResource (
   })
 }
 
-export function* ajaxErrorHandler (res: any) {
-  if (res.error) {
-    yield put(toastAction('error', '网络出现错误...'))
-
-    if (res.error.message === '未登录') {
-      yield put(toastAction('info', '请先登录'))
-      yield Router.toLogin()
-    }
-  }
-}
-
 export function* ajaxCall (fn: (...args: any[]) => Promise<any>, ...args: any[]) {
   const res = yield call(fn, ...args)
   if (res.error) {

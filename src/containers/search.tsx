@@ -9,7 +9,7 @@ import {
 import { ISearchQuery, startSearch, ISearchActiveTab, changeSearchActiveTab } from '../actions'
 import { Form } from '../components/base'
 import { IRouterProps } from '../interfaces'
-import TabBar from '../components/homeNavBar'
+import TabBar from '../components/HomeTabBar'
 import PlayList from './search/playlist'
 import Song from './search/song'
 import Album from './search/album'

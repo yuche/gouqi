@@ -73,6 +73,50 @@ export function* loginFlow () {
   }
 }
 
+function* recommandSaga () {
+  const isLogin = !!api.getUserId()
+  let promises = [
+    api.topPlayList,
+    api.newAlbums,
+    api.topArtists
+  ]
+  if (isLogin) {
+    promises.push(api.dailyRecommend)
+  }
+
+  yield put({
+    type: 'home/recommend/start'
+  })
+
+  const [
+    playlists,
+    albums,
+    artists,
+    songs
+  ] =  yield Promise.all(promises)
+
+  if (albums.code === 200 && artists.code === 200) {
+    yield put({
+      type: 'home/recommend/save',
+      payload: {
+        albums: albums.albums,
+        artists: artists.artists
+      }
+    })
+  }
+
+  if (songs.code === 200) {
+    yield put({
+      type: 'personal/daily/save',
+      payload: songs.recommend
+    })
+  }
+
+  yield put({
+    type: 'home/recommend/end'
+  })
+}
+
 function* setCookiesSaga () {
   const Cookies: string = yield AsyncStorage.getItem('Cookies')
 

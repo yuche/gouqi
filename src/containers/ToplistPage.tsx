@@ -55,8 +55,9 @@ class Toplist extends React.Component<IProps, any> {
             style={styles.image}
             source={{uri: item.coverImgUrl}}
           />
-          <Text style={styles.meta}>{item.meta}</Text>
+          {item.meta && <Text style={styles.meta}>{item.meta}</Text>}
           <Text style={styles.title} numberOfLines={2}>{item.name}</Text>
+          {item.subtitle && <Text style={styles.subtitle}>{item.subtitle}</Text>}
         </View>
       </TouchableWithoutFeedback>
     )
@@ -101,6 +102,12 @@ const styles = {
   title: {
     marginLeft: 5,
     marginTop: 5
+  } as TextStyle,
+  subtitle: {
+    marginLeft: 5,
+    marginTop: 5,
+    fontSize: 13,
+    color: '#eee'
   } as TextStyle
 }
 

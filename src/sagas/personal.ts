@@ -108,7 +108,7 @@ function* syncDailyRecommend () {
 
   yield call(InteractionManager.runAfterInteractions)
 
-  const response = yield* ajaxCall(api.DailyRecommend)
+  const response = yield* ajaxCall(api.dailyRecommend)
 
   if (response.code === 200) {
     yield put({

@@ -1,8 +1,7 @@
 import RecommendScene from './recommend'
-import PlayList from './playlist'
+import PlayList from './HomePlaylistsPage'
 import { connect } from 'react-redux'
 import * as React from 'react'
-import { createAction } from 'redux-actions'
 import TabBar from '../components/HomeTabBar'
 import ScrollableTabView from 'react-native-scrollable-tab-view'
 import UserPage from '../containers/UserPage'
@@ -41,7 +40,7 @@ export default connect(
   () => ({}),
   (dispatch: any) => ({
     init() {
-      return dispatch(createAction('app/init')())
+      return dispatch({type: 'app/init'})
     }
   })
 )(Home)

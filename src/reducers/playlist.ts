@@ -6,7 +6,8 @@ const initialState = {
   playlists: [],
   offset: 0,
   more: true,
-  track: {}
+  track: {},
+  isRefreshing: false
 }
 
 export default handleActions({
@@ -16,9 +17,21 @@ export default handleActions({
     })
   },
 
+  'playlists/refresh/start' (state) {
+    return assign(state, {
+      isRefreshing: true
+    })
+  },
+
   'playlists/sync/end' (state) {
     return assign(state, {
       isLoading: false
+    })
+  },
+
+  'playlists/refresh/end' (state) {
+    return assign(state, {
+      isRefreshing: false
     })
   },
 

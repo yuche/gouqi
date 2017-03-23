@@ -55,7 +55,6 @@ class Collect extends React.Component<IProps, any> {
           <ScrollView showsVerticalScrollIndicator={true}>
             <ListItem
               title='新建歌单'
-              // tslint:disable-next-line:jsx-no-multiline-js
               renderLeft={
                 <View style={styles.leftIcon}>
                   <Icon name='md-add' size={20} color={Color.main}/>

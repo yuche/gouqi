@@ -7,20 +7,71 @@ import {
   InteractionManager
 } from 'react-native'
 import {
-  syncMoreResource,
   ajaxCall
 } from './common'
 import Router from '../routers'
 
 function* syncPlaylists () {
   while (true) {
-    yield *syncMoreResource(
-      'playlists/sync',
-      'playlists',
-      api.topPlayList,
-      (state: any) => state.playlist,
-      (result: any) => result.playlists
-    )
+    yield take('playlists/sync')
+
+    const state = yield select((state: any) => state.playlist)
+
+    if (state.more) {
+      yield put({
+        type: 'playlists/sync/start'
+      })
+
+      const offsetState = state.offset + 30
+
+      const response = yield* ajaxCall(
+        api.topPlayList, '30',
+        state.offset === 0 ? state.offset.toString()  : offsetState.toString()
+      )
+      if (response.code === 200) {
+        yield put({
+          type: 'playlists/sync/save',
+          payload: state.playlists.concat(response.playlists),
+          meta: {
+            more: response.more,
+            offset: offsetState
+          }
+        })
+      }
+    } else {
+      yield put(toastAction('info', '没有更多资源了'))
+    }
+
+    yield put({
+      type: `playlists/sync/end`
+    })
+  }
+}
+
+function* refreshPlaylist () {
+  while (true) {
+    yield take('playlists/refresh')
+
+    yield put({
+      type: 'playlists/refresh/start'
+    })
+
+    const response = yield* ajaxCall(api.topPlayList, '30')
+
+    if (response.code === 200) {
+      yield put({
+        type: 'playlists/sync/save',
+        payload: response.playlists,
+        meta: {
+          more: true,
+          offset: 0
+        }
+      })
+    }
+
+    yield put({
+      type: 'playlists/refresh/end'
+    })
   }
 }
 
@@ -187,4 +238,5 @@ export default function* watchPlaylist () {
   yield fork(collectTrackToPlayliast)
   yield fork(toCommentPage)
   yield fork(toCreatePlaylistPage)
+  yield fork(refreshPlaylist)
 }
