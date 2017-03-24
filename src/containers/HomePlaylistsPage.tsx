@@ -11,19 +11,12 @@ import ListItem from '../components/listitem'
 import { IPlaylistsProps } from '../interfaces'
 import * as Actions from '../actions'
 import Router from '../routers'
+import { playCount } from '../utils'
 
 interface IProps extends IPlaylistsProps {
   syncMore: () => Redux.Action,
   refresh: () => Redux.Action,
   isRefreshing: boolean
-}
-
-function playCount (num: number) {
-  const n = num || 0
-  if (n < 100000) {
-    return n + ' 次播放' // space matters
-  }
-  return Math.round(n / 10000) + ' 万次播放'
 }
 
 class PlayList extends React.Component<IProps, {}> {
@@ -42,7 +35,7 @@ class PlayList extends React.Component<IProps, {}> {
     return (
       <ListItem
         title={playlist.name}
-        picURI={playlist.coverImgUrl + '?param=300y300'}
+        picURI={playlist.coverImgUrl}
         subTitle={playCount(playlist.playCount)}
         key={playlist.id}
         onPress={Router.toPlayList({ route: playlist })}

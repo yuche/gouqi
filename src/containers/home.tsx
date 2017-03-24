@@ -8,6 +8,8 @@ import UserPage from '../containers/UserPage'
 import Toplist from '../containers/ToplistPage'
 
 class Home extends React.Component<any, any> {
+  private tabbar: any
+
   constructor(props: any) {
     super(props)
   }
@@ -17,13 +19,12 @@ class Home extends React.Component<any, any> {
   }
 
   render() {
-    const { renderTabBar } = this
     return (
       <ScrollableTabView
         style={{marginTop: 20}}
-        renderTabBar={renderTabBar()}
+        renderTabBar={this.renderTabBar}
       >
-        <RecommendScene tabLabel='推荐' {...this.props}/>
+        <RecommendScene tabLabel='推荐' gotoPlaylist={this.goToPlaylist}/>
         <PlayList tabLabel='歌单'/>
         <Toplist tabLabel='排行榜'/>
         <UserPage tabLabel='我的'/>
@@ -31,8 +32,13 @@ class Home extends React.Component<any, any> {
     )
   }
 
+  private goToPlaylist = () => {
+    this.tabbar.goToPage(1)()
+  }
+
   private renderTabBar = () => {
-    return () => <TabBar {...this.props}/>
+    // tslint:disable-next-line:jsx-no-lambda
+    return <TabBar ref={component => this.tabbar = component}/>
   }
 }
 

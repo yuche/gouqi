@@ -1,4 +1,5 @@
 import { take, put, fork, select, call } from 'redux-saga/effects'
+import { takeLatest } from 'redux-saga'
 import {
   toastAction
 } from '../actions'
@@ -10,42 +11,39 @@ import {
   ajaxCall
 } from './common'
 import Router from '../routers'
+import { changeCoverImgUrl } from '../utils'
 
 function* syncPlaylists () {
-  while (true) {
-    yield take('playlists/sync')
+  const playlistState = yield select((state: any) => state.playlist)
 
-    const state = yield select((state: any) => state.playlist)
-
-    if (state.more) {
-      yield put({
-        type: 'playlists/sync/start'
-      })
-
-      const offsetState = state.offset + 30
-
-      const response = yield* ajaxCall(
-        api.topPlayList, '30',
-        state.offset === 0 ? state.offset.toString()  : offsetState.toString()
-      )
-      if (response.code === 200) {
-        yield put({
-          type: 'playlists/sync/save',
-          payload: state.playlists.concat(response.playlists),
-          meta: {
-            more: response.more,
-            offset: offsetState
-          }
-        })
-      }
-    } else {
-      yield put(toastAction('info', '没有更多资源了'))
-    }
-
+  if (playlistState.more) {
     yield put({
-      type: `playlists/sync/end`
+      type: 'playlists/sync/start'
     })
+
+    const offsetState = playlistState.offset + 30
+
+    const response = yield* ajaxCall(
+      api.topPlayList, '30',
+      playlistState.offset === 0 ? playlistState.offset.toString()  : offsetState.toString()
+    )
+    if (response.code === 200) {
+      yield put({
+        type: 'playlists/sync/save',
+        payload: playlistState.playlists.concat(changeCoverImgUrl(response.playlists)),
+        meta: {
+          more: response.more,
+          offset: offsetState
+        }
+      })
+    }
+  } else {
+    yield put(toastAction('info', '没有更多资源了'))
   }
+
+  yield put({
+    type: `playlists/sync/end`
+  })
 }
 
 function* refreshPlaylist () {
@@ -61,7 +59,7 @@ function* refreshPlaylist () {
     if (response.code === 200) {
       yield put({
         type: 'playlists/sync/save',
-        payload: response.playlists,
+        payload: changeCoverImgUrl(response.playlists),
         meta: {
           more: true,
           offset: 0
@@ -239,4 +237,5 @@ export default function* watchPlaylist () {
   yield fork(toCommentPage)
   yield fork(toCreatePlaylistPage)
   yield fork(refreshPlaylist)
+  yield takeLatest('playlists/sync', syncPlaylists)
 }

@@ -220,8 +220,8 @@ export async function search(
 }
 
 export async function dailyRecommend(
+  limit = '30',
   offset = '0',
-  limit = '20',
   total = 'true'
 ) {
   const csrf = getCsrfFromCookies()
@@ -256,8 +256,8 @@ export async function fmTrash(
 }
 
 export async function newAlbums(
-  offset = '0',
-  limit = '10'
+  limit = '10',
+  offset = '0'
 ) {
   return await request
     .get(`/api/album/new?area=ALL&offset=${offset}&total=true&limit=${limit}`)
@@ -303,7 +303,8 @@ export interface IAlbum {
   description: string,
   name: string,
   picUrl: string,
-  size: string
+  size: string,
+  artist: IArtist
 }
 
 export interface IArtist {
@@ -332,8 +333,8 @@ export async function topPlayList(
 }
 
 export async function topArtists(
-  offset = '0',
-  limit = '10'
+  limit = '10',
+  offset = '0'
 ) {
   return await request
     .get(`/api/artist/top?offset=${offset}&total=false&limit=${limit}`)

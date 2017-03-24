@@ -4,64 +4,126 @@ import {
   Text,
   TextStyle,
   View,
-  ViewStyle
+  ScrollView,
+  ViewStyle,
+  RefreshControl,
+  TouchableWithoutFeedback
 } from 'react-native'
+import { IArtist, IAlbum, IPlaylist, ITrack } from '../services/api'
 import { connect } from 'react-redux'
 import Router from '../routers'
-import Icon  from '../components/icon'
+import Icon from 'react-native-vector-icons/FontAwesome'
+import Grid from '../components/grid'
+import { sampleSize, isEmpty } from 'lodash'
+import { playCount } from '../utils'
+import { Color } from '../styles'
 
-class RecommendScene extends React.Component<any, any> {
+interface IProps {
+  albums: IAlbum[],
+  artists: IArtist[],
+  playlists: IPlaylist[],
+  daily: ITrack[],
+  isLoading: boolean,
+  sync: () => Redux.Action,
+  gotoPlaylist: () => void
+}
+
+class RecommendScene extends React.Component<IProps, any> {
 
   constructor(props: any) {
     super(props)
   }
 
-  showToast = () => {
-    // Router.toLogin()
-    this.props.dispatch({
-      type: 'ui/toast',
-      payload: {
-        kind: 'success',
-        text: '',
-        id: Math.random()
-      }
-    })
-    // this.toast.warning('错误的帐号或密码')
-    // this.refs.toast.show('fuck', 2000)
+  renderHeader (title: string, onPress?) {
+    const {
+      playlists,
+      isLoading
+    } = this.props
+    if (isEmpty(playlists) && isLoading) {
+      return null
+    }
+    return (
+      <TouchableWithoutFeedback onPress={onPress}>
+        <View style={styles.header}>
+          <Text style={{ fontSize: 16, marginLeft: 5 }}>{title}</Text>
+          <Icon size={16} color='#ccc' name='chevron-right' style={{ marginLeft: 5 }}/>
+        </View>
+      </TouchableWithoutFeedback>
+    )
+  }
+
+  toPlaylistDetail = (playlist: IPlaylist) => {
+    Router.toPlayList({ route: playlist })()
   }
 
   render () {
+    const {
+      playlists,
+      albums,
+      artists,
+      daily,
+      sync,
+      isLoading,
+      gotoPlaylist
+    } = this.props
     return (
-      <View style={styles.container}>
-        <Text style={styles.welcome}>
-          Welcome to React wocao!
-        </Text>
-        <Text style={styles.instructions}>
-          To get started, edit index.ios.js
-        </Text>
-        <Text style={styles.instructions}>
-          Press Cmd+R to reload,{'\n'}
-          Cmd+D or shake for dev menu
-        </Text>
-        <Text onPress={() => Router.toCreatePlaylist()}>
-          Go to Login Page
-        </Text>
-        <Text onPress={Router.toLogin()}>
-          Go to fck Page
-        </Text>
-        <Icon name='comment' size={18}  color='black'/>
-      </View>
+      <ScrollView
+        style={{ flex: 1 }}
+        refreshControl={
+          <RefreshControl refreshing={isLoading} onRefresh={sync}/>
+        }
+      >
+        {this.renderHeader('推荐歌单', gotoPlaylist)}
+        <Grid data={playlists} onPress={this.toPlaylistDetail}/>
+        {this.renderHeader('最新专辑')}
+        <Grid data={albums} onPress={() => ({})}/>
+        {this.renderHeader('热门歌手')}
+        <Grid data={artists} onPress={() => ({})}/>
+      </ScrollView>
     )
   }
 }
 
-export default connect()(RecommendScene)
+function mapStateToProps ({
+  playlist: {
+    playlists
+  },
+  home: {
+    albums,
+    artists,
+    isLoading
+  },
+  personal: {
+    daily
+  }
+}) {
+  return {
+    playlists: playlists.slice(0, 6).map(p => ({
+      ...p,
+      meta: playCount(p.playCount)
+    })),
+    albums: albums.slice(0, 6).map(a => ({...a, subtitle: a.artist.name})),
+    artists: sampleSize(artists, 3),
+    isLoading,
+    daily: daily.slice(0, 5)
+  }
+}
+
+export default connect(mapStateToProps,
+  (dispatch) => ({
+    sync() {
+      return dispatch({type: 'home/recommend'})
+    }
+  })
+)(RecommendScene) as React.ComponentClass<{tabLabel: string, gotoPlaylist: any}>
 
 const styles = StyleSheet.create({
-  container: {
-    alignItems: 'center',
-    flex: 1,
-    justifyContent: 'center'
+  header: {
+    marginTop: 10,
+    marginBottom: 15,
+    flexDirection: 'row',
+    borderLeftColor: Color.main,
+    borderLeftWidth: 2
   } as ViewStyle,
   instructions: {
     color: '#333333',

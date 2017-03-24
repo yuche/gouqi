@@ -13,6 +13,7 @@ import {
   toastAction,
   addSecondsAction
 } from '../actions'
+import { takeLatest } from 'redux-saga'
 import watchSearch from './search'
 import watchComment from './comment'
 import watchPlaylist from './playlist'
@@ -76,45 +77,60 @@ export function* loginFlow () {
 function* recommandSaga () {
   const isLogin = !!api.getUserId()
   let promises = [
-    api.topPlayList,
-    api.newAlbums,
-    api.topArtists
+    api.topPlayList('30'),
+    api.newAlbums('30'),
+    api.topArtists('100')
   ]
   if (isLogin) {
-    promises.push(api.dailyRecommend)
+    promises.push(api.dailyRecommend('30'))
   }
 
   yield put({
     type: 'home/recommend/start'
   })
 
-  const [
-    playlists,
-    albums,
-    artists,
-    songs
-  ] =  yield Promise.all(promises)
+  try {
+    const [
+      playlists,
+      albums,
+      artists,
+      songs
+    ] =  yield Promise.all(promises)
 
-  if (albums.code === 200 && artists.code === 200) {
+    if (playlists.code === 200) {
+      yield put({
+        type: 'playlists/sync',
+        payload: playlists.playlists,
+        meta: {
+          more: true,
+          offset: 0
+        }
+      })
+    }
+
+    if (albums.code === 200 && artists.code === 200) {
+      yield put({
+        type: 'home/recommend/save',
+        payload: {
+          albums: albums.albums,
+          artists: artists.artists
+        }
+      })
+    }
+
+    if (songs.code === 200) {
+      yield put({
+        type: 'personal/daily/save',
+        payload: songs.recommend
+      })
+    }
+
     yield put({
-      type: 'home/recommend/save',
-      payload: {
-        albums: albums.albums,
-        artists: artists.artists
-      }
+      type: 'home/recommend/end'
     })
+  } catch (error) {
+    yield put(toastAction('error', '网络出现错误..'))
   }
-
-  if (songs.code === 200) {
-    yield put({
-      type: 'personal/daily/save',
-      payload: songs.recommend
-    })
-  }
-
-  yield put({
-    type: 'home/recommend/end'
-  })
 }
 
 function* setCookiesSaga () {
@@ -171,6 +187,10 @@ export function* init() {
     yield* getProfile()
 
     yield* getHistory()
+
+    yield put({
+      type: 'home/recommend'
+    })
   }
 }
 
@@ -183,6 +203,7 @@ export default function* root () {
     fork(watchComment),
     fork(watchPlayer),
     fork(watchDownload),
-    fork(watchPersonal)
+    fork(watchPersonal),
+    takeLatest('home/recommend', recommandSaga)
   ]
 }

@@ -63,6 +63,10 @@ class TabBar extends React.Component<ITabBarProps, IState> {
    this.props.scrollValue.addListener(this.updateView)
   }
 
+  public goToPage (page: number)  {
+    return () => this.props.goToPage(page)
+  }
+
   renderTab = (
     name: string,
     page: number
@@ -160,10 +164,6 @@ class TabBar extends React.Component<ITabBarProps, IState> {
       this.state.leftUnderlineWidth.setValue(left)
 
     }
-  }
-
-  private goToPage (page: number)  {
-    return () => this.props.goToPage(page)
   }
 
   private goToSearch = () => {

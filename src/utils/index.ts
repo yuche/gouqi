@@ -18,3 +18,18 @@ export async function getDownloadedTracks (): Promise<ITrack[]> {
 export function assign<A extends B, B extends Object>(source: A, assignments: B): A {
   return Object.assign({}, source, assignments)
 }
+
+export function changeCoverImgUrl (arr, width = 300) {
+  return arr.map(item => ({
+    ...item,
+    coverImgUrl: `${item.coverImgUrl}?param=${width}y${width}`
+  }))
+}
+
+export function playCount (num: number) {
+  const n = num || 0
+  if (n < 100000) {
+    return n + ' 次播放' // space matters
+  }
+  return Math.round(n / 10000) + ' 万次播放'
+}
