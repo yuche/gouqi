@@ -1,8 +1,7 @@
 import { take, put, call, select } from 'redux-saga/effects'
 import * as api from '../services/api'
 import Router from '../routers'
-import { PLACEHOLDER_IMAGE } from '../utils'
-
+import { PLACEHOLDER_IMAGE, changeCoverImgUrl } from '../utils'
 import {
   toastAction
 } from '../actions'
@@ -89,48 +88,76 @@ export function* ajaxCall (fn: (...args: any[]) => Promise<any>, ...args: any[])
   return res
 }
 
-export function* syncMoreResource (
+export function syncMoreResource (
   action: string,
-  resourceKey: string,
+  stateKey: string,
   caller: () => Promise<any>,
-  stateSelector: (state: any) => any,
-  resultSelector: (result: any) => any[],
-  picSize = '100y100'
+  picSize = 300,
+  limit = 30
 ) {
-  yield take(action)
+  // tslint:disable-next-line:only-arrow-functions
+  return function* () {
+    const selectedState: IMoreResult = yield select((state: any) => state[stateKey])
 
-  const state: IMoreResult = yield select(stateSelector)
+    if (selectedState.more) {
+      yield put({
+        type: `${action}/sync/start`
+      })
 
-  if (state.more) {
+      const offsetState = selectedState.offset + limit
+      const result = yield* ajaxCall(
+        caller, limit.toString(),
+        selectedState.offset === 0 ? selectedState.offset.toString()  : offsetState.toString()
+      )
+
+      if (result.code === 200) {
+        const more = result.more || offsetState < result.total
+        yield put({
+          type: `${action}/sync/save`,
+          payload: selectedState[action].concat(changeCoverImgUrl(result[action])),
+          meta: {
+            more,
+            offset: offsetState
+          }
+        })
+      }
+
+      yield put({
+        type: `${action}/sync/end`
+      })
+    } else {
+      yield put(toastAction('info', '没有更多资源了'))
+    }
+  }
+}
+
+export function refreshResource (
+  action: string,
+  caller: () => Promise<any>,
+  width = 300,
+  limit = '30'
+) {
+  // tslint:disable-next-line:only-arrow-functions
+  return function* () {
     yield put({
-      type: `${action}/start`
+      type: `${action}/refresh/start`
     })
 
-    const offsetState = state.offset + 15
-    const result = yield* ajaxCall(
-      caller, '15',
-      state.offset === 0 ? state.offset.toString()  : offsetState.toString()
-    )
+    const response = yield* ajaxCall(caller, limit)
 
-    if (result.code === 200) {
+    if (response.code === 200) {
       yield put({
-        type: `${action}/save`,
-        payload: state[resourceKey].concat(resultSelector(result).map(p => {
-          return Object.assign({}, p, {
-            coverImgUrl: p.coverImgUrl + `?param=${picSize}`
-          })
-        })),
+        type: `${action}/sync/save`,
+        payload: changeCoverImgUrl(response[action]),
         meta: {
-          more: result.more,
-          offset: offsetState
+          more: true,
+          offset: 0
         }
       })
     }
-  } else {
-    yield put(toastAction('info', '没有更多资源了'))
-  }
 
-  yield put({
-    type: `${action}/end`
-  })
+    yield put({
+      type: `${action}/refresh/end`
+    })
+  }
 }

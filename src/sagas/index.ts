@@ -13,7 +13,6 @@ import {
   toastAction,
   addSecondsAction
 } from '../actions'
-import { takeLatest } from 'redux-saga'
 import watchSearch from './search'
 import watchComment from './comment'
 import watchPlaylist from './playlist'
@@ -23,6 +22,7 @@ import watchPersonal from './personal'
 import Router from '../routers'
 import RNFS from 'react-native-fs'
 import { getDownloadedTracks, FILES_FOLDER } from '../utils'
+import watchRecommend from './recommend'
 
 function* setProfile (profile) {
   yield AsyncStorage.setItem('PROFILE', JSON.stringify(profile))
@@ -74,65 +74,6 @@ export function* loginFlow () {
   }
 }
 
-function* recommandSaga () {
-  const isLogin = !!api.getUserId()
-  let promises = [
-    api.topPlayList('30'),
-    api.newAlbums('30'),
-    api.topArtists('100')
-  ]
-  if (isLogin) {
-    promises.push(api.dailyRecommend('30'))
-  }
-
-  yield put({
-    type: 'home/recommend/start'
-  })
-
-  try {
-    const [
-      playlists,
-      albums,
-      artists,
-      songs
-    ] =  yield Promise.all(promises)
-
-    if (playlists.code === 200) {
-      yield put({
-        type: 'playlists/sync',
-        payload: playlists.playlists,
-        meta: {
-          more: true,
-          offset: 0
-        }
-      })
-    }
-
-    if (albums.code === 200 && artists.code === 200) {
-      yield put({
-        type: 'home/recommend/save',
-        payload: {
-          albums: albums.albums,
-          artists: artists.artists
-        }
-      })
-    }
-
-    if (songs.code === 200) {
-      yield put({
-        type: 'personal/daily/save',
-        payload: songs.recommend
-      })
-    }
-
-    yield put({
-      type: 'home/recommend/end'
-    })
-  } catch (error) {
-    yield put(toastAction('error', '网络出现错误..'))
-  }
-}
-
 function* setCookiesSaga () {
   const Cookies: string = yield AsyncStorage.getItem('Cookies')
 
@@ -146,7 +87,7 @@ function* setCookiesSaga () {
         })
       } else {
         yield put(toastAction('info', '登录凭证已过期'))
-        yield Router.toLogin()
+        yield Router.toLogin()()
       }
     }
   }
@@ -204,6 +145,6 @@ export default function* root () {
     fork(watchPlayer),
     fork(watchDownload),
     fork(watchPersonal),
-    takeLatest('home/recommend', recommandSaga)
+    fork(watchRecommend)
   ]
 }

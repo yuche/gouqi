@@ -8,70 +8,22 @@ import {
   InteractionManager
 } from 'react-native'
 import {
-  ajaxCall
+  ajaxCall,
+  refreshResource,
+  syncMoreResource
 } from './common'
 import Router from '../routers'
-import { changeCoverImgUrl } from '../utils'
 
-function* syncPlaylists () {
-  const playlistState = yield select((state: any) => state.playlist)
+const syncPlaylists = syncMoreResource(
+  'playlists',
+  'playlist',
+  api.topPlayList
+)
 
-  if (playlistState.more) {
-    yield put({
-      type: 'playlists/sync/start'
-    })
-
-    const offsetState = playlistState.offset + 30
-
-    const response = yield* ajaxCall(
-      api.topPlayList, '30',
-      playlistState.offset === 0 ? playlistState.offset.toString()  : offsetState.toString()
-    )
-    if (response.code === 200) {
-      yield put({
-        type: 'playlists/sync/save',
-        payload: playlistState.playlists.concat(changeCoverImgUrl(response.playlists)),
-        meta: {
-          more: response.more,
-          offset: offsetState
-        }
-      })
-    }
-  } else {
-    yield put(toastAction('info', '没有更多资源了'))
-  }
-
-  yield put({
-    type: `playlists/sync/end`
-  })
-}
-
-function* refreshPlaylist () {
-  while (true) {
-    yield take('playlists/refresh')
-
-    yield put({
-      type: 'playlists/refresh/start'
-    })
-
-    const response = yield* ajaxCall(api.topPlayList, '30')
-
-    if (response.code === 200) {
-      yield put({
-        type: 'playlists/sync/save',
-        payload: changeCoverImgUrl(response.playlists),
-        meta: {
-          more: true,
-          offset: 0
-        }
-      })
-    }
-
-    yield put({
-      type: 'playlists/refresh/end'
-    })
-  }
-}
+const refreshPlaylist = refreshResource(
+  'playlists',
+  api.topPlayList
+)
 
 function* syncPlaylistDetail () {
   while (true) {
@@ -228,14 +180,15 @@ function* toCreatePlaylistPage () {
 }
 
 export default function* watchPlaylist () {
-  yield fork(syncPlaylists)
-  yield fork(syncPlaylistDetail)
-  yield fork(subscribePlaylist)
-  yield fork(popupTrackActionSheet)
-  yield fork(popupCollectActionSheet)
-  yield fork(collectTrackToPlayliast)
-  yield fork(toCommentPage)
-  yield fork(toCreatePlaylistPage)
-  yield fork(refreshPlaylist)
-  yield takeLatest('playlists/sync', syncPlaylists)
+  yield [
+    fork(syncPlaylistDetail),
+    fork(subscribePlaylist),
+    fork(popupTrackActionSheet),
+    fork(popupCollectActionSheet),
+    fork(collectTrackToPlayliast),
+    fork(toCommentPage),
+    fork(toCreatePlaylistPage),
+    takeLatest('playlists/refresh', refreshPlaylist),
+    takeLatest('playlists/sync', syncPlaylists)
+  ]
 }

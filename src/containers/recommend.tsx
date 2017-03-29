@@ -7,31 +7,94 @@ import {
   ScrollView,
   ViewStyle,
   RefreshControl,
-  TouchableWithoutFeedback
+  TouchableWithoutFeedback,
+  ListView
 } from 'react-native'
 import { IArtist, IAlbum, IPlaylist, ITrack } from '../services/api'
 import { connect } from 'react-redux'
 import Router from '../routers'
 import Icon from 'react-native-vector-icons/FontAwesome'
+import Ionic from 'react-native-vector-icons/Ionicons'
 import Grid from '../components/grid'
-import { sampleSize, isEmpty } from 'lodash'
+import { isEmpty, isEqual, get } from 'lodash'
 import { playCount } from '../utils'
 import { Color } from '../styles'
+import { IPlaylistProps } from '../interfaces'
+import ListItem from '../components/listitem'
+import {
+  popupTrackActionSheet,
+  playTrackAction
+} from '../actions'
 
-interface IProps {
+interface IProps extends IPlaylistProps {
   albums: IAlbum[],
   artists: IArtist[],
   playlists: IPlaylist[],
-  daily: ITrack[],
+  tracks: ITrack[],
   isLoading: boolean,
   sync: () => Redux.Action,
   gotoPlaylist: () => void
 }
 
 class RecommendScene extends React.Component<IProps, any> {
+  private ds: React.ListViewDataSource
 
   constructor(props: any) {
     super(props)
+    this.ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1.id !== r2.id})
+  }
+
+  componentWillReceiveProps (nextProps: IProps) {
+    if (!isEqual(nextProps.playing, this.props.playing)) {
+      this.ds = this.ds.cloneWithRows([])
+    }
+  }
+
+  renderTrack = (playing, isPlaylist: boolean) => {
+    return (track: ITrack, sectionId, rowId) => {
+      const index = Number(rowId)
+      const isPlaying = playing.index === index && isPlaylist
+      const artistName = get(track, 'artists[0].name', null)
+      const albumName = get(track, 'album.name', '')
+      const subTitle = artistName ?
+        `${artistName} - ${albumName}` :
+        albumName
+      const colorStyle = isPlaying && { color: Color.main }
+      return <ListItem
+        title={track.name}
+        containerStyle={{ paddingVertical: 0, paddingRight: 0 }}
+        picURI={track.album.picUrl + '?param=75y75'}
+        subTitle={subTitle}
+        textContainer={{ paddingVertical: 10 }}
+        picStyle={{ width: 40, height: 40}}
+        titleStyle={[{ fontSize: 15 }, colorStyle]}
+        subTitleStyle={colorStyle}
+        onPress={!isPlaying ? this.listItemOnPress(index) : undefined}
+        renderRight={
+          <TouchableWithoutFeedback
+            onPress={this.moreIconOnPress(track)}
+          >
+            <View style={{flexDirection: 'row', paddingRight: 10}}>
+              {isPlaying && <View style={{ justifyContent: 'center' }}>
+                <Ionic size={22} name='md-volume-up' color={Color.main} style={{ paddingLeft: 10 }}/>
+              </View>}
+              <View style={{ justifyContent: 'center' }}>
+                <Ionic size={22} name='ios-more' color='#777' style={{ paddingLeft: 10 }}/>
+              </View>
+            </View>
+          </TouchableWithoutFeedback>
+        }
+        key={track.id}
+      />
+    }
+  }
+
+  listItemOnPress = (id: number) => () => {
+    this.props.play(id, this.props.tracks)
+  }
+
+  moreIconOnPress = (track: ITrack) => () => {
+    this.props.popup(track)
   }
 
   renderHeader (title: string, onPress?) {
@@ -56,16 +119,25 @@ class RecommendScene extends React.Component<IProps, any> {
     Router.toPlayList({ route: playlist })()
   }
 
+  toDaily = () => {
+    Router.toDailyRecommend()()
+  }
+
   render () {
     const {
       playlists,
       albums,
       artists,
-      daily,
+      tracks,
       sync,
       isLoading,
-      gotoPlaylist
+      gotoPlaylist,
+      playing,
+      isPlaylist
     } = this.props
+    if (tracks) {
+      this.ds = this.ds.cloneWithRows(tracks)
+    }
     return (
       <ScrollView
         style={{ flex: 1 }}
@@ -79,6 +151,16 @@ class RecommendScene extends React.Component<IProps, any> {
         <Grid data={albums} onPress={() => ({})}/>
         {this.renderHeader('热门歌手')}
         <Grid data={artists} onPress={() => ({})}/>
+        {this.renderHeader('每日推荐', Router.toDailyRecommend())}
+        <ListView
+          enableEmptySections
+          removeClippedSubviews={true}
+          scrollRenderAheadDistance={120}
+          initialListSize={10}
+          dataSource={this.ds}
+          renderRow={this.renderTrack(playing, isPlaylist)}
+          showsVerticalScrollIndicator={false}
+        />
       </ScrollView>
     )
   }
@@ -95,6 +177,9 @@ function mapStateToProps ({
   },
   personal: {
     daily
+  },
+  player: {
+    playing
   }
 }) {
   return {
@@ -102,10 +187,12 @@ function mapStateToProps ({
       ...p,
       meta: playCount(p.playCount)
     })),
-    albums: albums.slice(0, 6).map(a => ({...a, subtitle: a.artist.name})),
-    artists: sampleSize(artists, 3),
-    isLoading,
-    daily: daily.slice(0, 5)
+    tracks: daily,
+    isPlaylist: playing.pid === 'daily',
+    albums,
+    artists,
+    playing,
+    isLoading
   }
 }
 
@@ -113,6 +200,18 @@ export default connect(mapStateToProps,
   (dispatch) => ({
     sync() {
       return dispatch({type: 'home/recommend'})
+    },
+    popup(track: ITrack) {
+      return dispatch(popupTrackActionSheet(track))
+    },
+    play(index: number, tracks: ITrack[]) {
+      return dispatch(playTrackAction({
+        playing: {
+          index,
+          pid: 'daily'
+        },
+        playlist: tracks
+      }))
     }
   })
 )(RecommendScene) as React.ComponentClass<{tabLabel: string, gotoPlaylist: any}>
