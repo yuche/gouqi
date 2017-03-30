@@ -22,7 +22,9 @@ export function assign<A extends B, B extends Object>(source: A, assignments: B)
 export function changeCoverImgUrl (arr, width = 300) {
   return arr.map(item => ({
     ...item,
-    coverImgUrl: `${item.coverImgUrl}?param=${width}y${width}`
+    coverImgUrl: `${item.coverImgUrl}?param=${width}y${width}`,
+    picUrl: `${item.picUrl}?param=${width}y${width}`,
+    img1v1Url: `${item.img1v1Url}?param=${width}y${width}`
   }))
 }
 

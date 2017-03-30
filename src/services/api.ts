@@ -311,7 +311,7 @@ export interface IArtist {
   picUrl: string,
   id: number,
   name: string,
-
+  img1v1Url: string
 }
 
 export interface ItopPlayListResult {
@@ -337,7 +337,7 @@ export async function topArtists(
   offset = '0'
 ) {
   return await request
-    .get(`/api/artist/top?offset=${offset}&total=false&limit=${limit}`)
+    .get(`/api/artist/top?offset=${offset}&total=true&limit=${limit}`)
 }
 
 export async function artistInfo(

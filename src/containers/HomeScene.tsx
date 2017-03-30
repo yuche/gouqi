@@ -1,4 +1,4 @@
-import RecommendScene from './recommend'
+import Recommend from './RecommendPage'
 import PlayList from './HomePlaylistsPage'
 import { connect } from 'react-redux'
 import * as React from 'react'
@@ -24,7 +24,7 @@ class Home extends React.Component<any, any> {
         style={{marginTop: 20}}
         renderTabBar={this.renderTabBar}
       >
-        <RecommendScene tabLabel='推荐' gotoPlaylist={this.goToPlaylist}/>
+        <Recommend tabLabel='推荐' gotoPlaylist={this.goToPlaylist}/>
         <PlayList tabLabel='歌单'/>
         <Toplist tabLabel='排行榜'/>
         <UserPage tabLabel='我的'/>

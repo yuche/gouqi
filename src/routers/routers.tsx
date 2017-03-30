@@ -4,9 +4,9 @@ import {
 } from 'react-native'
 
 import {Scene, Router, Actions} from 'react-native-router-flux'
-import Home from '../containers/home'
-import Login from '../containers/login'
-import Search from '../containers/search'
+import Home from '../containers/HomeScene'
+import Login from '../containers/LoginScene'
+import Search from '../containers/SearchScene'
 import PlayList from '../containers/playlist/detail'
 import Comment from '../containers/playlist/comment'
 import UIContainer from '../containers/UIContainer'
@@ -16,6 +16,8 @@ import DownloadPlaylistScene from '../containers/DownloadPlaylistScene'
 import PersonalPlaylistScene from '../containers/PersonalPlaylistScene'
 import HistoryScene from '../containers/HistoryPlaylistScene'
 import DailyRecommend from '../containers/DailyRecommend'
+import AlbumsScene from '../containers/AlbumsScene'
+import ArtistsScene from '../containers/ArtistsScene'
 
 const scenes = Actions.create(
   <Scene key='root'>
@@ -28,6 +30,8 @@ const scenes = Actions.create(
     <Scene key='PersonalPlaylistScene' component={PersonalPlaylistScene}/>
     <Scene key='DailyRecommend' component={DailyRecommend}/>
     <Scene key='HistoryScene' component={HistoryScene}/>
+    <Scene key='AlbumsScene' component={AlbumsScene}/>
+    <Scene key='ArtistsScene' component={ArtistsScene}/>
     <Scene key='playlistDetail' component={DetailModal} direction='fade'/>
     <Scene key='createPlaylist' component={CreatePlaylist} direction='vertical'/>
   </Scene>

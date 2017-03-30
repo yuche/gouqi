@@ -16,7 +16,10 @@ export interface IInfiList {
   isLoading: boolean,
   offset: number,
   more: boolean,
-  query?: string
+  query?: string,
+  syncMore: () => Redux.Action,
+  refresh: () => Redux.Action,
+  isRefreshing: boolean
 }
 
 export interface IPlaylistsProps extends IInfiList {

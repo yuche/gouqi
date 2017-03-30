@@ -114,7 +114,7 @@ export function syncMoreResource (
         const more = result.more || offsetState < result.total
         yield put({
           type: `${action}/sync/save`,
-          payload: selectedState[action].concat(changeCoverImgUrl(result[action])),
+          payload: selectedState[action].concat(changeCoverImgUrl(result[action], picSize)),
           meta: {
             more,
             offset: offsetState
@@ -148,7 +148,7 @@ export function refreshResource (
     if (response.code === 200) {
       yield put({
         type: `${action}/sync/save`,
-        payload: changeCoverImgUrl(response[action]),
+        payload: changeCoverImgUrl(response[action], width),
         meta: {
           more: true,
           offset: 0

@@ -1,8 +1,5 @@
 import { take, put, fork, select, call } from 'redux-saga/effects'
 import { takeLatest } from 'redux-saga'
-import {
-  toastAction
-} from '../actions'
 import * as api from '../services/api'
 import {
   ajaxCall,
@@ -12,19 +9,18 @@ import {
 
 const refreshArtists = refreshResource(
   'artists',
-  'artist',
-  api.newAlbums
+  api.topArtists,
+  100
 )
 
 const syncMoreArtists = syncMoreResource(
   'artists',
   'artist',
-  api.newAlbums,
-  state => state.artist,
-  result => result.artists
+  api.topArtists,
+  100
 )
 
-export default function* watchAlbums() {
+export default function* watchArtists() {
   yield [
     takeLatest('artists/refresh', refreshArtists),
     takeLatest('artists/sync', syncMoreArtists)

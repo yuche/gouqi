@@ -119,10 +119,6 @@ class RecommendScene extends React.Component<IProps, any> {
     Router.toPlayList({ route: playlist })()
   }
 
-  toDaily = () => {
-    Router.toDailyRecommend()()
-  }
-
   render () {
     const {
       playlists,
@@ -147,9 +143,9 @@ class RecommendScene extends React.Component<IProps, any> {
       >
         {this.renderHeader('推荐歌单', gotoPlaylist)}
         <Grid data={playlists} onPress={this.toPlaylistDetail}/>
-        {this.renderHeader('最新专辑')}
+        {this.renderHeader('最新专辑', Router.toAlbums)}
         <Grid data={albums} onPress={() => ({})}/>
-        {this.renderHeader('热门歌手')}
+        {this.renderHeader('热门歌手', Router.toArtists)}
         <Grid data={artists} onPress={() => ({})}/>
         {this.renderHeader('每日推荐', Router.toDailyRecommend())}
         <ListView

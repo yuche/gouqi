@@ -9,6 +9,8 @@ import personal from './personal'
 import player from './player'
 import download from './download'
 import home from './home'
+import album from './album'
+import artist from './artist'
 
 export default combineReducers({
   login,
@@ -20,5 +22,7 @@ export default combineReducers({
   personal,
   player,
   download,
-  home
+  home,
+  album,
+  artist
 })

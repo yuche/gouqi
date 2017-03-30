@@ -50,9 +50,18 @@ function toDailyRecommend (passProps?: IRouterPassProps) {
   return () => navigator['DailyRecommend'](passProps)
 }
 
+function toAlbums (passProps?: IRouterPassProps) {
+  navigator['AlbumsScene'](passProps)
+}
+
+function toArtists (passProps?: IRouterPassProps) {
+  navigator['ArtistsScene'](passProps)
+}
+
 function pop (passProps?: IRouterPassProps) {
   navigator.pop(passProps)
 }
+
 
 const Router = {
   toHome,
@@ -66,6 +75,8 @@ const Router = {
   toPersonalPlaylist,
   toHistoryScene,
   toDailyRecommend,
+  toAlbums,
+  toArtists,
   pop
 }
 

@@ -87,9 +87,9 @@ class PlayList extends React.Component<IProps, {}> {
 
 export default connect(
   ({ playlist: {
-    isLoading, playlists, offset, more, isRefreshing
+    isLoading, playlists, isRefreshing
   } }) => ({
-    isLoading, playlists, offset, more, isRefreshing
+    isLoading, playlists, isRefreshing
   }),
   (dispatch) => ({
     syncMore() {

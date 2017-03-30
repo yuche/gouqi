@@ -19,10 +19,12 @@ import watchPlaylist from './playlist'
 import watchPlayer from './player'
 import watchDownload from './download'
 import watchPersonal from './personal'
+import watchAlbums from './album'
 import Router from '../routers'
+import watchRecommend from './recommend'
+import watchArtist from './artist'
 import RNFS from 'react-native-fs'
 import { getDownloadedTracks, FILES_FOLDER } from '../utils'
-import watchRecommend from './recommend'
 
 function* setProfile (profile) {
   yield AsyncStorage.setItem('PROFILE', JSON.stringify(profile))
@@ -145,6 +147,8 @@ export default function* root () {
     fork(watchPlayer),
     fork(watchDownload),
     fork(watchPersonal),
-    fork(watchRecommend)
+    fork(watchRecommend),
+    fork(watchAlbums),
+    fork(watchArtist)
   ]
 }
