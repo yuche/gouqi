@@ -481,6 +481,37 @@ export async function subscribePlaylist(pid: string, subscribe = true) {
     })))
 }
 
+export async function subscribeArtist (id: string) {
+  return await(needLogin() || request
+    .post(`/weapi/artist/sub`, encryptedRequest({ artistId: id }))
+  )
+}
+
+export async function unsubscribeArtist (id: string) {
+  return await(needLogin() || request
+    .post(`/weapi/artist/unsub`, encryptedRequest({ artistId: id }))
+  )
+}
+
+export async function favoriteArtists () {
+  const uid = getUserId()
+  return await(needLogin() || request
+    .post(`/weapi/artist/sublist`, encryptedRequest({ id: uid, uid }))
+  )
+}
+
+export async function getAlbumsByArtistId (artistId: string, limit = '30', offset = '0') {
+  return await request
+    .get(`/api/artist/albums/${artistId}?offset=${offset}&limit=${limit}`)
+}
+
+export async function artistDescription (id: string) {
+  return await request
+    .post(`/weapi/artist/introduction`, encryptedRequest({
+      id
+    }))
+}
+
 export interface IComments {
   comments: IComemnt[],
   hotComments: IComemnt[],

@@ -19,9 +19,11 @@ class Player extends React.Component<IProps, any> {
   }
 
   componentDidMount() {
-    // api.albumDetail('35150850').then(res => {
-    //   console.log(res)
-    // })
+    setTimeout(() => {
+      api.artistDescription('3681').then(res => {
+      console.log(res)
+    })
+    }, 1500)
     MusicControl.enableBackgroundMode(true)
     MusicControl.enableControl('play', true)
     MusicControl.enableControl('pause', true)
