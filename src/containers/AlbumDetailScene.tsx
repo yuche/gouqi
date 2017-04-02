@@ -4,7 +4,6 @@ import {
   View,
   ViewStyle,
   Animated,
-  ActivityIndicator,
   Text,
   TextStyle,
   Image,
@@ -27,13 +26,21 @@ import ListItem from '../components/listitem'
 import { get, isEqual } from 'lodash'
 import Router from '../routers'
 import ParallaxScroll from '../components/ParallaxScroll'
-import { Color } from '../styles'
+import { Color, centering } from '../styles'
 import { BlurView } from 'react-native-blur'
 import Icon from 'react-native-vector-icons/FontAwesome'
 import Ionic from 'react-native-vector-icons/Ionicons'
 import { IPlaying } from '../reducers/player'
 
 const { width, height } = Dimensions.get('window')
+
+function formatDate (str: string) {
+  const date = new Date(str)
+  const year = date.getFullYear()
+  const month = date.getMonth() + 1
+  const day = date.getDate()
+  return `${year} 年 ${month} 月 ${day} 日`
+}
 
 interface IProps extends ILoadingProps {
   route: IAlbum,
@@ -42,6 +49,7 @@ interface IProps extends ILoadingProps {
   playing: IPlaying,
   isPlaylist: boolean,
   subscribe: () => Redux.Action,
+  collectAlbums: (tracks) => Redux.Action,
   popup: (track: any) => Redux.Action,
   play: (index: number, tracks: ITrack[]) => Redux.Action,
   download: (tracks: ITrack[]) => Redux.Action
@@ -131,6 +139,9 @@ class Album extends React.Component<IProps, IState> {
                 <Image source={{uri: avatarUrl}} style={{ width: 25, height: 25, borderRadius: 12.5 }}/>
                 <Text style={[styles.white, { marginLeft: 5 }]}>{artist.name}</Text>
               </View>
+              <Text style={[styles.white, { fontSize: 12, marginTop: 5 }]}>
+                { `发行时间：${formatDate(album.publishTime)}` }
+              </Text>
             </View>
           </View>
           {this.renderActions(album)}
@@ -140,7 +151,7 @@ class Album extends React.Component<IProps, IState> {
   }
 
   collectTracks = () => {
-    this.props.popup({
+    this.props.collectAlbums({
       id: this.props.album.songs.map(t => t.id)
     })
   }
@@ -230,7 +241,13 @@ class Album extends React.Component<IProps, IState> {
       return <ListItem
         title={track.name}
         containerStyle={{ paddingVertical: 0, paddingRight: 0 }}
-        picURI={track.album.picUrl + '?param=75y75'}
+        renderLeft={
+          <View style={[centering, { width: 30 }]}>
+            <Text style={{ fontSize: 18, fontWeight: 'bold', color: '#ddd' }}>
+              {Number(rowId) + 1}
+            </Text>
+          </View>
+        }
         subTitle={subTitle}
         textContainer={{ paddingVertical: 10 }}
         picStyle={{ width: 30, height: 30}}
@@ -419,6 +436,10 @@ export default connect(
         },
         playlist: tracks
       }))
+    },
+    collectAlbums (tracks) {
+      dispatch({ type: 'playlists/track/save', payload: tracks })
+      return dispatch({ type: 'ui/popup/collect/show' })
     },
     download (track: ITrack[]) {
       return dispatch(downloadTracksAction(track))

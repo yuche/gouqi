@@ -65,6 +65,7 @@ class RecommendScene extends React.Component<IProps, any> {
         containerStyle={{ paddingVertical: 0, paddingRight: 0 }}
         picURI={track.album.picUrl + '?param=75y75'}
         subTitle={subTitle}
+        noBorder={true}
         textContainer={{ paddingVertical: 10 }}
         picStyle={{ width: 40, height: 40}}
         titleStyle={[{ fontSize: 15 }, colorStyle]}
@@ -103,7 +104,7 @@ class RecommendScene extends React.Component<IProps, any> {
       isLoading
     } = this.props
     if (isEmpty(playlists) && isLoading) {
-      return null
+      return <View />
     }
     return (
       <TouchableWithoutFeedback onPress={onPress}>
@@ -145,13 +146,13 @@ class RecommendScene extends React.Component<IProps, any> {
           <RefreshControl refreshing={isLoading} onRefresh={sync}/>
         }
       >
-        {this.renderHeader('推荐歌单', gotoPlaylist)}
+        {!isEmpty(playlists) && this.renderHeader('推荐歌单', gotoPlaylist)}
         <Grid data={playlists} onPress={this.toPlaylistDetail}/>
-        {this.renderHeader('最新专辑', Router.toAlbums)}
+        {!isEmpty(albums) && this.renderHeader('最新专辑', Router.toAlbums)}
         <Grid data={albums} onPress={this.toAlbumDetail}/>
-        {this.renderHeader('热门歌手', Router.toArtists)}
+        {!isEmpty(artists) && this.renderHeader('热门歌手', Router.toArtists)}
         <Grid data={artists} onPress={() => ({})}/>
-        {this.renderHeader('每日推荐', Router.toDailyRecommend())}
+        {!isEmpty(tracks) && this.renderHeader('每日推荐', Router.toDailyRecommend())}
         <ListView
           enableEmptySections
           removeClippedSubviews={true}

@@ -307,6 +307,7 @@ export interface IAlbum {
   size: string,
   artist: IArtist,
   commentThreadId: string,
+  publishTime: string,
   info: {
     commentCount: string,
     likedCount: string,

@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { IComemnt, IPlaylist, ITrack } from '../services/api'
+import { IComemnt, IPlaylist, ITrack, IAlbum } from '../services/api'
 import Navbar from '../components/navbar'
 import { ILoadingProps } from '../interfaces'
 import { connect } from 'react-redux'
@@ -37,7 +37,8 @@ interface IProps extends ILoadingProps {
 interface ICommentRoute {
   id: number,
   playlist?: IPlaylist,
-  track?: ITrack
+  track?: ITrack,
+  album?: IAlbum
 }
 
 class Comments extends React.Component<IProps, any> {
@@ -96,7 +97,7 @@ class Comments extends React.Component<IProps, any> {
   }
 
   renderHeader (route: ICommentRoute, isLoading: boolean) {
-    const { playlist, track } = route
+    const { playlist, track, album } = route
     let url = ''
     let title = ''
     let subTitle = ''
@@ -109,6 +110,11 @@ class Comments extends React.Component<IProps, any> {
       url = track.album.picUrl + '?param=75y75'
       title = track.name
       subTitle = track.artists[0].name
+    }
+    if (album) {
+      url = album.picUrl + '?param=300y300'
+      title = album.name
+      subTitle = album.artist.name
     }
     return () => (
       <View>

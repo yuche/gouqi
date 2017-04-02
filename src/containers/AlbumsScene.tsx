@@ -10,6 +10,7 @@ import {
 import ListItem from '../components/listitem'
 import Navbar from '../components/navbar'
 import { connect } from 'react-redux'
+import Router from '../routers'
 
 interface IProps extends IInfiList {
   albums: IAlbum[]
@@ -30,8 +31,13 @@ class Albums extends React.Component<IProps, any> {
         picURI={album.picUrl}
         subTitle={album.artist.name}
         key={album.id}
+        onPress={this.toAlbumDetail(album)}
       />
     )
+  }
+
+  toAlbumDetail = (album: IAlbum) => () => {
+    Router.toAlbumDetail({ route: album })
   }
 
   componentDidMount () {
