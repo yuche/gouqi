@@ -35,9 +35,10 @@ export default class DetailModal extends React.Component<IProps, { visible: bool
     const {
       route
     } = this.props
+    const uri = route.coverImgUrl || route.picUrl
     return (
       <View>
-        <Animated.Image source={{uri: route.coverImgUrl}} style={styles.bg}>
+        <Animated.Image source={{uri}} style={styles.bg}>
           <BlurView blurType='light' blurAmount={80} style={styles.blur}>
             <View style={{ flex: 1, marginBottom: 60 }}>
               <Navbar
@@ -50,7 +51,7 @@ export default class DetailModal extends React.Component<IProps, { visible: bool
                 <TouchableWithoutFeedback onPress={this.hide}>
                   <View>
                     <View style={styles.head}>
-                      <Image source={{uri: route.coverImgUrl}}  style={styles.pic}/>
+                      <Image source={{uri}}  style={styles.pic}/>
                       <Text style={styles.headText}>{route.name}</Text>
                     </View>
                     <View style={styles.detail}>

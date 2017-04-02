@@ -58,6 +58,10 @@ function toArtists (passProps?: IRouterPassProps) {
   navigator['ArtistsScene'](passProps)
 }
 
+function toAlbumDetail (passProps?: IRouterPassProps) {
+  navigator['AlbumDetail'](passProps)
+}
+
 function pop (passProps?: IRouterPassProps) {
   navigator.pop(passProps)
 }
@@ -77,6 +81,7 @@ const Router = {
   toDailyRecommend,
   toAlbums,
   toArtists,
+  toAlbumDetail,
   pop
 }
 

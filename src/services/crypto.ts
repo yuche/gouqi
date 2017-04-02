@@ -1,6 +1,6 @@
 /* tslint:disable */
 /**
- * from https://github.com/stkevintan/Cube/blob/master/src/model/Crypto.js
+ * algorithm from https://github.com/stkevintan/Cube/blob/master/src/model/Crypto.js
  */
 const bigInt = require('big-integer')
 const md5 = require('blueimp-md5')

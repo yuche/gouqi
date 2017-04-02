@@ -276,6 +276,7 @@ export interface IPlaylist {
   subscribed: boolean,
   subscribing: boolean,
   trackCount: number,
+  picUrl: string,
   tracks: ITrack[]
 }
 
@@ -294,7 +295,7 @@ export interface ITrack {
   commentThreadId: string,
   mp3Url: string,
   name: string,
-  id: number
+  id: number,
 }
 
 export interface IAlbum {
@@ -304,7 +305,14 @@ export interface IAlbum {
   name: string,
   picUrl: string,
   size: string,
-  artist: IArtist
+  artist: IArtist,
+  commentThreadId: string,
+  info: {
+    commentCount: string,
+    likedCount: string,
+    shareCount: string
+  },
+  songs: ITrack[]
 }
 
 export interface IArtist {
@@ -352,6 +360,15 @@ export async function albumInfo(
 ) {
   return await request
     .get(`/api/album/${albumId}`)
+}
+
+export async function albumDetail(
+  albumId: string
+) {
+  return await request
+    .post(`/weapi/v1/album/${albumId}`, encryptedRequest({
+      id: albumId
+    }))
 }
 
 export const enum ChannelsType {
@@ -403,14 +420,15 @@ export async function batchSongDetailsNew(
 }
 
 export async function opMuiscToPlaylist(
-  tracks: string,
+  tracks: string | string[],
   pid: string,
   op: 'add' | 'del'
 ) {
+  const trackIds = `[${(Array.isArray(tracks) ? tracks : [tracks.toString()]).toString()}]`
   return await (needLogin() || request
     .post(`/api/playlist/manipulate/tracks`, {
       tracks,
-      trackIds: `[${tracks}]`,
+      trackIds,
       pid,
       op
     }))

@@ -134,7 +134,7 @@ function* collectTrackToPlayliast () {
 
     const response = yield* ajaxCall(
       api.opMuiscToPlaylist,
-      payload.trackIds.toString(),
+      payload.trackIds,
       payload.pid.toString(),
       'add'
     )

@@ -7,8 +7,8 @@ import {Scene, Router, Actions} from 'react-native-router-flux'
 import Home from '../containers/HomeScene'
 import Login from '../containers/LoginScene'
 import Search from '../containers/SearchScene'
-import PlayList from '../containers/playlist/detail'
-import Comment from '../containers/playlist/comment'
+import PlayList from '../containers/PlaylistDetailScene'
+import Comment from '../containers/CommentScene'
 import UIContainer from '../containers/UIContainer'
 import DetailModal from '../components/DetailModal'
 import CreatePlaylist from '../containers/CreatePlaylistScene'
@@ -18,6 +18,7 @@ import HistoryScene from '../containers/HistoryPlaylistScene'
 import DailyRecommend from '../containers/DailyRecommend'
 import AlbumsScene from '../containers/AlbumsScene'
 import ArtistsScene from '../containers/ArtistsScene'
+import AlbumDetail from '../containers/AlbumDetailScene'
 
 const scenes = Actions.create(
   <Scene key='root'>
@@ -32,6 +33,7 @@ const scenes = Actions.create(
     <Scene key='HistoryScene' component={HistoryScene}/>
     <Scene key='AlbumsScene' component={AlbumsScene}/>
     <Scene key='ArtistsScene' component={ArtistsScene}/>
+    <Scene key='AlbumDetail' component={AlbumDetail}/>
     <Scene key='playlistDetail' component={DetailModal} direction='fade'/>
     <Scene key='createPlaylist' component={CreatePlaylist} direction='vertical'/>
   </Scene>

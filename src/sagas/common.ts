@@ -151,7 +151,7 @@ export function refreshResource (
         payload: changeCoverImgUrl(response[action], width),
         meta: {
           more: true,
-          offset: 0
+          offset: Number(limit)
         }
       })
     }

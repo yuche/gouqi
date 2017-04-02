@@ -4,15 +4,21 @@ import * as api from '../services/api'
 export interface IinitialState {
   playlist: IPlaylists,
   subscribing: boolean,
-  isLoading: boolean
+  isLoading: boolean,
+  albums: IAlbums
 }
 
 export interface IPlaylists {
   [props: number]: api.IPlaylist
 }
 
+export interface IAlbums {
+  [props: number]: api.IAlbum
+}
+
 const initialState: IinitialState = {
   playlist: {},
+  albums: {},
   subscribing: false,
   isLoading: false
 }
@@ -35,6 +41,15 @@ export default handleActions({
       ...state,
       playlist: {
         ...state.playlist,
+        ...payload
+      }
+    }
+  },
+  'details/album/save' (state: IinitialState, { payload }) {
+    return {
+      ...state,
+      albums: {
+        ...state.albums,
         ...payload
       }
     }
