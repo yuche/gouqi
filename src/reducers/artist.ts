@@ -97,7 +97,7 @@ export default handleActions({
         ...state.detail,
         [meta]: {
           ...state.detail[meta],
-          albums: payload
+          description: payload
         }
       }
     }

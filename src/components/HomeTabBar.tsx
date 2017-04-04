@@ -6,7 +6,8 @@ import {
   StyleSheet,
   Text,
   Animated,
-  NativeComponent
+  NativeComponent,
+  InteractionManager
 } from 'react-native'
 import Router from '../routers'
 import {
@@ -173,9 +174,11 @@ class TabBar extends React.Component<ITabBarProps, IState> {
   private textOnLayout = (page: number) => {
     const textComp: NativeComponent = this.refs[`text_${page}`]
 
-    textComp.measure((ox, oy, width, height, pageX) => {
-      this.tabMeasurements[page] = { width, left: pageX }
-      this.updateView({ value: this.props.scrollValue._value })
+    InteractionManager.runAfterInteractions(() => {
+      textComp.measure((ox, oy, width, height, pageX) => {
+        this.tabMeasurements[page] = { width, left: pageX }
+        this.updateView({ value: this.props.scrollValue._value })
+      })
     })
   }
 }

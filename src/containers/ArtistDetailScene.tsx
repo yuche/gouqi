@@ -2,17 +2,23 @@ import { connect } from 'react-redux'
 import * as React from 'react'
 import TabBar from '../components/HomeTabBar'
 import ScrollableTabView from 'react-native-scrollable-tab-view'
-import ParallaxView from 'react-native-parallax-view'
 import { IArtist } from '../services/api'
 import {
   View,
   ViewStyle,
   Dimensions,
-  Image
+  Image,
+  Animated
 } from 'react-native'
 import ArtistTracks from './ArtistTracksPage'
+import ArtistAlbums from './ArtistAlbumsPage'
+import ArtistDesciption from './ArtistDescription'
 import Navbar from '../components/navbar'
 import { get } from 'lodash'
+
+interface IState {
+  scrollY: Animated.Value
+}
 
 const { width } = Dimensions.get('window')
 
@@ -22,10 +28,12 @@ interface IProps {
 }
 
 class Artist extends React.Component<IProps, any> {
-  private tabbar: any
 
   constructor(props: any) {
     super(props)
+    this.state = {
+      scrollY: new Animated.Value(0)
+    }
   }
 
   componentDidMount() {
@@ -45,16 +53,23 @@ class Artist extends React.Component<IProps, any> {
         <Image
           source={{uri}}
           style={{width, height: 240}}
-          blurRadius={100}
         />
         <ScrollableTabView
-          >
+          renderTabBar={this.renderTabBar}
+        >
           <ArtistTracks
             tabLabel='热门单曲'
             id={artist.id}
           />
-          <View tabLabel='测试'></View>
-          <View tabLabel='测试2'></View>
+          <ArtistAlbums
+            tabLabel='专辑'
+            id={artist.id}
+          />
+          <ArtistDesciption
+            tabLabel='详情'
+            id={artist.id}
+            name={artist.name}
+          />
         </ScrollableTabView>
       </View>
     )
@@ -62,7 +77,7 @@ class Artist extends React.Component<IProps, any> {
 
   private renderTabBar = () => {
     // tslint:disable-next-line:jsx-no-lambda
-    return <TabBar ref={component => this.tabbar = component}/>
+    return <TabBar showIcon={false}/>
   }
 }
 

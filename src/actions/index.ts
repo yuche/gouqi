@@ -98,6 +98,12 @@ export const syncPlaylistDetail: ISyncDetail = createAction('details/playlist',
 export const syncArtistTracks: ISyncDetail = createAction('artists/detail/track',
   (id: number) => id
 )
+export const syncArtistAlbums: ISyncDetail = createAction('artists/detail/album',
+  (id: number) => id
+)
+export const syncArtistDescription: ISyncDetail = createAction('artists/detail/description',
+  (id: number) => id
+)
 
 export const subscribePlaylist: ISyncDetail = createAction('details/playlist/subscribe',
   (id: number) => id

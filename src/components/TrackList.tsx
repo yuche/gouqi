@@ -5,7 +5,8 @@ import {
   TouchableWithoutFeedback,
   View,
   RefreshControl,
-  ListViewDataSource
+  ListViewDataSource,
+  ActivityIndicator
 } from 'react-native'
 import ListItem from './listitem'
 import { get, isEqual } from 'lodash'
@@ -102,6 +103,12 @@ class TrackList extends React.Component<IProps, any> {
     }
   }
 
+  renderFooter = () => {
+    return this.props.isLoading && !this.props.canRefresh ?
+      <ActivityIndicator animating style={{marginTop: 10}}/> :
+      <View />
+  }
+
   render() {
     const {
       tracks,
@@ -124,6 +131,7 @@ class TrackList extends React.Component<IProps, any> {
         dataSource={this.ds}
         renderRow={this.renderTrack(playing, isPlaylist)}
         showsVerticalScrollIndicator={true}
+        renderFooter={this.renderFooter}
         refreshControl={
           canRefresh ? <RefreshControl refreshing={isLoading} onRefresh={sync}/> : undefined
         }
