@@ -8,7 +8,8 @@ import {
   ViewStyle,
   RefreshControl,
   TouchableWithoutFeedback,
-  ListView
+  ListView,
+  ListViewDataSource
 } from 'react-native'
 import { IArtist, IAlbum, IPlaylist, ITrack } from '../services/api'
 import { connect } from 'react-redux'
@@ -37,7 +38,7 @@ interface IProps extends IPlaylistProps {
 }
 
 class RecommendScene extends React.Component<IProps, any> {
-  private ds: React.ListViewDataSource
+  private ds: ListViewDataSource
 
   constructor(props: any) {
     super(props)
@@ -124,6 +125,10 @@ class RecommendScene extends React.Component<IProps, any> {
     Router.toAlbumDetail({ route: album })
   }
 
+  toArtistDetail = (artist) => {
+    Router.toArtistsDetail({ route: artist })
+  }
+
   render () {
     const {
       playlists,
@@ -151,7 +156,7 @@ class RecommendScene extends React.Component<IProps, any> {
         {!isEmpty(albums) && this.renderHeader('最新专辑', Router.toAlbums)}
         <Grid data={albums} onPress={this.toAlbumDetail}/>
         {!isEmpty(artists) && this.renderHeader('热门歌手', Router.toArtists)}
-        <Grid data={artists} onPress={() => ({})}/>
+        <Grid data={artists} onPress={this.toArtistDetail}/>
         {!isEmpty(tracks) && this.renderHeader('每日推荐', Router.toDailyRecommend())}
         <ListView
           enableEmptySections

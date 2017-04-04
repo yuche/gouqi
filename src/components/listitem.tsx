@@ -56,7 +56,7 @@ class ListItem extends React.Component<IListItem, any> {
       textContainer,
       onPress
     } = this.props
-    const Component = onPress ? TouchableHighlight : View
+    const Component: any = onPress ? TouchableHighlight : View
     return (
       <Component
         activeOpacity={0.3}
@@ -84,7 +84,7 @@ class ListItem extends React.Component<IListItem, any> {
     if (renderLeft) {
       return renderLeft
     }
-    const borderRadius = { borderRadius : picStyle && picStyle.height ? picStyle.height / 2 : 20 }
+    const borderRadius = { borderRadius : picStyle && picStyle.height ? Number(picStyle.height) / 2 : 20 }
     if (picURI) {
       return (
         <View style={{ justifyContent: 'center' }}>

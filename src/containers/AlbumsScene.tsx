@@ -5,6 +5,7 @@ import {
   ListView,
   View,
   ActivityIndicator,
+  ListViewDataSource,
   RefreshControl
 } from 'react-native'
 import ListItem from '../components/listitem'
@@ -17,7 +18,7 @@ interface IProps extends IInfiList {
 }
 
 class Albums extends React.Component<IProps, any> {
-  private ds: React.ListViewDataSource
+  private ds: ListViewDataSource
 
   constructor(props) {
     super(props)

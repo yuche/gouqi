@@ -19,6 +19,7 @@ import DailyRecommend from '../containers/DailyRecommend'
 import AlbumsScene from '../containers/AlbumsScene'
 import ArtistsScene from '../containers/ArtistsScene'
 import AlbumDetail from '../containers/AlbumDetailScene'
+import ArtistsDetail from '../containers/ArtistDetailScene'
 
 const scenes = Actions.create(
   <Scene key='root'>
@@ -34,6 +35,7 @@ const scenes = Actions.create(
     <Scene key='AlbumsScene' component={AlbumsScene}/>
     <Scene key='ArtistsScene' component={ArtistsScene}/>
     <Scene key='AlbumDetail' component={AlbumDetail}/>
+    <Scene key='ArtistsDetail' component={ArtistsDetail}/>
     <Scene key='playlistDetail' component={DetailModal} direction='fade'/>
     <Scene key='createPlaylist' component={CreatePlaylist} direction='vertical'/>
   </Scene>

@@ -1,7 +1,4 @@
 import * as api from '../services/api'
-import {
-  Route
-} from 'react'
 import { ITrack } from '../services/api'
 import { IPlayerMode, IPlayerStatus } from '../reducers/player'
 import { IPlaying } from '../reducers/player'
@@ -53,7 +50,7 @@ export interface IToastPayload {
 }
 
 export interface IRouterProps {
-  route?: Route
+  route?: any
 }
 
 export interface ISearchPayload {

@@ -12,7 +12,9 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
   ListView,
-  Alert
+  ListViewDataSource,
+  Alert,
+  ScrollViewProperties
 } from 'react-native'
 import Navbar from '../components/navbar'
 import { ILoadingProps } from '../interfaces'
@@ -59,7 +61,7 @@ interface IState {
 const HEADER_HEIGHT = 160
 
 class PlayList extends React.Component<IProps, IState> {
-  private ds: React.ListViewDataSource
+  private ds: ListViewDataSource
   private scrollComponent: any
 
   constructor(props: IProps) {
@@ -316,7 +318,7 @@ class PlayList extends React.Component<IProps, IState> {
   }
 
   renderScrollComponent = (isLoading: boolean) => {
-    return (props: React.ScrollViewProperties) => (
+    return (props: ScrollViewProperties) => (
       <ParallaxScroll
         {...props}
         onScroll={props.onScroll}
@@ -355,8 +357,7 @@ const styles = {
   } as ViewStyle,
   headerPic: {
     width: 100,
-    height: 100,
-    resizeMode: 'cover'
+    height: 100
   },
   blur: {
     position: 'absolute',

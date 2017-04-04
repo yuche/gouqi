@@ -2,7 +2,8 @@ import * as React from 'react'
 import {
   ListView,
   ActivityIndicator,
-  View
+  View,
+  ListViewDataSource
 } from 'react-native'
 import { connect, Dispatch } from 'react-redux'
 import * as api from '../../services/api'
@@ -16,7 +17,7 @@ interface IProps extends ILoadingProps {
 
 class PlayList extends React.Component<
   IProps,
-  { ds: React.ListViewDataSource }
+  { ds: ListViewDataSource }
 > {
   constructor (props: IProps) {
     super(props)

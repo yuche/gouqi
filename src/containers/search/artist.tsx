@@ -2,7 +2,8 @@ import * as React from 'react'
 import {
   ListView,
   ActivityIndicator,
-  View
+  View,
+  ListViewDataSource
 } from 'react-native'
 import { connect, Dispatch } from 'react-redux'
 import { ISearchState, ILoadingProps } from '../../interfaces'
@@ -14,7 +15,7 @@ interface IProps extends ILoadingProps {
 }
 
 interface IState {
-  ds: React.ListViewDataSource
+  ds: ListViewDataSource
 }
 
 class Artist extends React.Component<IProps, IState> {

@@ -4,7 +4,8 @@ import {
   ListView,
   TouchableWithoutFeedback,
   View,
-  Alert
+  Alert,
+  ListViewDataSource
 } from 'react-native'
 import Navbar from '../components/navbar'
 import ListItem from '../components/listitem'
@@ -27,7 +28,7 @@ interface IProps extends IPlaylistProps {
 }
 
 class Playlist extends React.Component<IProps, any> {
-  private ds: React.ListViewDataSource
+  private ds: ListViewDataSource
 
   constructor(props: IProps) {
     super(props)

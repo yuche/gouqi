@@ -320,7 +320,8 @@ export interface IArtist {
   picUrl: string,
   id: number,
   name: string,
-  img1v1Url: string
+  img1v1Url: string,
+  followed: boolean
 }
 
 export interface ItopPlayListResult {
@@ -487,9 +488,11 @@ export async function subscribeArtist (id: string) {
   )
 }
 
-export async function unsubscribeArtist (id: string) {
+export async function unsubscribeArtist (ids: string[] | string) {
   return await(needLogin() || request
-    .post(`/weapi/artist/unsub`, encryptedRequest({ artistId: id }))
+    .post(`/weapi/artist/unsub`, encryptedRequest({
+      artistIds: Array.isArray(ids) ? ids : [ids]
+    }))
   )
 }
 

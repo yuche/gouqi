@@ -14,7 +14,8 @@ import {
   StyleSheet,
   ViewStyle,
   Dimensions,
-  ActivityIndicator
+  ActivityIndicator,
+  ListViewDataSource
 } from 'react-native'
 import { isEmpty } from 'lodash'
 import Router from '../routers'
@@ -42,7 +43,7 @@ interface ICommentRoute {
 }
 
 class Comments extends React.Component<IProps, any> {
-  private ds: React.ListViewDataSource
+  private ds: ListViewDataSource
 
   constructor(props: IProps) {
     super(props)

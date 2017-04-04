@@ -12,9 +12,9 @@
   version "6.2.30"
   resolved "http://registry.npm.taobao.org/@types/qs/download/@types/qs-6.2.30.tgz#139e247511ee3b9be539cdd553c8fdb33c1f624e"
 
-"@types/react-native@^0.29.35":
-  version "0.29.36"
-  resolved "https://registry.npmjs.org/@types/react-native/-/react-native-0.29.36.tgz#2e9c9f5fa2015a456ef0b5895bf59238c982266f"
+"@types/react-native":
+  version "0.42.14"
+  resolved "https://registry.npmjs.org/@types/react-native/-/react-native-0.42.14.tgz#98dd0cf883ece59165997ccee1171e84e32fb48b"
   dependencies:
     "@types/react" "*"
 
@@ -5323,6 +5323,12 @@ react-native-navbar@^1.5.4:
   version "1.5.4"
   resolved "http://registry.npm.taobao.org/react-native-navbar/download/react-native-navbar-1.5.4.tgz#9e8b1cfb6a02eee89abdf631f7ac3af3174a61b1"
 
+react-native-parallax-view:
+  version "2.0.6"
+  resolved "https://registry.npmjs.org/react-native-parallax-view/-/react-native-parallax-view-2.0.6.tgz#7de78edb7a2a0aba6c01b99fce828d387cec3e93"
+  dependencies:
+    react-native-scrollable-mixin "^1.0.1"
+
 react-native-root-siblings:
   version "1.1.2"
   resolved "https://registry.npmjs.org/react-native-root-siblings/-/react-native-root-siblings-1.1.2.tgz#fc1e7310f4f9f8b080331ff5d173db840d6b9e1f"
@@ -5335,6 +5341,10 @@ react-native-router-flux:
     react-native-experimental-navigation "0.26.x"
     react-native-tabs "^1.0.9"
     react-static-container "1.0.1"
+
+react-native-scrollable-mixin@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.npmjs.org/react-native-scrollable-mixin/-/react-native-scrollable-mixin-1.0.1.tgz#34a32167b64248594154fd0d6a8b03f22740548e"
 
 react-native-scrollable-tab-view, react-native-scrollable-tab-view@^0.6.0:
   version "0.6.0"

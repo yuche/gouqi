@@ -3,7 +3,8 @@ import { IPlaylist } from '../services/api'
 import {
   View,
   ListView,
-  Text
+  Text,
+  ListViewDataSource
 } from 'react-native'
 import Router from '../routers'
 import Navbar from '../components/navbar'
@@ -20,7 +21,7 @@ interface IProps {
 }
 
 class CollectPlaylist extends React.Component<IProps, any> {
-  private ds: React.ListViewDataSource
+  private ds: ListViewDataSource
 
   constructor(props: IProps) {
     super(props)

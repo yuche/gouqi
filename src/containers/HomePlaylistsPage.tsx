@@ -3,7 +3,8 @@ import {
   ListView,
   View,
   ActivityIndicator,
-  RefreshControl
+  RefreshControl,
+  ListViewDataSource
 } from 'react-native'
 import { connect } from 'react-redux'
 import * as api from '../services/api'
@@ -20,7 +21,7 @@ interface IProps extends IPlaylistsProps {
 }
 
 class PlayList extends React.Component<IProps, {}> {
-  private ds: React.ListViewDataSource
+  private ds: ListViewDataSource
 
   constructor (props: IProps) {
     super(props)

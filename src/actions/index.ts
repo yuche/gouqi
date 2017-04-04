@@ -95,6 +95,9 @@ export type ISyncDetail = (id: number) => Action<string>
 export const syncPlaylistDetail: ISyncDetail = createAction('details/playlist',
   (id: number) => id
 )
+export const syncArtistTracks: ISyncDetail = createAction('artists/detail/track',
+  (id: number) => id
+)
 
 export const subscribePlaylist: ISyncDetail = createAction('details/playlist/subscribe',
   (id: number) => id

@@ -5,7 +5,8 @@ import {
   ListView,
   View,
   ActivityIndicator,
-  RefreshControl
+  RefreshControl,
+  ListViewDataSource
 } from 'react-native'
 import ListItem from '../components/listitem'
 import Navbar from '../components/navbar'
@@ -16,7 +17,7 @@ interface IProps extends IInfiList {
 }
 
 class Artists extends React.Component<IProps, any> {
-  private ds: React.ListViewDataSource
+  private ds: ListViewDataSource
 
   constructor(props) {
     super(props)

@@ -7,8 +7,7 @@ import {
   RefreshControl,
   ListViewDataSource
 } from 'react-native'
-import Navbar from '../components/navbar'
-import ListItem from '../components/listitem'
+import ListItem from './listitem'
 import { get, isEqual } from 'lodash'
 import { Color } from '../styles'
 import Ionic from 'react-native-vector-icons/Ionicons'
@@ -19,12 +18,17 @@ import {
 } from '../actions'
 import { IPlaylistProps } from '../interfaces'
 
-interface IProps extends IPlaylistProps {
+interface IProps extends IPlaylistProps, IOwnProps {}
+
+interface IOwnProps {
   isLoading: boolean,
-  sync: () => Redux.Action
+  sync?: () => Redux.Action,
+  tracks: ITrack[]
+  pid: any,
+  canRefresh?: boolean
 }
 
-class Playlist extends React.Component<IProps, any> {
+class TrackList extends React.Component<IProps, any> {
   private ds: ListViewDataSource
 
   constructor(props: IProps) {
@@ -90,7 +94,12 @@ class Playlist extends React.Component<IProps, any> {
   }
 
   sync = () => {
-    this.props.sync()
+    const {
+      sync
+    } = this.props
+    if (sync) {
+      sync()
+    }
   }
 
   render() {
@@ -99,32 +108,26 @@ class Playlist extends React.Component<IProps, any> {
       playing,
       isPlaylist,
       isLoading,
-      sync
+      sync,
+      canRefresh = false
     } = this.props
     if (tracks) {
       this.ds = this.ds.cloneWithRows(tracks)
     }
 
     return (
-      <View style={{flex: 1}}>
-        <Navbar
-          title='每日推荐'
-          textColor='#333'
-          hideBorder={false}
-        />
-        <ListView
-          enableEmptySections
-          removeClippedSubviews={true}
-          scrollRenderAheadDistance={120}
-          initialListSize={10}
-          dataSource={this.ds}
-          renderRow={this.renderTrack(playing, isPlaylist)}
-          showsVerticalScrollIndicator={true}
-          refreshControl={
-            <RefreshControl refreshing={isLoading} onRefresh={sync}/>
-          }
-        />
-      </View>
+      <ListView
+        enableEmptySections
+        removeClippedSubviews={true}
+        scrollRenderAheadDistance={120}
+        initialListSize={10}
+        dataSource={this.ds}
+        renderRow={this.renderTrack(playing, isPlaylist)}
+        showsVerticalScrollIndicator={true}
+        refreshControl={
+          canRefresh ? <RefreshControl refreshing={isLoading} onRefresh={sync}/> : undefined
+        }
+      />
     )
   }
 
@@ -134,27 +137,19 @@ function mapStateToProps (
   {
     player: {
       playing
-    },
-    personal: {
-      daily,
-      isLoading
     }
-  }
+  },
+  ownProps: IOwnProps
 ) {
   return {
-    tracks: daily,
     playing,
-    isLoading,
-    isPlaylist: playing.pid === 'daily'
+    isPlaylist: playing.pid === ownProps.pid
   }
 }
 
 export default connect(
   mapStateToProps,
-  (dispatch) => ({
-    sync () {
-      return dispatch({type: 'personal/daily'})
-    },
+  (dispatch, ownProps: IOwnProps) => ({
     popup(track: ITrack) {
       return dispatch(popupTrackActionSheet(track))
     },
@@ -162,10 +157,10 @@ export default connect(
       return dispatch(playTrackAction({
         playing: {
           index,
-          pid: 'daily'
+          pid: ownProps.pid
         },
         playlist: tracks
       }))
     }
   })
-)(Playlist)
+)(TrackList)

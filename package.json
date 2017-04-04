@@ -16,6 +16,7 @@
     "postinstall": "npm run link && npm run remotedev"
   },
   "dependencies": {
+    "@types/react-native": "^0.42.14",
     "antd-mobile": "^1.0.0",
     "big-integer": "^1.6.15",
     "blueimp-md5": "^2.4.0",
@@ -31,6 +32,7 @@
     "react-native-fs": "^v2.1.0-rc.1",
     "react-native-music-control": "^0.4.0",
     "react-native-navbar": "^1.5.4",
+    "react-native-parallax-view": "^2.0.6",
     "react-native-root-siblings": "^1.1.2",
     "react-native-router-flux": "^3.37.0",
     "react-native-scrollable-tab-view": "^0.6.0",
