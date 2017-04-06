@@ -6,7 +6,8 @@ import {
   View,
   RefreshControl,
   ListViewDataSource,
-  ActivityIndicator
+  ActivityIndicator,
+  Text
 } from 'react-native'
 import ListItem from './listitem'
 import { get, isEqual } from 'lodash'
@@ -18,6 +19,7 @@ import {
   playTrackAction
 } from '../actions'
 import { IPlaylistProps } from '../interfaces'
+import { centering } from '../styles'
 
 interface IProps extends IPlaylistProps, IOwnProps {}
 
@@ -26,7 +28,8 @@ interface IOwnProps {
   sync?: () => Redux.Action,
   tracks: ITrack[]
   pid: any,
-  canRefresh?: boolean
+  canRefresh?: boolean,
+  showIndex?: boolean
 }
 
 class TrackList extends React.Component<IProps, any> {
@@ -47,7 +50,7 @@ class TrackList extends React.Component<IProps, any> {
     }
   }
 
-  renderTrack = (playing, isPlaylist: boolean) => {
+  renderTrack = (playing, isPlaylist: boolean, showIndex: boolean) => {
     return (track: ITrack, sectionId, rowId) => {
       const index = Number(rowId)
       const isPlaying = playing.index === index && isPlaylist
@@ -60,8 +63,15 @@ class TrackList extends React.Component<IProps, any> {
       return <ListItem
         title={track.name}
         containerStyle={{ paddingVertical: 0, paddingRight: 0 }}
-        picURI={track.album.picUrl + '?param=75y75'}
+        picURI={showIndex ? undefined : track.album.picUrl + '?param=75y75'}
         subTitle={subTitle}
+        renderLeft={
+          showIndex ? <View style={[centering, { width: 30 }]}>
+            <Text style={{ fontSize: 18, fontWeight: 'bold', color: '#ddd' }}>
+              {Number(rowId) + 1}
+            </Text>
+          </View> : undefined
+        }
         textContainer={{ paddingVertical: 10 }}
         picStyle={{ width: 40, height: 40}}
         titleStyle={[{ fontSize: 15 }, colorStyle]}
@@ -116,7 +126,8 @@ class TrackList extends React.Component<IProps, any> {
       isPlaylist,
       isLoading,
       sync,
-      canRefresh = false
+      canRefresh = false,
+      showIndex = false
     } = this.props
     if (tracks) {
       this.ds = this.ds.cloneWithRows(tracks)
@@ -129,7 +140,7 @@ class TrackList extends React.Component<IProps, any> {
         scrollRenderAheadDistance={120}
         initialListSize={10}
         dataSource={this.ds}
-        renderRow={this.renderTrack(playing, isPlaylist)}
+        renderRow={this.renderTrack(playing, isPlaylist, showIndex)}
         showsVerticalScrollIndicator={true}
         renderFooter={this.renderFooter}
         refreshControl={

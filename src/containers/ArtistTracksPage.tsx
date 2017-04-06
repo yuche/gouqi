@@ -1,7 +1,4 @@
 import TrackList from '../components/TrackList'
-import {
-  View
-} from 'react-native'
 import { connect } from 'react-redux'
 import * as React from 'react'
 import { ITrack } from '../services/api'
@@ -14,7 +11,8 @@ interface IProps {
   tabLabel: string,
   tracks: ITrack[],
   isLoading: boolean,
-  sync: () => Redux.Action
+  sync: () => Redux.Action,
+  showIndex?: boolean
 }
 
 class ArtistTracks extends React.Component<IProps, any> {
@@ -31,10 +29,12 @@ class ArtistTracks extends React.Component<IProps, any> {
     const {
       id,
       isLoading = false,
-      tracks = []
+      tracks = [],
+      showIndex
     } = this.props
     return (
       <TrackList
+        showIndex={showIndex}
         isLoading={isLoading}
         pid={id}
         tracks={tracks}
@@ -65,4 +65,4 @@ export default connect(
       return dispatch(syncArtistTracks(ownProps.id))
     }
   })
-)(ArtistTracks) as React.ComponentClass<{tabLabel: string, id: number}>
+)(ArtistTracks) as React.ComponentClass<{id: number, showIndex: boolean}>

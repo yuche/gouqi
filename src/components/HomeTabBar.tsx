@@ -64,6 +64,10 @@ class TabBar extends React.Component<ITabBarProps, IState> {
    this.props.scrollValue.addListener(this.updateView)
   }
 
+  componentWillUnmount() {
+    this.props.scrollValue.removeAllListeners()
+  }
+
   public goToPage (page: number)  {
     return () => this.props.goToPage(page)
   }

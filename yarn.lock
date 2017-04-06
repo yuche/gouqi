@@ -5251,10 +5251,6 @@ react-mixin@^3.0.5:
     object-assign "^4.0.1"
     smart-mixin "^2.0.0"
 
-react-native-audio-streamer:
-  version "0.0.7"
-  resolved "https://registry.npmjs.org/react-native-audio-streamer/-/react-native-audio-streamer-0.0.7.tgz#82ab5b6abd7a60f61504635648dc4e6f82aa4edc"
-
 react-native-blur:
   version "2.0.0"
   resolved "https://registry.npmjs.org/react-native-blur/-/react-native-blur-2.0.0.tgz#284b3abfb42c2d90924aa15f494ccb88d6055342"
