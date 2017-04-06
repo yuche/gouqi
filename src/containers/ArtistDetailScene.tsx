@@ -8,35 +8,64 @@ import {
   ViewStyle,
   Dimensions,
   Image,
-  Animated
+  Animated,
+  ScrollView
 } from 'react-native'
 import ArtistTracks from './ArtistTracksPage'
 import ArtistAlbums from './ArtistAlbumsPage'
 import ArtistDesciption from './ArtistDescription'
 import Navbar from '../components/navbar'
 import { get } from 'lodash'
+import Parallax from 'react-native-parallax-view'
 
 interface IState {
-  scrollY: Animated.Value
+  tracksY: Animated.Value
 }
 
-const { width } = Dimensions.get('window')
+const { width, height } = Dimensions.get('window')
+
+const HEADER_HEIGHT = 180
 
 interface IProps {
   route: IArtist,
   artist: IArtist
 }
 
-class Artist extends React.Component<IProps, any> {
+interface IState {
+  tracksY: Animated.Value,
+  albumsY: Animated.Value,
+  descriptionY: Animated.Value
+}
+
+class Artist extends React.Component<IProps, IState> {
+  private tabsIndex = 0
+
 
   constructor(props: any) {
     super(props)
     this.state = {
-      scrollY: new Animated.Value(0)
+      tracksY: new Animated.Value(0),
+      albumsY: new Animated.Value(0),
+      descriptionY: new Animated.Value(0)
     }
   }
 
   componentDidMount() {
+
+  }
+
+  getScrollY (index: number) {
+    const {
+      tracksY,
+      albumsY,
+      descriptionY
+    } = this.state
+    if (index === 0) {
+      return tracksY
+    } else if (index === 1) {
+      return albumsY
+    }
+    return descriptionY
   }
 
   render() {
@@ -44,16 +73,14 @@ class Artist extends React.Component<IProps, any> {
       artist
     } = this.props
     const uri = artist.picUrl
+    const scrollY = this.getScrollY(this.tabsIndex)
     return (
       <View style={{flex: 1}}>
         <Navbar
           title={artist.name}
           style={styles.navbar}
         />
-        <Image
-          source={{uri}}
-          style={{width, height: 240}}
-        />
+        {/*{this.renderImage(uri, this.state.scrollY)}
         <ScrollableTabView
           renderTabBar={this.renderTabBar}
         >
@@ -70,8 +97,88 @@ class Artist extends React.Component<IProps, any> {
             id={artist.id}
             name={artist.name}
           />
-        </ScrollableTabView>
+        </ScrollableTabView>*/}
+        {this.renderImage(uri, scrollY)}
+        {this.renderScrollTabView(artist, scrollY)}
       </View>
+    )
+  }
+
+  renderPage = (tabLabel: string, children: JSX.Element, scrollY: Animated.Value) => {
+    const playlistY = scrollY.interpolate({
+      inputRange: [0, HEADER_HEIGHT, HEADER_HEIGHT],
+      outputRange: [0, HEADER_HEIGHT, HEADER_HEIGHT]
+    })
+    return (
+      <ScrollView
+        tabLabel={tabLabel}
+        scrollEventThrottle={16}
+        onScroll={Animated.event(
+          [{nativeEvent: {contentOffset: {y: scrollY}}}]
+        )}
+      >
+        <Animated.View style={{transform: [{ translateY: playlistY }], paddingBottom: HEADER_HEIGHT}}>
+          {children}
+        </Animated.View>
+      </ScrollView>
+    )
+  }
+
+  onChangeTab = ({ from, i }) => {
+    this.tabsIndex = i
+    // this.forceUpdate()
+  }
+
+  renderScrollTabView = (artist: IArtist, scrollY: Animated.Value) => {
+    const transform = {
+      transform: [{ translateY: scrollY.interpolate({
+        inputRange: [0 , HEADER_HEIGHT, HEADER_HEIGHT],
+        outputRange: [0, -HEADER_HEIGHT, -HEADER_HEIGHT]
+      }) }]
+    }
+    return (
+      <Animated.View style={[styles.scroll, transform]}>
+        <View style={{ height: height - Navbar.HEIGHT - 40, backgroundColor: 'white'}}>
+          <ScrollableTabView
+            renderTabBar={this.renderTabBar}
+            onChangeTab={this.onChangeTab}
+          >
+            {this.renderPage('热门单曲', <ArtistTracks
+              tabLabel='专辑'
+              id={artist.id}
+            />, this.state.tracksY)}
+            {this.renderPage('专辑', <ArtistAlbums
+              tabLabel='专辑'
+              id={artist.id}
+            />, this.state.albumsY)}
+            {this.renderPage('详情', <ArtistDesciption
+              tabLabel='专辑'
+              id={artist.id}
+              name={artist.name}
+            />, this.state.descriptionY)}
+          </ScrollableTabView>
+        </View>
+      </Animated.View>
+    )
+  }
+
+  renderImage = (uri: string, scrollY: Animated.Value) => {
+    const transform = [
+      {
+        translateY: scrollY.interpolate({
+          inputRange: [-HEADER_HEIGHT, 0, HEADER_HEIGHT, HEADER_HEIGHT],
+          outputRange: [HEADER_HEIGHT / 2, 0, -HEADER_HEIGHT / 3, -HEADER_HEIGHT / 3]
+        })
+      },
+      {
+        scale: scrollY.interpolate({
+          inputRange: [-HEADER_HEIGHT, 0, HEADER_HEIGHT],
+          outputRange: [2, 1, 1]
+        })
+      }
+    ]
+    return (
+      <Animated.Image source={{uri}} style={[styles.bg, { transform }]} />
     )
   }
 
@@ -87,6 +194,26 @@ const styles = {
     position: 'absolute',
     top: 0,
     width
+  } as ViewStyle,
+  image: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    width,
+    height: width
+  } as ViewStyle,
+  bg: {
+    width,
+    height: 180 + Navbar.HEIGHT,
+    resizeMode: 'cover'
+  },
+  scroll: {
+    position: 'absolute',
+    left: 0,
+    top: 180 + Navbar.HEIGHT,
+    right: 0,
+    bottom: 0
   } as ViewStyle
 }
 
