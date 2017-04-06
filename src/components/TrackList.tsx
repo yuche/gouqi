@@ -7,7 +7,8 @@ import {
   RefreshControl,
   ListViewDataSource,
   ActivityIndicator,
-  Text
+  Text,
+  ScrollView
 } from 'react-native'
 import ListItem from './listitem'
 import { get, isEqual } from 'lodash'
@@ -29,10 +30,14 @@ interface IOwnProps {
   tracks: ITrack[]
   pid: any,
   canRefresh?: boolean,
-  showIndex?: boolean
+  showIndex?: boolean,
+  renderScrollComponent?: (e: any) => any
 }
 
 class TrackList extends React.Component<IProps, any> {
+  public static defaultProps: any = {
+    renderScrollComponent: (props: any) => <ScrollView {...props} />
+  }
   private ds: ListViewDataSource
 
   constructor(props: IProps) {
@@ -126,6 +131,7 @@ class TrackList extends React.Component<IProps, any> {
       isPlaylist,
       isLoading,
       sync,
+      renderScrollComponent,
       canRefresh = false,
       showIndex = false
     } = this.props
@@ -138,7 +144,7 @@ class TrackList extends React.Component<IProps, any> {
         enableEmptySections
         removeClippedSubviews={true}
         scrollRenderAheadDistance={120}
-        initialListSize={10}
+        initialListSize={15}
         dataSource={this.ds}
         renderRow={this.renderTrack(playing, isPlaylist, showIndex)}
         showsVerticalScrollIndicator={true}
@@ -146,6 +152,7 @@ class TrackList extends React.Component<IProps, any> {
         refreshControl={
           canRefresh ? <RefreshControl refreshing={isLoading} onRefresh={sync}/> : undefined
         }
+        renderScrollComponent={renderScrollComponent}
       />
     )
   }

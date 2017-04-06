@@ -10,9 +10,6 @@ import {
   Image,
   Dimensions,
   TouchableOpacity,
-  TouchableWithoutFeedback,
-  ListView,
-  ListViewDataSource,
   Alert,
   ScrollViewProperties
 } from 'react-native'
@@ -22,21 +19,16 @@ import { connect } from 'react-redux'
 import {
   syncPlaylistDetail,
   subscribePlaylist,
-  popupTrackActionSheet,
-  playTrackAction,
   downloadTracksAction
 } from '../actions'
-import ListItem from '../components/listitem'
 import {
   IinitialState as IDetailState
 } from '../reducers/detail'
-import { get, isEqual } from 'lodash'
 import Router from '../routers'
 import ParallaxScroll from '../components/ParallaxScroll'
-import { Color } from '../styles'
 import { BlurView } from 'react-native-blur'
 import Icon from 'react-native-vector-icons/FontAwesome'
-import Ionic from 'react-native-vector-icons/Ionicons'
+import TrackList from '../components/TrackList'
 
 import { IPlaying } from '../reducers/player'
 
@@ -49,8 +41,6 @@ interface IProps extends ILoadingProps {
   playing: IPlaying,
   isPlaylist: boolean,
   subscribe: () => Redux.Action,
-  popup: (track: ITrack) => Redux.Action,
-  play: (index: number, tracks: ITrack[]) => Redux.Action,
   download: (tracks: ITrack[]) => Redux.Action
 }
 
@@ -58,15 +48,13 @@ interface IState {
   scrollY: Animated.Value
 }
 
-const HEADER_HEIGHT = 160
+const HEADER_HEIGHT = 180
 
 class PlayList extends React.Component<IProps, IState> {
-  private ds: ListViewDataSource
   private scrollComponent: any
 
   constructor(props: IProps) {
     super(props)
-    this.ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1.id !== r2.id})
     this.state = {
       scrollY: new Animated.Value(0)
     }
@@ -77,12 +65,6 @@ class PlayList extends React.Component<IProps, IState> {
     this.setState({
       scrollY: this.scrollComponent.state.scrollY
     })
-  }
-
-  componentWillReceiveProps (nextProps: IProps) {
-    if (!isEqual(nextProps.playing, this.props.playing)) {
-      this.ds = this.ds.cloneWithRows([])
-    }
   }
 
   render () {
@@ -238,53 +220,6 @@ class PlayList extends React.Component<IProps, IState> {
     )
   }
 
-  renderTrack = (playing: IPlaying, isPlaylist: boolean) => {
-    return (track: ITrack, secionId, rowId) => {
-      const index = Number(rowId)
-      const isPlaying = playing.index === index && isPlaylist
-      const artistName = get(track, 'artists[0].name', null)
-      const albumName = get(track, 'album.name', '')
-      const subTitle = artistName ?
-        `${artistName} - ${albumName}` :
-        albumName
-      const colorStyle = isPlaying && { color: Color.main }
-      return <ListItem
-        title={track.name}
-        containerStyle={{ paddingVertical: 0, paddingRight: 0 }}
-        picURI={track.album.picUrl + '?param=75y75'}
-        subTitle={subTitle}
-        textContainer={{ paddingVertical: 10 }}
-        picStyle={{ width: 30, height: 30}}
-        titleStyle={[{ fontSize: 14 }, colorStyle]}
-        subTitleStyle={colorStyle}
-        onPress={!isPlaying ? this.listItemOnPress(index) : undefined}
-        renderRight={
-          <TouchableWithoutFeedback
-            onPress={this.moreIconOnPress(track)}
-          >
-            <View style={{flexDirection: 'row', paddingRight: 10}}>
-              {isPlaying && <View style={{ justifyContent: 'center' }}>
-                <Ionic size={22} name='md-volume-up' color={Color.main} style={{ paddingLeft: 10 }}/>
-              </View>}
-              <View style={{ justifyContent: 'center' }}>
-                <Ionic size={22} name='ios-more' color='#777' style={{ paddingLeft: 10 }}/>
-              </View>
-            </View>
-          </TouchableWithoutFeedback>
-        }
-        key={track.id}
-      />
-    }
-  }
-
-  listItemOnPress = (index: number) => () => {
-    this.props.play(index, this.props.playlist.tracks)
-  }
-
-  moreIconOnPress = (track: ITrack) => () => {
-    this.props.popup(track)
-  }
-
   renderPlayList = (
     isLoading: boolean,
     scrollY: Animated.Value,
@@ -296,33 +231,25 @@ class PlayList extends React.Component<IProps, IState> {
       inputRange: [0 , HEADER_HEIGHT, HEADER_HEIGHT],
       outputRange: [0, -HEADER_HEIGHT, -HEADER_HEIGHT]
     })
-    if (tracks) {
-      this.ds = this.ds.cloneWithRows(tracks)
-    }
     return (
       <Animated.View style={[styles.playlistContainer, { transform: [{ translateY: containerY }] }]}>
         <View style={{ height: height - Navbar.HEIGHT, backgroundColor: 'white'}}>
-          <ListView
-            enableEmptySections
-            removeClippedSubviews={true}
-            scrollRenderAheadDistance={120}
-            initialListSize={20}
-            dataSource={this.ds}
-            renderRow={this.renderTrack(playing, isPlaylist)}
-            showsVerticalScrollIndicator={true}
-            renderScrollComponent={this.renderScrollComponent(isLoading)}
+          <TrackList
+            isLoading={isLoading}
+            pid={this.props.route.id}
+            tracks={tracks}
+            renderScrollComponent={this.renderScrollComponent}
           />
         </View>
       </Animated.View>
     )
   }
 
-  renderScrollComponent = (isLoading: boolean) => {
-    return (props: ScrollViewProperties) => (
+  renderScrollComponent = (props: ScrollViewProperties) => {
+    return (
       <ParallaxScroll
         {...props}
         onScroll={props.onScroll}
-        isLoading={isLoading}
         ref={this.mapScrollComponentToRef}
       />
     )
@@ -356,8 +283,8 @@ const styles = {
     bottom: 0
   } as ViewStyle,
   headerPic: {
-    width: 100,
-    height: 100
+    width: 120,
+    height: 120
   },
   blur: {
     position: 'absolute',
@@ -434,18 +361,6 @@ export default connect(
     },
     subscribe() {
       return dispatch(subscribePlaylist(ownProps.route.id))
-    },
-    popup(track: ITrack) {
-      return dispatch(popupTrackActionSheet(track))
-    },
-    play (index: number, tracks: ITrack[]) {
-      return dispatch(playTrackAction({
-        playing: {
-          index,
-          pid: ownProps.route.id
-        },
-        playlist: tracks
-      }))
     },
     download (track: ITrack[]) {
       return dispatch(downloadTracksAction(track))

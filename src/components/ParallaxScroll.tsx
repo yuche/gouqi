@@ -1,8 +1,7 @@
 import * as React from 'react'
 import {
   Animated,
-  ScrollView,
-  ActivityIndicator
+  ScrollView
  } from 'react-native'
 interface IState {
   scrollY: Animated.Value
@@ -10,10 +9,9 @@ interface IState {
 
 class ParallaxScroll extends React.Component<any, IState> {
 
-  static HEADER_HEIGHT = 160
-
   public static defaultProps: any = {
-    renderScrollComponent: (props: any) => <ScrollView {...props} />
+    renderScrollComponent: (props: any) => <ScrollView {...props} />,
+    headerHeight: 180
   }
 
   private scrollComponent: any
@@ -51,7 +49,6 @@ class ParallaxScroll extends React.Component<any, IState> {
     const {
       children,
       renderScrollComponent,
-      isLoading,
       ...scrollViewProps
     } = this.props
 
@@ -59,7 +56,7 @@ class ParallaxScroll extends React.Component<any, IState> {
       scrollY
     } = this.state
 
-    const bodyComponent = this.renderBodyComponent(scrollY, isLoading, children)
+    const bodyComponent = this.renderBodyComponent(scrollY, children)
 
     return React.cloneElement(
       renderScrollComponent(scrollViewProps), {
@@ -84,18 +81,17 @@ class ParallaxScroll extends React.Component<any, IState> {
     prevOnScroll(event)
   }
 
-  renderBodyComponent (scrollY: Animated.Value, isLoading: boolean, children: any) {
-    const MARGIN_TOP = ParallaxScroll.HEADER_HEIGHT
+  renderBodyComponent (scrollY: Animated.Value, children: any) {
+    const headerHeight = this.props.headerHeight
 
-    const playlistY = scrollY.interpolate({
-      inputRange: [0, MARGIN_TOP, MARGIN_TOP],
-      outputRange: [0, MARGIN_TOP, MARGIN_TOP]
+    const translateY = scrollY.interpolate({
+      inputRange: [0, headerHeight, headerHeight],
+      outputRange: [0, headerHeight, headerHeight]
     })
 
     return (
-      <Animated.View style={{transform: [{ translateY :playlistY }], paddingBottom: MARGIN_TOP + 60}}>
+      <Animated.View style={{transform: [{ translateY }], paddingBottom: headerHeight + 60}}>
         {children}
-        {isLoading && <ActivityIndicator animating style={{marginTop: 15}}/>}
       </Animated.View>
     )
   }
