@@ -49,6 +49,7 @@ class ParallaxScroll extends React.Component<any, IState> {
     const {
       children,
       renderScrollComponent,
+      onScroll,
       ...scrollViewProps
     } = this.props
 
@@ -61,24 +62,14 @@ class ParallaxScroll extends React.Component<any, IState> {
     return React.cloneElement(
       renderScrollComponent(scrollViewProps), {
         ref: component => { this.scrollComponent = component },
-        onScroll: this.onScroll,
+        onScroll: Animated.event(
+            [{nativeEvent: {contentOffset: {y: scrollY}}}],
+            { listener: onScroll }
+          ),
         scrollEventThrottle: 16
       },
       bodyComponent
     )
-  }
-
-  onScroll = (event: any) => {
-    const {
-      onScroll: prevOnScroll = (e: any) => ({})
-    } = this.props
-
-    const { nativeEvent: { contentOffset: { y: offsetY } } } = event
-
-    this.state.scrollY.setValue(offsetY)
-
-    // it's import that NOT overwrite original ListView methods
-    prevOnScroll(event)
   }
 
   renderBodyComponent (scrollY: Animated.Value, children: any) {

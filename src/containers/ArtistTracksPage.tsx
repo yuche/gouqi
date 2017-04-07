@@ -5,6 +5,10 @@ import { ITrack } from '../services/api'
 import {
   syncArtistTracks
 } from '../actions'
+import ParallaxScroll from '../components/ParallaxScroll'
+import {
+  ScrollViewProperties
+} from 'react-native'
 
 interface IProps {
   id: number,
@@ -16,6 +20,7 @@ interface IProps {
 }
 
 class ArtistTracks extends React.Component<IProps, any> {
+  private scrollComponent: any
 
   constructor(props) {
     super(props)
@@ -23,6 +28,20 @@ class ArtistTracks extends React.Component<IProps, any> {
 
   componentDidMount () {
     this.props.sync()
+  }
+
+  renderScrollComponent = (props: ScrollViewProperties) => {
+    return (
+      <ParallaxScroll
+        {...props}
+        onScroll={props.onScroll}
+        ref={this.mapScrollComponentToRef}
+      />
+    )
+  }
+
+  mapScrollComponentToRef = (component: any) => {
+    this.scrollComponent = component
   }
 
   render () {
@@ -38,6 +57,7 @@ class ArtistTracks extends React.Component<IProps, any> {
         isLoading={isLoading}
         pid={id}
         tracks={tracks}
+        renderScrollComponent={this.renderScrollComponent}
       />
     )
   }
@@ -64,5 +84,7 @@ export default connect(
     sync() {
       return dispatch(syncArtistTracks(ownProps.id))
     }
-  })
-)(ArtistTracks) as React.ComponentClass<{id: number, showIndex: boolean}>
+  }),
+  (s, d, o) => ({...s, ...d, ...o}), // see: https://github.com/reactjs/react-redux/blob/master/docs/api.md#arguments
+  { withRef: true }
+)(ArtistTracks) as React.ComponentClass<{id: number, showIndex: boolean, tabLabel: string}>

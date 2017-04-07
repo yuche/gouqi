@@ -1,5 +1,6 @@
 /**
  * TODO:
+ * # 1
  * 本页面应该做成 QQ 音乐的艺人详情页那样效果。
  * 但每次切换 tabs 的时候，原来 tabs 的垂直位置也会相应跟着切换。
  * 原因在于的 tabs 的位置取决于两个值：
@@ -13,6 +14,15 @@
  * 还有一个方法，使用 [react-native-interactable](https://github.com/wix/react-native-interactable)
  * 来实现视差滚动，这样一来 DOM 结构和代码都能得到大幅简化，性能也会有所提升。
  * 可惜目前 react-native-interactable 也不支持滚动元素。see issues: #50, #35
+ * 
+ * # 2
+ * 图片无法根据滚动距离实现毛玻璃效果。
+ * react-native-blur 无法更改 blurAmount，所以不能用。
+ * react-native 的 Image blurRadius 可以在 iOS 单独使用，
+ * 但如果使用 state 来控制 blurRadius 会有严重的性能问题。
+ * 而 setNativeProps  方法调用了也无效。
+ * 应该是 react-native 的一个 bug。我已经提了 issue:
+ * https://github.com/facebook/react-native/issues/13344
  */
 
 import { connect } from 'react-redux'
@@ -24,21 +34,13 @@ import {
   View,
   ViewStyle,
   Dimensions,
-  Animated,
-  ScrollView,
-  Image
+  Animated
 } from 'react-native'
 import ArtistTracks from './ArtistTracksPage'
 import ArtistAlbums from './ArtistAlbumsPage'
 import ArtistDesciption from './ArtistDescription'
 import Navbar from '../components/navbar'
 import { get } from 'lodash'
-
-interface IState {
-  tracksY: Animated.Value
-}
-
-const ScrollViewWithLabel: any = ScrollView
 
 const { width, height } = Dimensions.get('window')
 
@@ -50,50 +52,35 @@ interface IProps {
 }
 
 interface IState {
-  tracksY: Animated.Value,
-  albumsY: Animated.Value,
-  descriptionY: Animated.Value,
+  scrollY: Animated.Value,
   blurRadius: number
 }
 
 class Artist extends React.Component<IProps, IState> {
-  private tabsIndex = 0
   private image: any
+  private albumsPage: any
+  private tracksPage: any
+  private descriptionPage: any
+  private events = ['', '', '']
 
   constructor(props: any) {
     super(props)
     this.state = {
-      tracksY: new Animated.Value(0),
-      albumsY: new Animated.Value(0),
-      descriptionY: new Animated.Value(0),
+      scrollY: new Animated.Value(0),
       blurRadius: 0
     }
   }
 
   componentDidMount() {
-    this.state.albumsY.addListener(this.updateBlur)
-    this.state.descriptionY.addListener(this.updateBlur)
-    this.state.tracksY.addListener(this.updateBlur)
+    this.setState({
+      scrollY: this.tracksPage.getWrappedInstance().scrollComponent.state.scrollY
+    } as IState, () => {
+      this.events[0] = this.state.scrollY.addListener(this.updateBlur)
+    })
   }
 
   componentWillUnmount() {
-    this.state.albumsY.removeAllListeners()
-    this.state.descriptionY.removeAllListeners()
-    this.state.tracksY.removeAllListeners()
-  }
-
-  getScrollY (index: number) {
-    const {
-      tracksY,
-      albumsY,
-      descriptionY
-    } = this.state
-    if (index === 0) {
-      return tracksY
-    } else if (index === 1) {
-      return albumsY
-    }
-    return descriptionY
+    this.state.scrollY.removeAllListeners()
   }
 
   updateBlur = ({ value }) => {
@@ -101,57 +88,48 @@ class Artist extends React.Component<IProps, IState> {
     if (blurRadius > 25) {
       blurRadius = 25
     }
-    /**
-     * 这里应该使用 
-     * setNativeProps({ blurRadius })
-     * 来获取更高性能。
-     * 但不知为何 blurRadius 不响应。
-     * 应该是 react-native 的 bug。
-     */
     this.image.setNativeProps({ blurRadius })
+    console.log(blurRadius)
   }
 
   render() {
     const {
       artist
     } = this.props
-    const uri = artist.picUrl
-    const scrollY = this.getScrollY(this.tabsIndex)
+    const {
+      scrollY
+    } = this.state
     return (
       <View style={{flex: 1}}>
         <Navbar
           title={artist.name}
           style={styles.navbar}
         />
-        {this.renderImage(uri, scrollY)}
+        {this.renderImage(artist.picUrl, scrollY)}
         {this.renderScrollTabView(artist, scrollY)}
       </View>
     )
   }
 
-  renderPage = (tabLabel: string, children: JSX.Element, scrollY: Animated.Value) => {
-    const playlistY = scrollY.interpolate({
-      inputRange: [0, HEADER_HEIGHT, HEADER_HEIGHT],
-      outputRange: [0, HEADER_HEIGHT, HEADER_HEIGHT]
-    })
-    return (
-      <ScrollViewWithLabel
-        tabLabel={tabLabel}
-        scrollEventThrottle={16}
-        onScroll={Animated.event(
-          [{nativeEvent: {contentOffset: {y: scrollY}}}]
-        )}
-      >
-        <Animated.View style={{transform: [{ translateY: playlistY }], paddingBottom: HEADER_HEIGHT}}>
-          {children}
-        </Animated.View>
-      </ScrollViewWithLabel>
-    )
-  }
-
   onChangeTab = ({ i }) => {
-    this.tabsIndex = i
-    this.forceUpdate()
+    let scrollY
+    if (i === 0) {
+      scrollY = this.tracksPage.getWrappedInstance().scrollComponent.state.scrollY
+    } else if (i === 1) {
+      scrollY = this.albumsPage.getWrappedInstance().scrollComponent.state.scrollY
+    } else {
+      scrollY = this.descriptionPage.getWrappedInstance().state.scrollY
+    }
+
+    this.setState({
+      scrollY
+    } as IState, () => {
+      const id = this.events[i]
+      if (id) {
+        this.state.scrollY.removeListener(id)
+      }
+      this.events[i] = this.state.scrollY.addListener(this.updateBlur)
+    })
   }
 
   renderScrollTabView = (artist: IArtist, scrollY: Animated.Value) => {
@@ -168,23 +146,39 @@ class Artist extends React.Component<IProps, IState> {
             renderTabBar={this.renderTabBar}
             onChangeTab={this.onChangeTab}
           >
-            {this.renderPage('热门单曲', <ArtistTracks
+            <ArtistTracks
+              ref={this.mapPage('track')}
               id={artist.id}
               showIndex={true}
-            />, this.state.tracksY)}
-            {this.renderPage('专辑', <ArtistAlbums
+              tabLabel='热门歌曲'
+            />
+            <ArtistAlbums
+              ref={this.mapPage('album')}
               tabLabel='专辑'
               id={artist.id}
-            />, this.state.albumsY)}
-            {this.renderPage('详情', <ArtistDesciption
-              tabLabel='专辑'
+            />
+            <ArtistDesciption
+              ref={this.mapPage('description')}
+              tabLabel='详情'
               id={artist.id}
               name={artist.name}
-            />, this.state.descriptionY)}
+            />
           </ScrollableTabView>
         </View>
       </Animated.View>
     )
+  }
+
+  mapPage = (key: string) => (component) => {
+    if (key === 'album') {
+      this.albumsPage = component
+    }
+    if (key === 'track') {
+      this.tracksPage = component
+    }
+    if (key === 'description') {
+      this.descriptionPage = component
+    }
   }
 
   renderImage = (uri: string, scrollY: Animated.Value) => {
@@ -203,17 +197,13 @@ class Artist extends React.Component<IProps, IState> {
       }
     ]
     return (
-      <Animated.View
+      <Animated.Image
         // tslint:disable-next-line:jsx-no-lambda
+        ref={component => this.image = component}
+        source={{uri}}
         style={[styles.bg, { transform }]}
-      >
-        <Image
-          ref={component => this.image = component}
-          source={{uri}}
-          style={[styles.bg]}
-          blurRadius={0}
-        />
-      </Animated.View>
+        blurRadius={0}
+      />
     )
   }
 

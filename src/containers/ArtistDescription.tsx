@@ -9,7 +9,8 @@ import {
   ViewStyle,
   TextStyle,
   ScrollView,
-  ActivityIndicator
+  ActivityIndicator,
+  Animated
 } from 'react-native'
 
 interface IProps {
@@ -24,15 +25,24 @@ interface IProps {
   }
 }
 
+interface IState {
+  scrollY: Animated.Value
+}
+
 interface IIntroduction {
   ti: string,
   txt: string
 }
 
+const HEADER_HEIGHT = 180
+
 class Description extends React.Component<IProps, any> {
 
   constructor(props) {
     super(props)
+    this.state = {
+      scrollY: new Animated.Value(0)
+    }
   }
 
   componentDidMount () {
@@ -76,12 +86,26 @@ class Description extends React.Component<IProps, any> {
       },
       name
     } = this.props
+    const {
+      scrollY
+    } = this.state
+    const translateY = scrollY.interpolate({
+      inputRange: [0, HEADER_HEIGHT, HEADER_HEIGHT],
+      outputRange: [0, HEADER_HEIGHT, HEADER_HEIGHT]
+    })
     return (
-      <ScrollView>
-        {isLoading && <ActivityIndicator animating style={{marginTop: 10}}/>}
-        {!isLoading && this.renderBrief(name, brief)}
-        {!isLoading && this.renderIntroduction(introduction)}
-      </ScrollView>
+        <ScrollView
+          scrollEventThrottle={16}
+          onScroll={Animated.event(
+            [{nativeEvent: {contentOffset: {y: scrollY}}}]
+          )}
+        >
+          <Animated.View style={{transform: [{ translateY }], paddingBottom: HEADER_HEIGHT + 60}}>
+            {isLoading && <ActivityIndicator animating style={{marginTop: 10}}/>}
+            {!isLoading && this.renderBrief(name, brief)}
+            {!isLoading && this.renderIntroduction(introduction)}
+          </Animated.View>
+        </ScrollView>
     )
   }
 
@@ -127,5 +151,7 @@ export default connect(
     sync() {
       return dispatch(syncArtistDescription(ownProps.id))
     }
-  })
+  }),
+  (s, d, o) => ({...s, ...d, ...o}), // see: https://github.com/reactjs/react-redux/blob/master/docs/api.md#arguments
+  { withRef: true }
 )(Description) as React.ComponentClass<{tabLabel: string, id: number, name: string}>

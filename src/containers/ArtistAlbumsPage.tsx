@@ -4,12 +4,14 @@ import {
   ListView,
   View,
   ActivityIndicator,
-  ListViewDataSource
+  ListViewDataSource,
+  ScrollViewProperties
 } from 'react-native'
 import ListItem from '../components/listitem'
 import { connect } from 'react-redux'
 import Router from '../routers'
 import { syncArtistAlbums } from '../actions'
+import ParallaxScroll from '../components/ParallaxScroll'
 
 interface IProps {
   albums: IAlbum[],
@@ -21,10 +23,25 @@ interface IProps {
 
 class Albums extends React.Component<IProps, any> {
   private ds: ListViewDataSource
+  private scrollComponent: any
 
   constructor(props) {
     super(props)
     this.ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1.id !== r2.id})
+  }
+
+  renderScrollComponent = (props: ScrollViewProperties) => {
+    return (
+      <ParallaxScroll
+        {...props}
+        onScroll={props.onScroll}
+        ref={this.mapScrollComponentToRef}
+      />
+    )
+  }
+
+  mapScrollComponentToRef = (component: any) => {
+    this.scrollComponent = component
   }
 
   renderAlbum = (album: IAlbum) => {
@@ -69,6 +86,7 @@ class Albums extends React.Component<IProps, any> {
         scrollRenderAheadDistance={90}
         renderRow={this.renderAlbum}
         renderFooter={this.renderFooter}
+        renderScrollComponent={this.renderScrollComponent}
       />
     )
   }
@@ -97,5 +115,7 @@ export default connect(
     sync() {
       return dispatch(syncArtistAlbums(ownProps.id))
     }
-  })
+  }),
+  (s, d, o) => ({...s, ...d, ...o}), // see: https://github.com/reactjs/react-redux/blob/master/docs/api.md#arguments
+  { withRef: true }
 )(Albums) as React.ComponentClass<{tabLabel: string, id: number}>

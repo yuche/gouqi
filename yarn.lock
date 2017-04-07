@@ -5362,9 +5362,9 @@ react-native-video:
   dependencies:
     keymirror "0.1.1"
 
-react-native@0.41.0:
-  version "0.41.0"
-  resolved "https://registry.npmjs.org/react-native/-/react-native-0.41.0.tgz#09ea967b182885f302724f14587145da3b2d2e22"
+react-native@0.42.3:
+  version "0.42.3"
+  resolved "https://registry.npmjs.org/react-native/-/react-native-0.42.3.tgz#450c8a03a5e3e991a08a426f22776dd8feb80b26"
   dependencies:
     absolute-path "^0.0.0"
     art "^0.10.0"
