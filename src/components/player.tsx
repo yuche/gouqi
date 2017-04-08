@@ -20,7 +20,7 @@ class Player extends React.Component<IProps, any> {
 
   componentDidMount() {
     // setTimeout(() => {
-    //   api.artistDescription('3681').then(res => {
+    //   api.favoriteArtists().then(res => {
     //   console.log(res)
     // })
     // }, 1500)

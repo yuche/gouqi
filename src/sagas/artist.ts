@@ -119,7 +119,6 @@ function* toggleSubscribeArtist ({ payload }) {
   const response = followed
     ? yield call(api.unsubscribeArtist, id)
     : yield call(api.subscribeArtist, id)
-  console.log(response)
 
   if (response.code === 200) {
     yield put({
@@ -134,11 +133,31 @@ function* toggleSubscribeArtist ({ payload }) {
   })
 }
 
+function* favorites () {
+  yield put({
+    type: 'artists/favo/start'
+  })
+
+  const response = yield call(api.favoriteArtists)
+
+  if (response.code) {
+    yield put({
+      type: 'artists/favo/save',
+      payload: response.data
+    })
+  }
+
+  yield put({
+    type: 'artists/favo/end'
+  })
+}
+
 export default function* watchArtists() {
   yield [
     takeLatest('artists/refresh', refreshArtists),
     takeLatest('artists/sync', syncMoreArtists),
     takeLatest('artists/detail/follow', toggleSubscribeArtist),
+    takeLatest('artists/favo', favorites),
     fork(syncArtistTracks),
     fork(syncArtistAlbums),
     fork(syncArtistDescription)

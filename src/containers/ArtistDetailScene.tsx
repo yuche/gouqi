@@ -325,11 +325,14 @@ function mapStatetoProps (
 ) {
   const { route } = ownProps
   const artist = detail[route.id] && detail[route.id].artist
+  const picUrl = route.picUrl.slice(-3) === 'jpg'
+    ? route.picUrl
+    : route.picUrl.slice(0, route.picUrl.length - 14)
   return {
     artist: {
       ...route,
       ...artist,
-      picUrl: route.picUrl
+      picUrl
     },
     isSubscribing
   }

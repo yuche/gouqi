@@ -48,7 +48,7 @@ class CollectPlaylist extends React.Component<IProps, any> {
       >
         <ListItem
           title={playlist.name}
-          picURI={playlist.coverImgUrl}
+          picURI={playlist.coverImgUrl + '?param=300y300'}
           subTitle={playlist.trackCount + ' 首'}
           key={playlist.id}
           onPress={Router.toPlayList({ route: playlist })}

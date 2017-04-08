@@ -7,10 +7,12 @@ const initialState = {
   isLoading: false,
   isRefreshing: false,
   offset: 0,
+  favorites: [],
   isLoadingAlbums: false,
   isLoadingTracks: false,
   isLoadingDescription: false,
   isSubscribing: false,
+  isLoadingFavos: false,
   detail: {}
 }
 
@@ -34,6 +36,24 @@ export default handleActions({
     return {
       ...state,
       isRefreshing: false
+    }
+  },
+  'artists/favo/start' (state) {
+    return {
+      ...state,
+      isLoadingFavos: true
+    }
+  },
+  'artists/favo/end' (state) {
+    return {
+      ...state,
+      isLoadingFavos: false
+    }
+  },
+  'artists/favo/save' (state, { payload }: any) {
+    return {
+      ...state,
+      favorites: payload
     }
   },
   'artists/sync/start' (state) {

@@ -65,6 +65,10 @@ function toArtistsDetail (passProps?: IRouterPassProps) {
   navigator['ArtistsDetail'](passProps)
 }
 
+function toFavoriteArtists (passProps?: IRouterPassProps) {
+  navigator['FavoriteArtists'](passProps)
+}
+
 function pop (passProps?: IRouterPassProps) {
   navigator.pop(passProps)
 }
@@ -86,6 +90,7 @@ const Router = {
   toArtists,
   toAlbumDetail,
   toArtistsDetail,
+  toFavoriteArtists,
   pop
 }
 

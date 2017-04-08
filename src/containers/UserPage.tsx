@@ -17,6 +17,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons'
 import Router from '../routers'
 import { Color } from '../styles'
 import { get } from 'lodash'
+import CustomIcon from '../components/icon'
 
 interface IProps {
   profile: IProfile,
@@ -131,6 +132,23 @@ class UserPage extends React.Component<IProps, any> {
           }
         />
         {this.list.map(this.renderListItem)}
+        <ListItem
+          title='我喜欢的艺人'
+          titleStyle={styles.title}
+          containerStyle={styles.list}
+          renderLeft={
+            <View style={centering}>
+              <CustomIcon name='artist' size={20} color='#ccc'/>
+            </View>
+          }
+          renderRight={
+            <View style={centering}>
+              <Icon name='angle-right' size={20} color='#ccc'/>
+            </View>
+          }
+          // tslint:disable-next-line:jsx-no-lambda
+          onPress={() => Router.toFavoriteArtists()}
+        />
       </View>
     )
   }
