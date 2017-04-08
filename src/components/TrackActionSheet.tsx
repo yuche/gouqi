@@ -4,7 +4,8 @@ import {
   Text,
   ViewStyle,
   TouchableHighlight,
-  Dimensions
+  Dimensions,
+  InteractionManager
 } from 'react-native'
 import { centering } from '../styles'
 import CustomIcon from '../components/icon'
@@ -16,6 +17,7 @@ import {
   downloadTracksAction
 } from '../actions'
 import Popup from './PopupContainer'
+import Router from '../routers'
 
 const { width } = Dimensions.get('window')
 
@@ -50,8 +52,8 @@ class PopupContent extends React.Component<IProps, any> {
             {this.renderAction('收藏到歌单', 'collect', this.popup)}
             {this.renderAction('评论', 'comment', this.toComment)}
             {this.renderAction('下载', 'download', () => download(track))}
-            {this.renderAction('艺术家', 'artist')}
-            {this.renderAction('专辑', 'album')}
+            {this.renderAction('艺术家', 'artist', () => this.toArtist(track.artists[0]))}
+            {this.renderAction('专辑', 'album', () => this.toAlbum(track.album))}
           </View>
           <TouchableHighlight
             style={[centering, styles.footer]}
@@ -79,6 +81,20 @@ class PopupContent extends React.Component<IProps, any> {
     this.props.toComment()
   }
 
+  toAlbum = (route) => {
+    this.hide()
+    InteractionManager.runAfterInteractions(() => {
+      Router.toAlbumDetail({ route })
+    })
+  }
+
+  toArtist = (route) => {
+    this.hide()
+    Router.toArtistsDetail({ route })
+    // InteractionManager.runAfterInteractions(() => {
+    //   Router.toArtistsDetail({ route })
+    // })
+  }
 
   renderAction (title: string, iconName: string, onPress?: any) {
     return (

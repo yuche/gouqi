@@ -28,7 +28,7 @@ class Artists extends React.Component<IProps, any> {
     return (
       <ListItem
         title={artist.name}
-        picURI={artist.img1v1Url}
+        picURI={artist.img1v1Url + '?param=300y300'}
         roundPic
         key={artist.id}
         // tslint:disable-next-line:jsx-no-lambda
