@@ -10,6 +10,7 @@ const initialState = {
   isLoadingAlbums: false,
   isLoadingTracks: false,
   isLoadingDescription: false,
+  isSubscribing: false,
   detail: {}
 }
 
@@ -78,6 +79,22 @@ export default handleActions({
       }
     }
   },
+  'artists/detail/follow/toggle' (state, { payload, meta }: any) {
+    const detail = state.detail[meta]
+    return {
+      ...state,
+      detail: {
+        ...state.detail,
+        [meta]: {
+          ...state.detail[meta],
+          artist: {
+            ...detail.artist,
+            followed: payload
+          }
+        }
+      }
+    }
+  },
   'artists/detail/track/start' (state) {
     return {
       ...state,
@@ -88,6 +105,18 @@ export default handleActions({
     return {
       ...state,
       isLoadingTracks: false
+    }
+  },
+  'artists/detail/follow/start' (state) {
+    return {
+      ...state,
+      isSubscribing: true
+    }
+  },
+  'artists/detail/follow/end' (state) {
+    return {
+      ...state,
+      isSubscribing: false
     }
   },
   'artists/detail/description/save' (state, { payload, meta }: any) {

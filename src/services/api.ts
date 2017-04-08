@@ -542,14 +542,13 @@ export async function getComments(
   offset = '0',
   total = 'true'
 ) {
-  const csrf = getCsrfFromCookies()
-  return await (needLogin() || request
-    .post(`/weapi/v1/resource/comments/${commentId}/?csrf_token=${csrf}`, encryptedRequest({
+  return await request
+    .post(`/weapi/v1/resource/comments/${commentId}`, encryptedRequest({
       rid: commentId,
       offset,
       limit,
       total
-    })))
+    }))
 }
 
 // export async function updatePlaylist (

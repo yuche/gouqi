@@ -11,6 +11,7 @@ import {
 import ListItem from '../components/listitem'
 import Navbar from '../components/navbar'
 import { connect } from 'react-redux'
+import Router from '../routers'
 
 interface IProps extends IInfiList {
   artists: IArtist[]
@@ -31,6 +32,8 @@ class Artists extends React.Component<IProps, any> {
         picURI={artist.img1v1Url}
         roundPic
         key={artist.id}
+        // tslint:disable-next-line:jsx-no-lambda
+        onPress={() => Router.toArtistsDetail({ route: artist })}
       />
     )
   }

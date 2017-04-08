@@ -109,10 +109,36 @@ function* syncArtistDescription () {
   }
 }
 
+function* toggleSubscribeArtist ({ payload }) {
+  const id = payload.toString()
+  let { followed } = yield select((state: any) => state.artist.detail[payload].artist)
+  yield put({
+    type: 'artists/detail/follow/start'
+  })
+
+  const response = followed
+    ? yield call(api.unsubscribeArtist, id)
+    : yield call(api.subscribeArtist, id)
+  console.log(response)
+
+  if (response.code === 200) {
+    yield put({
+      type: 'artists/detail/follow/toggle',
+      payload: !followed,
+      meta: Number(id)
+    })
+  }
+
+  yield put({
+    type: 'artists/detail/follow/end'
+  })
+}
+
 export default function* watchArtists() {
   yield [
     takeLatest('artists/refresh', refreshArtists),
     takeLatest('artists/sync', syncMoreArtists),
+    takeLatest('artists/detail/follow', toggleSubscribeArtist),
     fork(syncArtistTracks),
     fork(syncArtistAlbums),
     fork(syncArtistDescription)
