@@ -9,9 +9,11 @@ import { connect, Dispatch } from 'react-redux'
 import { ISearchState, ILoadingProps } from '../../interfaces'
 import ListItem from '../../components/listitem'
 import * as actions from '../../actions'
+import TrackList from '../../components/TrackList'
 
 interface IProps extends ILoadingProps {
-  songs: any[]
+  songs: any[],
+  query: string
 }
 
 interface IState {
@@ -51,26 +53,25 @@ class Song extends React.Component<IProps, IState> {
       <View />
   }
 
-  onEndReached = () => {
+  sync = () => {
     if (!this.props.isLoading && this.props.songs.length > 0) {
       this.props.sync()
     }
   }
 
   render() {
+    const {
+      songs,
+      isLoading,
+      query = 'search'
+    } = this.props
     return (
-      <ListView
-        showsVerticalScrollIndicator
-        enableEmptySections
-        dataSource={this.state.ds}
-        initialListSize={15}
-        pagingEnabled={false}
-        removeClippedSubviews={true}
-        onEndReached={this.onEndReached}
-        onEndReachedThreshold={35}
-        scrollRenderAheadDistance={90}
-        renderRow={this.renderPlayList}
-        renderFooter={this.renderFooter}
+      <TrackList
+        tracks={songs}
+        isLoading={isLoading}
+        pid={query}
+        canRefresh={false}
+        sync={this.sync}
       />
     )
   }
@@ -81,10 +82,11 @@ export default connect(
     search: {
       song: {
         isLoading, songs
-      }
+      },
+      query
     }
   }: { search: ISearchState }) => ({
-    isLoading, songs
+      isLoading, songs, query
   }),
   (dispatch: Dispatch<Redux.Action>) => ({
     sync() {

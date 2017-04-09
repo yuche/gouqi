@@ -74,7 +74,7 @@ class Login extends React.Component<IProps, IUserInfo> {
         />
         <ScrollView
           style={{marginTop: 10}}
-          keyboardShouldPersistTaps={true}
+          keyboardShouldPersistTaps='always'
         >
           <Form
             icon='user'

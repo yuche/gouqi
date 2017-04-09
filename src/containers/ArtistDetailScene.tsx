@@ -180,35 +180,6 @@ class Artist extends React.Component<IProps, IState> {
     )
   }
 
-  renderAction = (followed: boolean, isSubscribing: boolean, scrollY: Animated.Value) => {
-    const transform = [
-      {
-        translateY: scrollY.interpolate({
-          inputRange: [0, HEADER_HEIGHT, HEADER_HEIGHT],
-          outputRange: [0, -HEADER_HEIGHT, -HEADER_HEIGHT]
-        })
-      }
-    ]
-    const opacity = {
-      opacity: scrollY.interpolate({
-        inputRange: [0, 100, HEADER_HEIGHT, HEADER_HEIGHT],
-        outputRange: [1, 1, 0, 0]
-      })
-    }
-    return (
-      <Animated.View style={[styles.action, { transform }, opacity]}>
-        <TouchableWithoutFeedback onPress={this.follow}>
-          <View style={styles.btn}>
-            {isSubscribing && <ActivityIndicator animating color='white' style={{ width: 15, height: 15}}/>}
-            {!isSubscribing && followed && <Icon name='check' size={16} color='#fff'/> }
-            {!isSubscribing && !followed && <Icon name='plus' size={16} color='#fff'/> }
-            <Text style={{ color: 'white', marginLeft: 2 }}>{followed ? '已收藏' : '收藏'}</Text>
-          </View>
-        </TouchableWithoutFeedback>
-      </Animated.View>
-    )
-  }
-
   follow = () => {
     this.props.follow()
   }
@@ -225,6 +196,41 @@ class Artist extends React.Component<IProps, IState> {
     }
   }
 
+  renderAction = (followed: boolean, isSubscribing: boolean, scrollY: Animated.Value) => {
+    const transform = [
+      {
+        translateY: scrollY.interpolate({
+          inputRange: [-HEADER_HEIGHT, 0, HEADER_HEIGHT, HEADER_HEIGHT],
+          outputRange: [HEADER_HEIGHT / 2, 0, -HEADER_HEIGHT, -HEADER_HEIGHT]
+        })
+      },
+      {
+        scale: scrollY.interpolate({
+          inputRange: [-HEADER_HEIGHT, 0, HEADER_HEIGHT],
+          outputRange: [1.75, 1, 1]
+        })
+      }
+    ]
+    const opacity = {
+      opacity: scrollY.interpolate({
+        inputRange: [0, 100, HEADER_HEIGHT, HEADER_HEIGHT],
+        outputRange: [1, 1, 0, 0]
+      })
+    }
+    return (
+      <Animated.View style={[styles.action, { transform }]}>
+        <TouchableWithoutFeedback onPress={this.follow}>
+          <Animated.View style={[styles.btn, opacity]}>
+            {isSubscribing && <ActivityIndicator animating color='white' style={{ width: 15, height: 15 }} />}
+            {!isSubscribing && followed && <Icon name='check' size={16} color='#fff' />}
+            {!isSubscribing && !followed && <Icon name='plus' size={16} color='#fff' />}
+            <Text style={{ color: 'white', marginLeft: 3 }}>{followed ? '已收藏' : '收藏'}</Text>
+          </Animated.View>
+        </TouchableWithoutFeedback>
+      </Animated.View>
+    )
+  }
+
   renderImage = (uri: string, scrollY: Animated.Value) => {
     const transform = [
       {
@@ -236,7 +242,7 @@ class Artist extends React.Component<IProps, IState> {
       {
         scale: scrollY.interpolate({
           inputRange: [-HEADER_HEIGHT, 0, HEADER_HEIGHT],
-          outputRange: [2, 1, 1]
+          outputRange: [1.75, 1, 1]
         })
       }
     ]
@@ -247,9 +253,10 @@ class Artist extends React.Component<IProps, IState> {
         <Image
           // tslint:disable-next-line:jsx-no-lambda
           ref={c => this.image = c}
-          source={{uri}}
+          source={{ uri }}
           style={styles.bg}
           blurRadius={0}
+          defaultSource={require('../../assets/imgs/artist.jpg')}
         />
       </Animated.View>
     )
@@ -292,7 +299,7 @@ const styles = {
     borderColor: 'white',
     borderWidth: 1,
     backgroundColor: 'transparent',
-    width: 80,
+    width: 85,
     height: 30,
     marginRight: 15,
     marginBottom: 15,
@@ -308,6 +315,7 @@ const styles = {
     bottom: 0,
     zIndex: 9,
     width,
+    backgroundColor: 'rgba(0 ,0 , 0, .3)',
     height: 180 + Navbar.HEIGHT,
     justifyContent: 'flex-end',
     alignItems: 'flex-end'
@@ -325,14 +333,10 @@ function mapStatetoProps (
 ) {
   const { route } = ownProps
   const artist = detail[route.id] && detail[route.id].artist
-  const picUrl = route.picUrl.slice(-3) === 'jpg'
-    ? route.picUrl
-    : route.picUrl.slice(0, route.picUrl.length - 14)
   return {
     artist: {
       ...route,
-      ...artist,
-      picUrl
+      ...artist
     },
     isSubscribing
   }

@@ -151,9 +151,9 @@ export function getUserId(): string | null {
 }
 
 function needLogin () {
-    return getUserId() ? null : {
-      error: new Error('未登录')
-    }
+  return getUserId() ? null : {
+    error: new Error('未登录')
+  }
 }
 
 interface ILoginBody {
@@ -210,12 +210,23 @@ export const enum SearchType {
 export async function search(
   s: string,
   type: SearchType | string,
-  limit = '20',
+  limit = '30',
   offset = '0',
   total = 'true'
 ) {
-  return await request.post('/api/search/get/web', {
+  return await request.post('/api/search/pc', {
     s, type, offset, limit, total
+  })
+}
+
+export async function newSearch (
+  s: string,
+  type: SearchType | string,
+  limit = '30',
+  offset = '0'
+) {
+  return await request.post('api', {
+
   })
 }
 

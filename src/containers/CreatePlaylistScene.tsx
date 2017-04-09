@@ -51,7 +51,7 @@ class CreatePlaylistScene extends React.Component<IProps, { value: string }> {
           hideBorder={false}
           rightConfig={rightConfig}
         />
-        <ScrollView style={{ marginTop: 10 }} keyboardShouldPersistTaps={true}>
+        <ScrollView style={{ marginTop: 10 }} keyboardShouldPersistTaps='always'>
           <Form
             placeholder='歌单名称'
             autoCapitalize='none'

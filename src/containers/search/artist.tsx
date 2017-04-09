@@ -9,6 +9,7 @@ import { connect, Dispatch } from 'react-redux'
 import { ISearchState, ILoadingProps } from '../../interfaces'
 import ListItem from '../../components/listitem'
 import * as actions from '../../actions'
+import Router from '../../routers'
 
 interface IProps extends ILoadingProps {
   artists: any[]
@@ -35,6 +36,10 @@ class Artist extends React.Component<IProps, IState> {
     }
   }
 
+  itemOnPress = (artist) => () => {
+    Router.toArtistsDetail({ route: artist })
+  }
+
   renderPlayList = (artist: any) => {
     return (
       <ListItem
@@ -42,6 +47,7 @@ class Artist extends React.Component<IProps, IState> {
         picURI={artist.img1v1Url}
         key={artist.id}
         roundPic
+        onPress={this.itemOnPress(artist)}
       />
     )
   }

@@ -36,10 +36,10 @@ export function* syncSearchResource (
       type: `search/${reducerType}/start`
     })
 
-    const offsetState = state.offset + 15
+    const offsetState = state.offset + 30
 
     const response = yield* ajaxCall(
-      api.search, query, type.toString(), '15',
+      api.search, query, type.toString(), '30',
       state.offset
     )
 

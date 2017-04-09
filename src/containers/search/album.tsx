@@ -9,6 +9,7 @@ import { connect, Dispatch } from 'react-redux'
 import { ISearchState, ILoadingProps } from '../../interfaces'
 import ListItem from '../../components/listitem'
 import * as actions from '../../actions'
+import Router from '../../routers'
 
 interface IProps extends ILoadingProps {
   albums: any[]
@@ -42,8 +43,13 @@ class Album extends React.Component<IProps, IState> {
         picURI={album.picUrl}
         subTitle={album.artist.name}
         key={album.id}
+        onPress={this.itemOnPress(album)}
       />
     )
+  }
+
+  itemOnPress = (album) => () => {
+    Router.toAlbumDetail({ route: album })
   }
 
   renderFooter = () => {

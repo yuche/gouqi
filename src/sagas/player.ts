@@ -6,7 +6,8 @@ import { takeLatest, takeEvery } from 'redux-saga'
 import {
   changeStatusAction,
   currentTimeAction,
-  addSecondsAction
+  addSecondsAction,
+  toastAction
 } from '../actions'
 import {
   AsyncStorage
@@ -114,11 +115,15 @@ function* playTrack ({ payload: { playing, prev } }) {
   if (playlist.length) {
     const track = playlist[playing.index]
     let uri = get(track, 'mp3Url', '')
-    if (uri.startsWith('http')) {
+    if (uri.startsWith('http') || !uri) {
       const response = yield* ajaxCall(api.batchSongDetailsNew, [track.id])
       if (response.code === 200) {
-        uri = response.data[0].url
+        uri = response.data[0].url || uri
       }
+    }
+    if (!uri) {
+      yield put(toastAction('error', '播放出现错误'))
+      return false
     }
     yield put({
       type: 'player/track/play',

@@ -26,7 +26,7 @@ interface IProps extends IPlaylistProps, IOwnProps {}
 
 interface IOwnProps {
   isLoading: boolean,
-  sync?: () => Redux.Action,
+  sync?: () => any,
   tracks: ITrack[]
   pid: any,
   canRefresh?: boolean,
@@ -149,6 +149,7 @@ class TrackList extends React.Component<IProps, any> {
         renderRow={this.renderTrack(playing, isPlaylist, showIndex)}
         showsVerticalScrollIndicator={true}
         renderFooter={this.renderFooter}
+        onEndReached={this.sync}
         refreshControl={
           canRefresh ? <RefreshControl refreshing={isLoading} onRefresh={sync}/> : undefined
         }

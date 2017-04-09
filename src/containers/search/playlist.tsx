@@ -10,6 +10,7 @@ import * as api from '../../services/api'
 import ListItem from '../../components/listitem'
 import { ISearchState, ILoadingProps } from '../../interfaces'
 import * as actions from '../../actions'
+import Router from '../../routers'
 
 interface IProps extends ILoadingProps {
   playlists: api.IPlaylist[]
@@ -43,6 +44,7 @@ class PlayList extends React.Component<
         picURI={playlist.coverImgUrl}
         subTitle={playlist.playCount + ' 次播放'}
         key={playlist.id}
+        onPress={Router.toPlayList({ route: playlist })}
       />
     )
   }
