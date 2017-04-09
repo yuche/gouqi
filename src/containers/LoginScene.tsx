@@ -2,7 +2,11 @@ import * as React from 'react'
 import {
   ScrollView,
   View,
-  TextInputStatic
+  ViewStyle,
+  TextInputStatic,
+  TouchableOpacity,
+  ActivityIndicator,
+  Text
 } from 'react-native'
 import { connect, Dispatch } from 'react-redux'
 import * as Actions from '../actions'
@@ -10,10 +14,10 @@ import {
   IUserInfo
 } from '../interfaces'
 import {
-  Form,
-  Button
+  Form
 } from '../components/base'
 import NavBar from '../components/navbar'
+import { Color } from '../styles'
 
 export interface IattemptLogin {
   (userInfo: IUserInfo): Redux.Action
@@ -65,6 +69,9 @@ class Login extends React.Component<IProps, IUserInfo> {
 
   render() {
     const { username, password } = this.state
+    const {
+      isLoading
+    } = this.props
     return (
       <View style={{flex: 1}}>
         <NavBar
@@ -99,16 +106,31 @@ class Login extends React.Component<IProps, IUserInfo> {
             onSubmitEditing={this.handleUserLogin}
           />
 
-          <Button
-            onPress={this.handleUserLogin}
-            disabled={!username || !password}
+          <TouchableOpacity
+            onPress={!isLoading ? this.handleUserLogin : undefined}
+            style={styles.btn}
           >
-            登录
-          </Button>
+            {isLoading && <ActivityIndicator animating color='white' style={{ width: 15, height: 15 }}/>}
+            <Text style={{ color: 'white' }}>
+              登录
+            </Text>
+          </TouchableOpacity>
         </ScrollView>
       </View>
     )
   }
+}
+
+const styles = {
+  btn: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 4,
+    height: 40,
+    backgroundColor: Color.main,
+    margin: 10
+  } as ViewStyle
 }
 
 export default connect(

@@ -9,7 +9,8 @@ import {
   Image,
   Text,
   TextStyle,
-  StyleSheet
+  StyleSheet,
+  TouchableWithoutFeedback
 } from 'react-native'
 import ListItem from '../components/listitem'
 import Icon from 'react-native-vector-icons/FontAwesome'
@@ -111,7 +112,9 @@ class UserPage extends React.Component<IProps, any> {
     return (
       <View style={{flex: 1}}>
         <View style={styles.header}>
-        <Image source={{uri}} style={styles.headImg}/>
+        <TouchableWithoutFeedback onPress={Router.toLogin()}>
+            <Image source={{ uri }} style={styles.headImg} />
+        </TouchableWithoutFeedback>
           { nickname && <Text>{nickname}</Text>}
           <Text>{seconds}</Text>
         </View>
