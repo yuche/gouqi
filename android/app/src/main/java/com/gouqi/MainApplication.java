@@ -3,6 +3,7 @@ package com.gouqi;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.wix.interactable.Interactable;
 import com.rnfs.RNFSPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
 import com.brentvatne.react.ReactVideoPackage;
@@ -29,6 +30,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new Interactable(),
             new RNFSPackage(),
             new VectorIconsPackage(),
             new ReactVideoPackage(),

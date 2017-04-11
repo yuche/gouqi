@@ -5288,6 +5288,10 @@ react-native-fs:
     base-64 "^0.1.0"
     utf8 "^2.1.1"
 
+react-native-interactable:
+  version "0.0.8"
+  resolved "https://registry.npmjs.org/react-native-interactable/-/react-native-interactable-0.0.8.tgz#f4a175daccded50aa7edc67fb65f64e325eec70c"
+
 react-native-menu@~0.20.1:
   version "0.20.2"
   resolved "https://registry.npmjs.org/react-native-menu/-/react-native-menu-0.20.2.tgz#a1bec7a3d1660246561298c851f98728bc4a1305"
