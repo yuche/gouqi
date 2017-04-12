@@ -219,17 +219,6 @@ export async function search(
   })
 }
 
-export async function newSearch (
-  s: string,
-  type: SearchType | string,
-  limit = '30',
-  offset = '0'
-) {
-  return await request.post('api', {
-
-  })
-}
-
 export async function dailyRecommend(
   limit = '30',
   offset = '0',
@@ -437,6 +426,8 @@ export async function opMuiscToPlaylist(
   pid: string,
   op: 'add' | 'del'
 ) {
+  // 甩锅甩锅甩锅请注意
+  // 写成也不怪我，是网易 API 接受的参数太奇葩了
   const trackIds = `[${(Array.isArray(tracks) ? tracks : [tracks.toString()]).toString()}]`
   return await (needLogin() || request
     .post(`/api/playlist/manipulate/tracks`, {

@@ -18,7 +18,7 @@ if (__DEV__) {
       // realtime: true,
       name: Platform.OS,
       hostname: 'localhost',
-      actionsBlacklist: ['player/currentTime', '🐸🐸🐸'],
+      actionsBlacklist: ['player/currentTime', '🐸🐸🐸', 'download/progress'],
       port: 5678
   }
 

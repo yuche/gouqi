@@ -87,12 +87,19 @@ export const changeSearchActiveTab: ISearchActiveTab = createAction('search/acti
   (activeTab: number) => activeTab
 )
 
+export const downloadProgress = createAction('download/progress', progress => progress, id => id)
+
+export const downloadFailed = createAction('download/failed/merge')
+
 export const syncAlbumDetail: ISyncDetail = createAction('albums/detail',
   (id: number) => id
 )
 
 export type ISyncDetail = (id: number) => Action<string>
 export const syncPlaylistDetail: ISyncDetail = createAction('details/playlist',
+  (id: number) => id
+)
+export const downloadSuccess: ISyncDetail = createAction('details/playlist',
   (id: number) => id
 )
 export const syncArtistTracks: ISyncDetail = createAction('artists/detail/track',
