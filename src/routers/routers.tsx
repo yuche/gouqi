@@ -21,6 +21,7 @@ import ArtistsScene from '../containers/ArtistsScene'
 import AlbumDetail from '../containers/AlbumDetailScene'
 import ArtistsDetail from '../containers/ArtistDetailScene'
 import FavoriteArtists from '../containers/FavoriteArtistScene'
+import Downloading from '../containers/DownloadingScene'
 
 const scenes = Actions.create(
   <Scene key='root'>
@@ -37,6 +38,7 @@ const scenes = Actions.create(
     <Scene key='ArtistsScene' component={ArtistsScene}/>
     <Scene key='AlbumDetail' component={AlbumDetail}/>
     <Scene key='ArtistsDetail' component={ArtistsDetail}/>
+    <Scene key='Downloading' component={Downloading}/>
     <Scene key='FavoriteArtists' component={FavoriteArtists}/>
     <Scene key='playlistDetail' component={DetailModal} direction='fade'/>
     <Scene key='createPlaylist' component={CreatePlaylist} direction='vertical'/>

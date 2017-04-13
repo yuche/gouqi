@@ -91,38 +91,42 @@ export const downloadProgress = createAction('download/progress', progress => pr
 
 export const downloadFailed = createAction('download/failed/merge')
 
+export const clearDownloading = createAction('download/downloading/clear')
+
+export const setDownloading = createAction('download/downloading/set')
+
 export const syncAlbumDetail: ISyncDetail = createAction('albums/detail',
   (id: number) => id
 )
 
 export type ISyncDetail = (id: number) => Action<string>
 export const syncPlaylistDetail: ISyncDetail = createAction('details/playlist',
-  (id: number) => id
+  id => id
 )
-export const downloadSuccess: ISyncDetail = createAction('details/playlist',
-  (id: number) => id
+export const removeDownloadingItem: ISyncDetail = createAction('download/downloading/remove',
+  id => id
 )
 export const syncArtistTracks: ISyncDetail = createAction('artists/detail/track',
-  (id: number) => id
+  id => id
 )
 export const syncArtistAlbums: ISyncDetail = createAction('artists/detail/album',
-  (id: number) => id
+  id => id
 )
 export const syncArtistDescription: ISyncDetail = createAction('artists/detail/description',
-  (id: number) => id
+  id => id
 )
 export const followArtist: ISyncDetail = createAction('artists/detail/follow',
-  (id: number) => id
+  id => id
 )
 
 export const subscribePlaylist: ISyncDetail = createAction('details/playlist/subscribe',
-  (id: number) => id
+  id => id
 )
 
 export const getComments: ISyncDetail = createAction('comments/sync',
-  (id: string) => id
+  id => id
 )
 
 export const getMoreComments: ISyncDetail = createAction('comments/more',
-  (id: string) => id
+  id => id
 )

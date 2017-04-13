@@ -10,7 +10,9 @@ import {
   hideTrackActionSheet,
   downloadProgress,
   downloadFailed,
-  downloadSuccess
+  removeDownloadingItem,
+  clearDownloading,
+  setDownloading
 } from '../actions'
 import { FILES_FOLDER, DOWNLOADED_TRACKS } from '../utils'
 import { takeEvery, takeLatest, eventChannel, END } from 'redux-saga'
@@ -28,7 +30,7 @@ function downloadTrackChannel(track: ITrack) {
         emit(downloadProgress(Math.floor(bytesWritten / contentLength * 100), track.id))
       }
     }).promise.then(res => {
-      emit(downloadSuccess(track.id))
+      emit(removeDownloadingItem(track.id))
       emit(END)
     }).catch(_ => {
       emit(downloadFailed(track))
@@ -40,14 +42,14 @@ function downloadTrackChannel(track: ITrack) {
 }
 
 function* downloadSingleTrack (track: ITrack) {
-  const deletedTracks = yield select((state: any) => state.download.deleted)
-  const isDeleted = deletedTracks.includes(track.id)
+  const downloading: ITrack[] = yield select((state: any) => state.download.downloading)
+  const isDeleted = downloading.some(t => t.id === track.id)
   if (isDeleted) {
     return false
   }
-  const chan = yield call(downloadTrackChannel, track.mp3Url, track.id)
+  const channel = yield call(downloadTrackChannel, track.mp3Url, track.id)
   while (true) {
-    const action = yield take(chan)
+    const action = yield take(channel)
     yield put(action)
   }
 }
@@ -72,18 +74,13 @@ function* downloadTracksSaga ({ payload }: ITracksPayload) {
       }
     }
 
-    yield put({
-      type: 'download/downloading/set',
-      payload: tasks
-    })
+    yield put(setDownloading(tasks))
 
     for (let task of tasks) {
       yield call(downloadSingleTrack, task)
     }
 
-    yield put({
-      type: 'download/deleted/clear'
-    })
+    yield put(clearDownloading())
 
   } else {
     yield put(toastAction('info', '已经下载过了'))

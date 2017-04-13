@@ -9,7 +9,6 @@ interface IDownloadState {
     [props: number]: number
   },
   failed: ITrack[],
-  deleted: number[],
   downloading: ITrack[]
 }
 
@@ -17,7 +16,6 @@ const initialState: IDownloadState = {
   tracks: [],
   progress: {},
   failed: [],
-  deleted: [],
   downloading: []
 }
 
@@ -46,16 +44,16 @@ export default handleActions({
       downloading: state.downloading.filter(t => t.id !== payload)
     }
   },
-  'download/deleted/merge' (state, { payload }: any) {
+  'download/downloading/merge' (state, { payload }: any) {
     return {
       ...state,
-      deleted: state.deleted.concat(payload)
+      downloading: state.downloading.concat(payload)
     }
   },
-  'download/deleted/clear' (state) {
+  'download/downloading/clear' (state) {
     return {
       ...state,
-      deleted: []
+      downloading: []
     }
   },
   'download/failed/remove' (state, { payload }: any) {

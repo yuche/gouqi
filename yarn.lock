@@ -5323,6 +5323,10 @@ react-native-navbar@^1.5.4:
   version "1.5.4"
   resolved "http://registry.npm.taobao.org/react-native-navbar/download/react-native-navbar-1.5.4.tgz#9e8b1cfb6a02eee89abdf631f7ac3af3174a61b1"
 
+react-native-progress:
+  version "3.2.0"
+  resolved "https://registry.npmjs.org/react-native-progress/-/react-native-progress-3.2.0.tgz#86d756be5537c09936ac3d3c4e23710da590743c"
+
 react-native-root-siblings:
   version "1.1.2"
   resolved "https://registry.npmjs.org/react-native-root-siblings/-/react-native-root-siblings-1.1.2.tgz#fc1e7310f4f9f8b080331ff5d173db840d6b9e1f"

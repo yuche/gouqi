@@ -152,6 +152,23 @@ class UserPage extends React.Component<IProps, any> {
           // tslint:disable-next-line:jsx-no-lambda
           onPress={() => Router.toFavoriteArtists()}
         />
+        <ListItem
+          title='正在下载'
+          titleStyle={styles.title}
+          containerStyle={styles.list}
+          renderLeft={
+            <View style={centering}>
+              <CustomIcon name='artist' size={20} color='#ccc'/>
+            </View>
+          }
+          renderRight={
+            <View style={centering}>
+              <Icon name='angle-right' size={20} color='#ccc'/>
+            </View>
+          }
+          // tslint:disable-next-line:jsx-no-lambda
+          onPress={() => Router.toDownloading()}
+        />
       </View>
     )
   }
