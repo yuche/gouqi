@@ -56,7 +56,9 @@ export default handleActions({
   'download/downloading/clear' (state) {
     return {
       ...state,
-      downloading: []
+      downloading: [],
+      failed: [],
+      progress: {}
     }
   },
   'download/failed/remove' (state, { payload }: any) {

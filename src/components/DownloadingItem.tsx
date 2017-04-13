@@ -17,7 +17,8 @@ interface IProps {
   track: ITrack,
   progress?: IProgress,
   failed: boolean,
-  remove: (id) => any
+  remove: (id) => any,
+  stop: () => any
 }
 
 interface IProgress {
@@ -55,7 +56,8 @@ export default class DownloadingItem extends React.Component<IProps, any> {
       track,
       progress,
       failed,
-      remove
+      remove,
+      stop
     } = this.props
     return (
       <ListItem
@@ -70,9 +72,9 @@ export default class DownloadingItem extends React.Component<IProps, any> {
           </View>
         }
         renderRight={
-          !progress ? <TouchableWithoutFeedback
+          <TouchableWithoutFeedback
             // tslint:disable-next-line:jsx-no-lambda
-            onPress={() => remove(track.id)}
+            onPress={() => !progress ? remove(track.id) : stop() }
           >
             <View style={{ flexDirection: 'row', paddingRight: 10 }}>
               <View style={{ justifyContent: 'center' }}>
@@ -80,7 +82,6 @@ export default class DownloadingItem extends React.Component<IProps, any> {
               </View>
             </View>
           </TouchableWithoutFeedback>
-          : undefined
         }
       />
     )

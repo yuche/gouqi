@@ -14,8 +14,7 @@ import {
   clearDownloading,
   setDownloading,
   downloadSuccess,
-  deleteDownloadTrack,
-  stopCurrentDownload
+  deleteDownloadTrack
 } from '../actions'
 import { FILES_FOLDER, DOWNLOADED_TRACKS } from '../utils'
 import { takeEvery, takeLatest, eventChannel, END } from 'redux-saga'
@@ -46,14 +45,16 @@ function downloadTrackChannel(track: ITrack) {
           id: track.id
         }))
       }
-    }).promise.then(res => {
+    }).promise.then(_ => {
       currentDownloadJob = Object.create(null)
       emit(removeDownloadingItem(track.id))
       emit(downloadSuccess(track))
       emit(END)
-    }).catch(_ => {
-      emit(downloadFailed(track))
-      emit(toastAction('error', `下载 ${track.name} 出现错误`))
+    }).catch((err: Error) => {
+      if (!err.message.includes('abort')) {
+        emit(downloadFailed(track))
+        emit(toastAction('error', `下载 ${track.name} 出现错误`))
+      }
       emit(END)
     })
     return () => ({})
@@ -114,15 +115,10 @@ function* mergeTracksSaga ({ payload }: ITracksPayload) {
 
 function* stopCurrentDownloadSaga () {
   if (currentDownloadJob) {
-    RNFS.stopDownload(currentDownloadJob)
+    RNFS.stopDownload(currentDownloadJob.jobId)
     yield put(removeDownloadingItem(currentDownloadJob.trackId))
     yield put(deleteDownloadTrack(currentDownloadJob.trackId))
   }
-}
-
-function* clearDownloadingSaga () {
-  yield put(stopCurrentDownload())
-  yield put(clearDownloading())
 }
 
 function* setTracksSaga ({ payload }: ITracksPayload) {
@@ -161,7 +157,6 @@ export default function* watchDownload () {
     takeEvery('download/tracks/set', setTracksSaga),
     takeLatest('download/stop', stopCurrentDownloadSaga),
     takeLatest('download/clear', clearAllDownload),
-    takeLatest('download/downloading/clear', clearDownloadingSaga),
     takeEvery('download/tracks/delete', deleteDownloadTrackSaga)
   ]
 }

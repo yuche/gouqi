@@ -5,9 +5,14 @@ import {
   ScrollView,
   View,
   InteractionManager,
-  ActivityIndicator
+  ActivityIndicator,
+  Alert
 } from 'react-native'
-import { removeDownloadingItem } from '../actions'
+import {
+  removeDownloadingItem,
+  stopCurrentDownload,
+  clearDownloading
+} from '../actions'
 import Items from '../components/DownloadingItem'
 import Navbar from '../components/navbar'
 
@@ -17,7 +22,9 @@ interface IProps {
   progress: {
     [props: number]: any
   },
-  remove: (id: number) => Redux.Action
+  remove: (id: number) => Redux.Action,
+  stop: () => Redux.Action,
+  clear: () => Redux.Action
 }
 
 class Downloading extends React.Component<IProps, { visable: boolean }> {
@@ -37,18 +44,41 @@ class Downloading extends React.Component<IProps, { visable: boolean }> {
     })
   }
 
+  clear = () => {
+    Alert.alert(
+      '',
+      '确定清空所有吗？',
+      [{
+        text: '取消'
+      }, {
+        text: '确定',
+        onPress: () => this.props.clear()
+      }]
+    )
+  }
+
   render() {
     const {
       tracks,
       progress,
-      remove
+      remove,
+      stop
     } = this.props
+
+    const rightConfig = {
+      text: '清空',
+      onPress: () => {
+        this.clear()
+      }
+    }
+
     return (
       <View style={{ flex: 1 }}>
         <Navbar
           title='正在下载'
           textColor='#333'
           hideBorder={false}
+          rightConfig={rightConfig}
         />
         <ScrollView>
           {this.state.visable ? tracks.map(track => <Items
@@ -57,6 +87,7 @@ class Downloading extends React.Component<IProps, { visable: boolean }> {
             progress={progress[track.id]}
             remove={remove}
             failed={false}
+            stop={stop}
           />) : <ActivityIndicator animating size='small' style={{ marginTop: 10 }} /> }
         </ScrollView>
       </View>
@@ -83,6 +114,12 @@ export default connect(
   (dispatch) => ({
     remove(id: number) {
       return dispatch(removeDownloadingItem(id))
+    },
+    clear() {
+      return dispatch(clearDownloading())
+    },
+    stop() {
+      return dispatch(stopCurrentDownload())
     }
   })
 )(Downloading)
