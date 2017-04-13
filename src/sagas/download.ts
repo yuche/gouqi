@@ -12,13 +12,22 @@ import {
   downloadFailed,
   removeDownloadingItem,
   clearDownloading,
-  setDownloading
+  setDownloading,
+  downloadSuccess,
+  deleteDownloadTrack,
+  stopCurrentDownload
 } from '../actions'
 import { FILES_FOLDER, DOWNLOADED_TRACKS } from '../utils'
 import { takeEvery, takeLatest, eventChannel, END } from 'redux-saga'
 const IS_LOGIN = !!getUserId()
 
+function streamLength (length: number) {
+  return (length / 10e5).toFixed(1)
+}
+
 type ITracksPayload = { payload: ITrack[] }
+
+let currentDownloadJob = Object.create(null)
 
 function downloadTrackChannel(track: ITrack) {
   return eventChannel(emit => {
@@ -26,11 +35,21 @@ function downloadTrackChannel(track: ITrack) {
       fromUrl: track.mp3Url,
       toFile: `${FILES_FOLDER}/${track.id}.mp3`,
       background: true,
+      begin({ jobId }) {
+        currentDownloadJob.jobId = jobId
+        currentDownloadJob.trackId = track.id
+      },
       progress({ contentLength, bytesWritten }) {
-        emit(downloadProgress(Math.floor(bytesWritten / contentLength * 100), track.id))
+        emit(downloadProgress({
+          total: streamLength(contentLength),
+          receive: streamLength(bytesWritten),
+          id: track.id
+        }))
       }
     }).promise.then(res => {
+      currentDownloadJob = Object.create(null)
       emit(removeDownloadingItem(track.id))
+      emit(downloadSuccess(track))
       emit(END)
     }).catch(_ => {
       emit(downloadFailed(track))
@@ -43,11 +62,11 @@ function downloadTrackChannel(track: ITrack) {
 
 function* downloadSingleTrack (track: ITrack) {
   const downloading: ITrack[] = yield select((state: any) => state.download.downloading)
-  const isDeleted = downloading.some(t => t.id === track.id)
-  if (isDeleted) {
+  const isExist = downloading.some(t => t.id === track.id)
+  if (!isExist) {
     return false
   }
-  const channel = yield call(downloadTrackChannel, track.mp3Url, track.id)
+  const channel = yield call(downloadTrackChannel, track)
   while (true) {
     const action = yield take(channel)
     yield put(action)
@@ -93,6 +112,19 @@ function* mergeTracksSaga ({ payload }: ITracksPayload) {
   yield call(MergeDownloadedTracks, downloadedTracks, payload)
 }
 
+function* stopCurrentDownloadSaga () {
+  if (currentDownloadJob) {
+    RNFS.stopDownload(currentDownloadJob)
+    yield put(removeDownloadingItem(currentDownloadJob.trackId))
+    yield put(deleteDownloadTrack(currentDownloadJob.trackId))
+  }
+}
+
+function* clearDownloadingSaga () {
+  yield put(stopCurrentDownload())
+  yield put(clearDownloading())
+}
+
 function* setTracksSaga ({ payload }: ITracksPayload) {
   yield call(AsyncStorage.setItem, DOWNLOADED_TRACKS, JSON.stringify(payload))
 }
@@ -109,7 +141,7 @@ function* clearAllDownload () {
   yield put(toastAction('success', '所有下载项目都清除成功'))
 }
 
-function* deleteDownloadTrack ({ payload }) {
+function* deleteDownloadTrackSaga ({ payload }) {
   const tracks: ITrack[] = yield select((state: any) => state.download.tracks.filter(t => t.id !== payload))
 
   yield put({
@@ -127,7 +159,9 @@ export default function* watchDownload () {
     takeEvery('download/tracks', downloadTracksSaga),
     takeEvery('download/tracks/merge', mergeTracksSaga),
     takeEvery('download/tracks/set', setTracksSaga),
+    takeLatest('download/stop', stopCurrentDownloadSaga),
     takeLatest('download/clear', clearAllDownload),
-    takeEvery('download/tracks/delete', deleteDownloadTrack)
+    takeLatest('download/downloading/clear', clearDownloadingSaga),
+    takeEvery('download/tracks/delete', deleteDownloadTrackSaga)
   ]
 }

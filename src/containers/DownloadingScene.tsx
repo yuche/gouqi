@@ -3,7 +3,9 @@ import { connect } from 'react-redux'
 import { ITrack } from '../services/api'
 import {
   ScrollView,
-  View
+  View,
+  InteractionManager,
+  ActivityIndicator
 } from 'react-native'
 import { removeDownloadingItem } from '../actions'
 import Items from '../components/DownloadingItem'
@@ -13,25 +15,33 @@ interface IProps {
   tracks: ITrack[],
   failed: ITrack[],
   progress: {
-    [props: number]: number
+    [props: number]: any
   },
   remove: (id: number) => Redux.Action
 }
 
-class Downloading extends React.Component<IProps, any> {
+class Downloading extends React.Component<IProps, { visable: boolean }> {
 
   constructor(props) {
     super(props)
+    this.state = {
+      visable: false
+    }
   }
 
-  remove = (id: number) => () => {
-    this.props.remove(id)
+  componentDidMount() {
+    InteractionManager.runAfterInteractions(() => {
+      this.setState({
+        visable: true
+      })
+    })
   }
 
   render() {
     const {
       tracks,
-      progress
+      progress,
+      remove
     } = this.props
     return (
       <View style={{ flex: 1 }}>
@@ -41,12 +51,13 @@ class Downloading extends React.Component<IProps, any> {
           hideBorder={false}
         />
         <ScrollView>
-          {tracks.map(track => <Items
+          {this.state.visable ? tracks.map(track => <Items
+            key={track.id}
             track={track}
             progress={progress[track.id]}
-            remove={this.remove(track.id)}
+            remove={remove}
             failed={false}
-          />)}
+          />) : <ActivityIndicator animating size='small' style={{ marginTop: 10 }} /> }
         </ScrollView>
       </View>
     )

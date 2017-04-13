@@ -6,7 +6,10 @@ import { isEmpty } from 'lodash'
 interface IDownloadState {
   tracks: ITrack[],
   progress: {
-    [props: number]: number
+    [props: number]: {
+      total: string,
+      receive: string
+    }
   },
   failed: ITrack[],
   downloading: ITrack[]
@@ -64,12 +67,15 @@ export default handleActions({
         : state.failed.filter(t => t.id !== payload)
     }
   },
-  'download/progress' (state, { payload, meta }: any) {
+  'download/progress'(state, { payload: { id, total, receive } }: any) {
     return {
       ...state,
       progress: {
         ...state.progress,
-        [meta]: payload
+        [id]: {
+          total,
+          receive
+        }
       }
     }
   },

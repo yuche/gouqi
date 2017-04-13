@@ -47,7 +47,6 @@
   },
   "devDependencies": {
     "@types/isomorphic-fetch": "0.0.31",
-    "@types/lodash": "^4.14.52",
     "@types/qs": "^6.2.30",
     "@types/react": "^0.14.37",
     "@types/react-native": "^0.42.14",
