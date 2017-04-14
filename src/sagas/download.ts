@@ -11,7 +11,6 @@ import {
   downloadProgress,
   downloadFailed,
   removeDownloadingItem,
-  clearDownloading,
   setDownloading,
   downloadSuccess,
   deleteDownloadTrack
@@ -99,8 +98,6 @@ function* downloadTracksSaga ({ payload }: ITracksPayload) {
     for (let task of tasks) {
       yield call(downloadSingleTrack, task)
     }
-
-    yield put(clearDownloading())
 
   } else {
     yield put(toastAction('info', '已经下载过了'))

@@ -22,6 +22,7 @@ import AlbumDetail from '../containers/AlbumDetailScene'
 import ArtistsDetail from '../containers/ArtistDetailScene'
 import FavoriteArtists from '../containers/FavoriteArtistScene'
 import Downloading from '../containers/DownloadingScene'
+import DownloadBall from '../components/DownloadBall'
 
 const scenes = Actions.create(
   <Scene key='root'>
@@ -38,7 +39,7 @@ const scenes = Actions.create(
     <Scene key='ArtistsScene' component={ArtistsScene}/>
     <Scene key='AlbumDetail' component={AlbumDetail}/>
     <Scene key='ArtistsDetail' component={ArtistsDetail}/>
-    <Scene key='Downloading' component={Downloading}/>
+    <Scene key='Downloading' component={Downloading} direction='fade'/>
     <Scene key='FavoriteArtists' component={FavoriteArtists}/>
     <Scene key='playlistDetail' component={DetailModal} direction='fade'/>
     <Scene key='createPlaylist' component={CreatePlaylist} direction='vertical'/>
@@ -47,8 +48,9 @@ const scenes = Actions.create(
 
 const Routers = () => (
   <View style={{flex: 1}}>
-      <Router scenes={scenes}/>
-      <UIContainer />
+    <DownloadBall />
+    <Router scenes={scenes}/>
+    <UIContainer />
   </View>
 )
 
