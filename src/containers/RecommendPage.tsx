@@ -193,7 +193,7 @@ function mapStateToProps ({
       ...p,
       meta: playCount(p.playCount)
     })),
-    tracks: daily,
+    tracks: daily.slice(0, 6),
     isPlaylist: playing.pid === 'daily',
     albums,
     artists,

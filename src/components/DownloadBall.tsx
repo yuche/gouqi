@@ -9,7 +9,8 @@ import {
   Dimensions
  } from 'react-native'
  import Router from '../routers'
- import { Color, centering } from '../styles'
+ import { centering } from '../styles'
+ import { isEmpty } from 'lodash'
 
  const { width, height } = Dimensions.get('window')
 
@@ -48,8 +49,8 @@ class DownloadBall extends React.Component<IProps, any> {
   componentWillReceiveProps ({ visable }) {
     if (visable !== this.props.visable) {
       visable
-        ? this.hide()
-        : this.show()
+        ? this.show()
+        : this.hide()
     }
   }
 
@@ -96,7 +97,7 @@ function mapStateToProps ({
   }
 }) {
   return {
-    visable: Array.isArray(downloading) && downloading.length > 0
+    visable: !isEmpty(downloading)
   }
 }
 
@@ -117,9 +118,7 @@ const styles = {
     width: 50,
     height: 50,
     borderRadius: 25,
-    borderWidth: 1,
-    backgroundColor: Color.main,
-    borderColor: '#dddddd',
+    backgroundColor: '#12B7F5',
     shadowColor: '#000000',
     shadowOffset: {
       width: 0,

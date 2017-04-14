@@ -39,7 +39,7 @@ const scenes = Actions.create(
     <Scene key='ArtistsScene' component={ArtistsScene}/>
     <Scene key='AlbumDetail' component={AlbumDetail}/>
     <Scene key='ArtistsDetail' component={ArtistsDetail}/>
-    <Scene key='Downloading' component={Downloading} direction='fade'/>
+    <Scene key='Downloading' component={Downloading}/>
     <Scene key='FavoriteArtists' component={FavoriteArtists}/>
     <Scene key='playlistDetail' component={DetailModal} direction='fade'/>
     <Scene key='createPlaylist' component={CreatePlaylist} direction='vertical'/>

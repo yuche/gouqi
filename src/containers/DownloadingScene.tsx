@@ -2,11 +2,10 @@ import * as React from 'react'
 import { connect } from 'react-redux'
 import { ITrack } from '../services/api'
 import {
-  ScrollView,
   View,
-  InteractionManager,
-  ActivityIndicator,
-  Alert
+  Alert,
+  ListView,
+  ListViewDataSource
 } from 'react-native'
 import {
   removeDownloadingItem,
@@ -19,9 +18,6 @@ import Navbar from '../components/navbar'
 interface IProps {
   tracks: ITrack[],
   failed: ITrack[],
-  progress: {
-    [props: number]: any
-  },
   remove: (id: number) => Redux.Action,
   stop: () => Redux.Action,
   clear: () => Redux.Action
@@ -29,18 +25,19 @@ interface IProps {
 
 class Downloading extends React.Component<IProps, { visable: boolean }> {
 
-  constructor(props) {
-    super(props)
-    this.state = {
-      visable: false
+  private rightConfig = {
+    text: '清空',
+    onPress: () => {
+      this.clear()
     }
   }
 
-  componentDidMount() {
-    InteractionManager.runAfterInteractions(() => {
-      this.setState({
-        visable: true
-      })
+  private ds: ListViewDataSource
+
+  constructor(props) {
+    super(props)
+    this.ds = new ListView.DataSource({
+      rowHasChanged: (r1, r2) => r1.id !== r2.id || r1.progress !== r2.progress
     })
   }
 
@@ -57,39 +54,43 @@ class Downloading extends React.Component<IProps, { visable: boolean }> {
     )
   }
 
+  renderTrack = (stop, remove ) => {
+    return (track) => (
+      <Items
+        key={track.id}
+        track={track}
+        progress={track.progress}
+        remove={remove}
+        failed={false}
+        stop={stop}
+      />
+    )
+  }
+
   render() {
     const {
       tracks,
-      progress,
       remove,
       stop
     } = this.props
-
-    const rightConfig = {
-      text: '清空',
-      onPress: () => {
-        this.clear()
-      }
-    }
-
+    this.ds = this.ds.cloneWithRows(tracks)
     return (
       <View style={{ flex: 1 }}>
         <Navbar
           title='正在下载'
           textColor='#333'
           hideBorder={false}
-          rightConfig={rightConfig}
+          rightConfig={this.rightConfig}
         />
-        <ScrollView>
-          {this.state.visable ? tracks.map(track => <Items
-            key={track.id}
-            track={track}
-            progress={progress[track.id]}
-            remove={remove}
-            failed={false}
-            stop={stop}
-          />) : <ActivityIndicator animating size='small' style={{ marginTop: 10 }} /> }
-        </ScrollView>
+        <ListView
+          enableEmptySections
+          removeClippedSubviews={true}
+          scrollRenderAheadDistance={90}
+          initialListSize={15}
+          dataSource={this.ds}
+          renderRow={this.renderTrack(stop, remove)}
+          showsVerticalScrollIndicator={true}
+        />
       </View>
     )
   }
@@ -103,8 +104,10 @@ function mapStateToProps ({
   }
 }) {
   return {
-    tracks: downloading,
-    progress,
+    tracks: downloading.map(track => ({
+      ...track,
+      progress: progress[track.id]
+    })),
     failed
   }
 }
