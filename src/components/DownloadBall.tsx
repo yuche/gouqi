@@ -7,17 +7,19 @@ import {
   Animated,
   TouchableWithoutFeedback,
   Dimensions
- } from 'react-native'
- import Router from '../routers'
- import { centering } from '../styles'
- import { isEmpty } from 'lodash'
+} from 'react-native'
+import Router from '../routers'
+import { centering } from '../styles'
+import Icon from 'react-native-vector-icons/FontAwesome'
+import { isEmpty } from 'lodash'
+// import * as Animatable from 'react-native-animatable'
 
- const { width, height } = Dimensions.get('window')
+const { width, height } = Dimensions.get('window')
 
- const WIDTH_FACTOR = width / 375
- const HEIGHT_FACTOR = (height - 75) / 667
+const WIDTH_FACTOR = width / 375
+const HEIGHT_FACTOR = (height - 75) / 667
 
- const snapPoints = [
+const snapPoints = [
   {x: -150 * WIDTH_FACTOR, y: 0},
   {x: -150 * WIDTH_FACTOR, y: -150 * HEIGHT_FACTOR},
   {x: -150 * WIDTH_FACTOR, y:  150 * HEIGHT_FACTOR},
@@ -35,11 +37,11 @@ interface IProps {
 }
 
 class DownloadBall extends React.Component<IProps, any> {
-  private scaleAnim: Animated.Value
+  private animation: Animated.Value
 
   constructor(props) {
     super(props)
-    this.scaleAnim = new Animated.Value(0)
+    this.animation = new Animated.Value(0)
   }
 
   onPress = () => {
@@ -48,22 +50,17 @@ class DownloadBall extends React.Component<IProps, any> {
 
   componentWillReceiveProps ({ visable }) {
     if (visable !== this.props.visable) {
-      visable
-        ? this.show()
-        : this.hide()
+      this.toggleVisable(visable)
     }
   }
 
-  show() {
-    const { timing, sequence } = Animated
-    sequence([
-      timing(this.scaleAnim, { toValue: 1.5, duration: 300 }),
-      timing(this.scaleAnim, { toValue: 1, duration: 300 })
-    ]).start()
-  }
-
-  hide() {
-    Animated.timing(this.scaleAnim, { toValue: 0, duration: 300 }).start()
+  toggleVisable(visable: boolean) {
+    Animated.timing(
+      this.animation, {
+        toValue: visable ? 1 : 0,
+        duration: 300
+      }
+    ).start()
   }
 
   render() {
@@ -75,13 +72,16 @@ class DownloadBall extends React.Component<IProps, any> {
         >
           <TouchableWithoutFeedback onPress={this.onPress}>
             <Animated.View
-              style={[styles.ball, {
+              style={[styles.ball,{
                 transform: [{
-                  scale: this.scaleAnim
+                  scale: this.animation.interpolate({
+                    inputRange: [0, .2, .4, .6, .8, 1],
+                    outputRange: [0, 1.3, .9, 1.03, 0.97, 1]
+                  })
                 }]
               }]}
             >
-              <View />
+              <Icon size={20} name='download' color='white' />
             </Animated.View>
           </TouchableWithoutFeedback>
         </Interactable.View>
@@ -125,6 +125,7 @@ const styles = {
       height: 0
     },
     shadowRadius: 3,
-    shadowOpacity: 0.8
+    shadowOpacity: 0.8,
+    ...centering
   } as ViewStyle
 }

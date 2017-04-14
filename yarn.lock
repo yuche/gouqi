@@ -5247,6 +5247,10 @@ react-mixin@^3.0.5:
     object-assign "^4.0.1"
     smart-mixin "^2.0.0"
 
+react-native-animatable:
+  version "1.1.1"
+  resolved "https://registry.npmjs.org/react-native-animatable/-/react-native-animatable-1.1.1.tgz#00ddc72985f62f62a11a505abb1a06e77a92cd8a"
+
 react-native-blur:
   version "2.0.0"
   resolved "https://registry.npmjs.org/react-native-blur/-/react-native-blur-2.0.0.tgz#284b3abfb42c2d90924aa15f494ccb88d6055342"
