@@ -29,7 +29,7 @@ const scenes = Actions.create(
     <Scene key='home' component={Home} hideNavBar initial/>
     <Scene key='login' component={Login} title='登录' direction='vertical'/>
     <Scene key='playlist' component={PlayList}/>
-    <Scene key='search' component={Search} direction='vertical' hideNavBar panHandlers={null}/>
+    <Scene key='search' component={Search} direction='vertical' hideNavBar panHandlers={undefined}/>
     <Scene key='comment' component={Comment} title='评论'/>
     <Scene key='DownloadPlaylistScene' component={DownloadPlaylistScene}/>
     <Scene key='PersonalPlaylistScene' component={PersonalPlaylistScene}/>

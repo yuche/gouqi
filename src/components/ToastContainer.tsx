@@ -1,7 +1,7 @@
 import Toast from './toast'
 import * as React from 'react'
 import { connect } from 'react-redux'
-import RootSiblings from 'react-native-root-siblings'
+import RootSiblings from 'react-native-root-siblings/lib/SiblingsManager'
 
 import {
   IToastPayload
