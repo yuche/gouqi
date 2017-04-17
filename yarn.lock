@@ -6,6 +6,10 @@
   version "0.0.31"
   resolved "https://registry.npmjs.org/@types/isomorphic-fetch/-/isomorphic-fetch-0.0.31.tgz#ec120166ce22f0b134e8770f40c97cd076068fae"
 
+"@types/lodash@^4.14.62":
+  version "4.14.62"
+  resolved "https://registry.npmjs.org/@types/lodash/-/lodash-4.14.62.tgz#8674f9861582148a60b7a89cb260f11378d11683"
+
 "@types/qs@^6.2.30":
   version "6.2.31"
   resolved "https://registry.npmjs.org/@types/qs/-/qs-6.2.31.tgz#7d929bd877f9cd3ece6415c602b7cf9b077133f1"

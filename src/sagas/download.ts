@@ -1,6 +1,5 @@
 import {
-    AsyncStorage,
-    InteractionManager
+  AsyncStorage
 } from 'react-native'
 import RNFS from 'react-native-fs'
 import { put, call, select, fork, take } from 'redux-saga/effects'
@@ -50,6 +49,7 @@ function downloadTrackChannel(track: ITrack) {
       emit(downloadSuccess(track))
       emit(END)
     }).catch((err: Error) => {
+      currentDownloadJob = Object.create(null)
       if (!err.message.includes('abort')) {
         emit(downloadFailed(track))
         emit(toastAction('error', `下载 ${track.name} 出现错误`))

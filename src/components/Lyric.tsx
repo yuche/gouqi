@@ -4,7 +4,10 @@ import {
   Text,
   ViewStyle,
   TextStyle,
-  ScrollView
+  ScrollView,
+  FlatList,
+  FlatListStatic,
+  TouchableWithoutFeedback
 } from 'react-native'
 import { isEmpty, findIndex } from 'lodash'
 interface ILyric {
@@ -28,6 +31,9 @@ function parseLrcText(str: string) {
   const text = str
     .replace(/\[(\d{2}):(\d{2})\.(\d{2,3})]/g, '')
     .replace(/^\s+|\s+$/g, '')
+  if (!text) {
+    return []
+  }
   return times ?
     parseMutipleTime(times).map(time => ({...time, text})) :
     []
@@ -49,15 +55,14 @@ function parseMutipleTime(times: string[]) {
 }
 
 interface IProps {
-  lyrics: ILyric[],
-  currentTime: number
+  lyrics: string,
+  currentTime: number,
+  lineHeight?: number
 }
 
 interface IState {
   currentIndex: number
 }
-
-const LYRICS = parseLrc('[00:00.00] 作曲 : 赵雷\n[00:01.00] 作词 : 赵雷\n[00:16.75]让我掉下眼泪的 不止昨夜的酒\n[00:25.91]让我依依不舍的 不止你的温柔\n[00:33.91]余路还要走多久 你攥着我的手\n[00:41.70]让我感到为难的 是挣扎的自由\n[00:52.10]分别总是在九月 回忆是思念的愁\n[00:59.63]深秋嫩绿的垂柳 亲吻着我额头\n[01:07.53]在那座阴雨的小城里 我从未忘记你\n[01:15.41]成都 带不走的 只有你\n[01:23.69]和我在成都的街头走一走\n[01:31.08]直到所有的灯都熄灭了也不停留\n[01:39.69]你会挽着我的衣袖 我会把手揣进裤兜\n[01:47.08]走到玉林路的尽头 坐在(走过)小酒馆的门口\n[02:30.37]分别总是在九月 回忆是思念的愁\n[02:38.10]深秋嫩绿的垂柳 亲吻着我额头\n[02:46.13]在那座阴雨的小城里 我从未忘记你\n[02:54.02]成都 带不走的 只有你\n[03:02.34]和我在成都的街头走一走\n[03:10.41]直到所有的灯都熄灭了也不停留\n[03:18.34]你会挽着我的衣袖 我会把手揣进裤兜\n[03:25.51]走到玉林路的尽头 坐在(走过)小酒馆的门口\n[04:35.96][03:35.40]和我在成都的街头走一走\n[04:42.76][03:45.39]直到所有的灯都熄灭了也不停留\n[03:53.62]和我在成都的街头走一走\n[04:01.35]直到所有的灯都熄灭了也不停留\n[04:08.95]你会挽着我的衣袖 我会把手揣进裤兜\n[04:17.27]走到玉林路的尽头 坐在(走过)小酒馆的门口\n')
 
 export default class Lyrics extends React.PureComponent<IProps, IState> {
 
@@ -65,25 +70,44 @@ export default class Lyrics extends React.PureComponent<IProps, IState> {
 
   private timer: number
 
-  constructor(props) {
+  private flatlist: any
+
+  private lyricList: ILyric[] = []
+
+  private LINE_HEIGHT: number
+
+  constructor(props: IProps) {
     super(props)
+    this.state = {
+      currentIndex: 0
+    }
+    this.lyricList = parseLrc(props.lyrics)
+    this.LINE_HEIGHT = props.lineHeight || Number(styles.lrc.height)
   }
 
-  componentWillReceiveProps ({ currentTime }: IProps) {
+  componentWillReceiveProps ({ currentTime, lyrics }: IProps) {
     const {
-      lyrics
-    } = this.props
+      currentIndex
+    } = this.state
     if (
       currentTime !== this.props.currentTime
-      && !isEmpty(lyrics)
+      && !isEmpty(this.lyricList)
     ) {
-      const index = findIndex(lyrics, lrc => lrc.time >= currentTime)
-      if (this.state.currentIndex !== index) {
+      const index = findIndex(this.lyricList, lrc => lrc.time >= currentTime) - 1
+      if (currentIndex !== index && index >= 0  && index <= this.lyricList.length) {
+        this.lyricList = this.lyricList.slice()
         this.setState({
           currentIndex: index
         })
         if (!this.isScrolling) {
           // scroll to
+          this.flatlist.scrollToIndex({
+            animated: true,
+            index,
+            viewPosition: .5,
+            viewOffset: 20
+          })
+          console.log('is trigger')
         }
       }
     }
@@ -99,28 +123,45 @@ export default class Lyrics extends React.PureComponent<IProps, IState> {
     }
   }
 
-  onScroll = () => {
+  onTouch = () => {
     this.clearTimer()
     this.isScrolling = true
     this.timer = setTimeout(() => {
       this.isScrolling = false
-    }, 2000)
+    }, 3000)
   }
 
-  renderLrc ({ time, text }: ILyric, index: number) {
+  renderItem = ({item , index}) => {
     return (
-      <View style={styles.lrc}>
-        <Text>
-          {text}
+      <View style={styles.lrc} key={index}>
+        <Text style={[ index === this.state.currentIndex && styles.active ]}>
+          {item.text}
         </Text>
       </View>
     )
   }
 
+  getItemLayout = (data, index) => {
+    return {
+      length: this.LINE_HEIGHT,
+      offset: this.LINE_HEIGHT * index,
+      index
+    }
+  }
+
+  keyExtractor = (data, index) => index
+
   render() {
     return (
-      <View style={{ flex: 1 }}>
-
+      <View style={{ flex: 1 }} onTouchStart={this.onTouch}>
+        <FlatList
+          // tslint:disable-next-line:jsx-no-lambda
+          ref={component => (this.flatlist = component)}
+          data={this.lyricList}
+          renderItem={this.renderItem}
+          getItemLayout={this.getItemLayout}
+          keyExtractor={this.keyExtractor}
+        />
       </View>
     )
   }
@@ -131,5 +172,8 @@ const styles = {
     height: 40,
     justifyContent: 'center',
     alignItems: 'center'
-  } as ViewStyle
+  } as ViewStyle,
+  active: {
+    color: 'red'
+  } as TextStyle
 }
