@@ -80,8 +80,6 @@ export async function MergeDownloadedTracks (original, tracks) {
 
 function* downloadTracksSaga ({ payload }: ITracksPayload) {
   yield put(hideTrackActionSheet())
-  yield call(InteractionManager.runAfterInteractions)
-  yield put(toastAction('success', '已开始下载'))
   const downloadedTracks: number[] = yield select((state: any) => state.download.tracks.map(t => t.id))
   let tasks = payload.filter(t => downloadedTracks.indexOf(t.id) === -1)
 

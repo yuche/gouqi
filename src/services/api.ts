@@ -1,6 +1,9 @@
 // most of api from @darknessomi/musicbox
 // https://github.com/darknessomi/musicbox/blob/master/NEMbox/api.py
-
+/**
+ * TODO:
+ * 修改 API params 为 Object
+ */
 import {
   encryptedMD5,
   encryptedRequest
