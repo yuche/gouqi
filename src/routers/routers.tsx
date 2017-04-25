@@ -1,7 +1,10 @@
 import * as React from 'react'
 import {
-  View
+  View,
+  Dimensions
 } from 'react-native'
+
+const { height } = Dimensions.get('window')
 
 import {Scene, Router, Actions} from 'react-native-router-flux'
 import Home from '../containers/HomeScene'
@@ -23,10 +26,11 @@ import ArtistsDetail from '../containers/ArtistDetailScene'
 import FavoriteArtists from '../containers/FavoriteArtistScene'
 import Downloading from '../containers/DownloadingScene'
 import DownloadBall from '../components/DownloadBall'
+import Player from '../containers/PlayerContainer'
 
 const scenes = Actions.create(
-  <Scene key='root'>
-    <Scene key='home' component={Home} hideNavBar initial/>
+  <Scene key='root' sceneStyle={{ height }}>
+    <Scene key='home' component={Home} hideNavBar initial sceneStyle={{ minHeight: height, flex: 1}}/>
     <Scene key='login' component={Login} title='登录' direction='vertical'/>
     <Scene key='playlist' component={PlayList}/>
     <Scene key='search' component={Search} direction='vertical' hideNavBar panHandlers={undefined}/>
@@ -51,6 +55,7 @@ const Routers = () => (
     <DownloadBall />
     <Router scenes={scenes}/>
     <UIContainer />
+    <Player />
   </View>
 )
 

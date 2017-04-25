@@ -9,7 +9,12 @@ const glyphMap = {
   more: '\ue607',
   info: '\ue626',
   'star-o': '\ue64d',
-  download: '\ue820'
+  download: '\ue820',
+  seque: '\ue604',
+  'seque1': '\ue60c',
+  random: '\ue62a',
+  ci: '\ue63f',
+  'ci-circle': '\ue601'
 }
 
 export default createIconSet(glyphMap, 'iconfont')

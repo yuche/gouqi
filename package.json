@@ -13,7 +13,7 @@
     "coverage": "nyc ava --verbose && nyc report --reporter=html",
     "coverage:check": "open coverage/index.html",
     "remotedev": "remotedev-debugger --hostname localhost --port 5678 --injectserver",
-    "postinstall": "npm run link"
+    "postinstall": "npm run link && npm run quickbuild"
   },
   "dependencies": {
     "antd-mobile": "^1.0.0",
@@ -37,6 +37,7 @@
     "react-native-root-siblings": "^1.1.2",
     "react-native-router-flux": "^3.38.0",
     "react-native-scrollable-tab-view": "^0.6.0",
+    "react-native-slider": "github:brunolemos/react-native-slider#fix/react-16",
     "react-native-vector-icons": "^4.0.0",
     "react-native-video": "^1.0.0",
     "react-redux": "^4.4.5",

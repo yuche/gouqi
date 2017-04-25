@@ -78,7 +78,11 @@ class DownloadBall extends React.Component<IProps, any> {
                     inputRange: [0, .2, .4, .6, .8, 1],
                     outputRange: [0, 1.3, .9, 1.03, 0.97, 1]
                   })
-                }]
+                }],
+                height: this.animation.interpolate({
+                  inputRange: [0, .01, 50],
+                  outputRange: [0, 50, 50]
+                })
               }]}
             >
               <Icon size={20} name='download' color='white' />

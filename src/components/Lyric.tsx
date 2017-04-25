@@ -4,18 +4,17 @@ import {
   Text,
   ViewStyle,
   TextStyle,
-  ScrollView,
   FlatList,
-  FlatListStatic,
-  TouchableWithoutFeedback
+  ActivityIndicator
 } from 'react-native'
 import { isEmpty, findIndex } from 'lodash'
 interface ILyric {
   time: number,
-  text: string
+  text: string,
+  translation?: string
 }
 
-function parseLrc(lyrics: string) {
+function parseLyrics(lyrics: string) {
   return lyrics
     .split('\n')
     .reduce((arr: ILyric[], str: string) => {
@@ -24,6 +23,20 @@ function parseLrc(lyrics: string) {
     .sort((a, b) => {
       return a.time - b.time
     })
+}
+
+function parselrcWithTranslation(s1: string, s2: string) {
+  const original = parseLyrics(s1)
+  const translations = parseLyrics(s2)
+  return original.map(({ time, text }) => {
+    const lrc = translations.find(t => t.time === time)
+    const translation = lrc ? lrc.text : ''
+    return {
+      time,
+      text,
+      translation
+    }
+  })
 }
 
 function parseLrcText(str: string) {
@@ -55,9 +68,13 @@ function parseMutipleTime(times: string[]) {
 }
 
 interface IProps {
-  lyrics: string,
+  lyrics: {
+    original: string,
+    translations?: string
+  },
   currentTime: number,
-  lineHeight?: number
+  refreshing: boolean,
+  lineHeight?: number,
 }
 
 interface IState {
@@ -65,49 +82,61 @@ interface IState {
 }
 
 export default class Lyrics extends React.PureComponent<IProps, IState> {
+  public static defaultProps: Partial<IProps> = {
+    lineHeight: 40,
+    refreshing: true
+  }
 
   private isScrolling: boolean = false
 
   private timer: number
 
-  private flatlist: any
+  private Flatlist: any
 
   private lyricList: ILyric[] = []
-
-  private LINE_HEIGHT: number
 
   constructor(props: IProps) {
     super(props)
     this.state = {
       currentIndex: 0
     }
-    this.lyricList = parseLrc(props.lyrics)
-    this.LINE_HEIGHT = props.lineHeight || Number(styles.lrc.height)
+    const { lyrics: {
+      translations,
+      original
+    } } = props
+    this.lyricList = translations ?
+      parselrcWithTranslation(original, translations) :
+      parseLyrics(original)
   }
 
-  componentWillReceiveProps ({ currentTime, lyrics }: IProps) {
+  componentWillReceiveProps ({ currentTime, lyrics, lineHeight, refreshing }: IProps) {
     const {
       currentIndex
     } = this.state
     if (
       currentTime !== this.props.currentTime
       && !isEmpty(this.lyricList)
+      && !refreshing
     ) {
-      const index = findIndex(this.lyricList, lrc => lrc.time >= currentTime) - 1
-      if (currentIndex !== index && index >= 0  && index <= this.lyricList.length) {
-        this.lyricList = this.lyricList.slice()
+      const index = findIndex(this.lyricList, (lrc, index) => {
+        const next = this.lyricList[index + 1]
+        return lrc.time >= currentTime &&
+          (!next || currentTime < next.time)
+      }) - 1
+      if ( currentIndex !== index) {
+        const isIndexValid = index >= 0
+        // this.lyricList = this.lyricList.slice()
         this.setState({
-          currentIndex: index
+          currentIndex: isIndexValid ? index : this.lyricList.length - 1
         })
-        if (!this.isScrolling) {
+        if (!this.isScrolling && isIndexValid && this.Flatlist) {
           // scroll to
-          this.flatlist.scrollToIndex({
+          this.Flatlist.scrollToIndex({
             animated: true,
-            index,
+            index: index + 1,
             viewPosition: .5,
-            viewOffset: 20
+            ViewOffset: Number(lineHeight) / 2
           })
-          console.log('is trigger')
         }
       }
     }
@@ -132,36 +161,55 @@ export default class Lyrics extends React.PureComponent<IProps, IState> {
   }
 
   renderItem = ({item , index}) => {
+    const isActive = index === this.state.currentIndex
     return (
-      <View style={styles.lrc} key={index}>
-        <Text style={[ index === this.state.currentIndex && styles.active ]}>
-          {item.text}
-        </Text>
+      <View style={[styles.lrc, this.props.lineHeight && { height: this.props.lineHeight }]} key={index}>
+        {this.renderText(item.text, isActive)}
+        {this.renderText(item.translation, isActive)}
       </View>
     )
   }
 
+  renderText = (text: string, isActive: boolean) => {
+    return text ?
+      <Text
+        style={[styles.text, isActive && styles.active]}
+      >
+        {text}
+      </Text> :
+      null
+  }
+
   getItemLayout = (data, index) => {
+    const LINE_HEIGHT = Number(this.props.lineHeight)
     return {
-      length: this.LINE_HEIGHT,
-      offset: this.LINE_HEIGHT * index,
+      length: LINE_HEIGHT,
+      offset: LINE_HEIGHT * index,
       index
     }
   }
 
   keyExtractor = (data, index) => index
 
+  mapFlatlist = (component) => ( this.Flatlist = component )
+
   render() {
     return (
-      <View style={{ flex: 1 }} onTouchStart={this.onTouch}>
-        <FlatList
-          // tslint:disable-next-line:jsx-no-lambda
-          ref={component => (this.flatlist = component)}
-          data={this.lyricList}
-          renderItem={this.renderItem}
-          getItemLayout={this.getItemLayout}
-          keyExtractor={this.keyExtractor}
-        />
+      <View style={styles.container} onTouchStart={this.onTouch}>
+        {
+          this.props.refreshing ?
+            <ActivityIndicator animating size='large'/> :
+            <FlatList
+              // tslint:disable-next-line:jsx-no-lambda
+              ref={this.mapFlatlist}
+              data={this.lyricList}
+              renderItem={this.renderItem}
+              getItemLayout={this.getItemLayout}
+              keyExtractor={this.keyExtractor}
+              extraData={this.state.currentIndex}
+              refreshing={this.props.refreshing}
+            />
+        }
       </View>
     )
   }
@@ -175,5 +223,15 @@ const styles = {
   } as ViewStyle,
   active: {
     color: 'red'
-  } as TextStyle
+  } as TextStyle,
+  text: {
+    textAlign: 'center',
+    lineHeight: 17
+  } as TextStyle,
+  container: {
+    flex: 1,
+    marginHorizontal: 20,
+    justifyContent: 'center',
+    alignItems: 'center'
+  } as ViewStyle
 }
