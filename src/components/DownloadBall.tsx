@@ -12,7 +12,6 @@ import Router from '../routers'
 import { centering } from '../styles'
 import Icon from 'react-native-vector-icons/FontAwesome'
 import { isEmpty } from 'lodash'
-// import * as Animatable from 'react-native-animatable'
 
 const { width, height } = Dimensions.get('window')
 
