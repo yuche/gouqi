@@ -6,7 +6,8 @@ import {
   Animated,
   Dimensions,
   Text,
-  Platform
+  Platform,
+  TouchableWithoutFeedback
 } from 'react-native'
 import { centering } from '../styles'
 import Icon from 'react-native-vector-icons/FontAwesome'
@@ -90,6 +91,14 @@ class Toast extends React.Component<IProps, IState> {
     this.state.slideAnim.setValue(-NAVBAR_HEIGHT)
   }
 
+  onPress = () => {
+    this.animation(-NAVBAR_HEIGHT).start(() => {
+      this.setState({
+        visable: false
+      } as IState)
+    })
+  }
+
   render () {
     const visible = this.state.visable
     const transform = {transform: [{translateY: this.state.slideAnim}]}
@@ -98,19 +107,21 @@ class Toast extends React.Component<IProps, IState> {
       <View
         style={styles.container}
       >
-        <Animated.View
-          style={[typeStyleFilter(this.props.kind), styles.wrapper, transform]}
-        >
-          <View style={{ height: 12 }} />
-          <View style={{ flexDirection: 'row', flex: 1}}>
-            <View style={[centering, { width: 30 }]}>
-              <Icon size={18} color={'white'} name={this.iconNameFilter()}/>
+        <TouchableWithoutFeedback onPress={this.onPress}>
+          <Animated.View
+            style={[typeStyleFilter(this.props.kind), styles.wrapper, transform]}
+          >
+            <View style={{ height: 12 }} />
+            <View style={{ flexDirection: 'row', flex: 1 }}>
+              <View style={[centering, { width: 30 }]}>
+                <Icon size={18} color={'white'} name={this.iconNameFilter()} />
+              </View>
+              <View style={[centering, { flex: 1, position: 'relative', right: 15 }]}>
+                <Text style={[{ color: 'white' }]}>{this.props.text}</Text>
+              </View>
             </View>
-            <View style={[centering, { flex: 1, position: 'relative', right: 15}]}>
-              <Text style={[{ color: 'white' }]}>{this.props.text}</Text>
-            </View>
-          </View>
-        </Animated.View>
+          </Animated.View>
+        </TouchableWithoutFeedback>
       </View> :
       null
   }

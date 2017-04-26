@@ -408,6 +408,11 @@ export async function batchSongDetails(songIds: string[]) {
     .get(`/api/song/detail?ids=[${songIds.join()}]`)
 }
 
+export async function getLyric(songId: string) {
+  return await request
+    .get(`/api/song/lyric?os=osx&id=${songId}&lv=-1&kv=-1&tv=-1`)
+}
+
 export async function batchSongDetailsNew(
   songIds: string[],
   bitrate = '320000'

@@ -200,7 +200,6 @@ export default class Lyrics extends React.PureComponent<IProps, IState> {
           this.props.refreshing ?
             <ActivityIndicator animating size='large'/> :
             <FlatList
-              // tslint:disable-next-line:jsx-no-lambda
               ref={this.mapFlatlist}
               data={this.lyricList}
               renderItem={this.renderItem}

@@ -10,7 +10,11 @@ export interface IPlayerState {
   uri: string,
   currentTime: number,
   duration: number,
-  seconds: number
+  seconds: number,
+  loadingLyric: boolean,
+  lyrics: {
+    [props: number]: any
+  }
 }
 
 export interface IPlaying {
@@ -43,7 +47,9 @@ const initialState: IPlayerState = {
   uri: '',
   currentTime: 0,
   duration: 0,
-  seconds: 0
+  seconds: 0,
+  loadingLyric: false,
+  lyrics: {}
 }
 
 export default handleActions({
@@ -62,6 +68,27 @@ export default handleActions({
         ...state.playing,
         ...playing
       }
+    }
+  },
+  'player/lyric/save' (state, { payload }: any) {
+    return {
+      ...state,
+      lyrics: {
+        ...state.lyrics,
+        ...payload
+      }
+    }
+  },
+  'player/lyric/end'(state) {
+    return {
+      ...state,
+      loadingLyric: false
+    }
+  },
+  'player/lyric/start'(state) {
+    return {
+      ...state,
+      loadingLyric: true
     }
   },
   'player/playlist/merge' (state, { payload }: any) {

@@ -134,3 +134,5 @@ export const getMoreComments: ISyncDetail = createAction('comments/more',
 )
 
 export const stopCurrentDownload = createAction('download/stop')
+
+export const setModeAction = createAction('player/mode')

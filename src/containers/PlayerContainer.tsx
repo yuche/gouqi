@@ -8,7 +8,11 @@ import {
   nextTrackAction,
   prevTrackAction,
   currentTimeAction,
-  durationAction
+  durationAction,
+  downloadTracksAction,
+  popupTrackActionSheet,
+  setModeAction,
+  toastAction
 } from '../actions'
 import {
   View,
@@ -33,6 +37,16 @@ const { width, height } = Dimensions.get('window')
 
 const VIEW_POSITION_Y = height - Navbar.HEIGHT - Navbar.HEIGHT
 
+function padding(num: number) {
+  return num < 10 ? '0' + num : num
+}
+
+function formatTime(time: number) {
+  const min = Math.floor(time / 60)
+  const sec = time % 60
+  return `${padding(min)}:${padding(sec)}`
+}
+
 class PlayerContainer extends React.Component<IProps, any> {
 
   private deltaY: Animated.Value
@@ -40,6 +54,8 @@ class PlayerContainer extends React.Component<IProps, any> {
   private imageAnimation: any
 
   private Interactable: any
+
+  private bodyAnimation: any
 
   constructor(props: IProps) {
     super(props)
@@ -66,6 +82,14 @@ class PlayerContainer extends React.Component<IProps, any> {
           outputRange: [90, 0, 0]
         })
       }]
+    }
+    this.bodyAnimation = {
+      opacity: this.deltaY.interpolate({
+        inputRange: [-VIEW_POSITION_Y, -VIEW_POSITION_Y + 100, 0],
+        outputRange: [1, 0.25, 0],
+        extrapolateLeft: 'clamp',
+        extrapolateRight: 'clamp'
+      })
     }
   }
 
@@ -105,12 +129,12 @@ class PlayerContainer extends React.Component<IProps, any> {
                 {this.renderTabbarBtns(status)}
               </View>
             </TouchableWithoutFeedback>
-            <View style={styles.body}>
+            <Animated.View style={[styles.body, this.bodyAnimation]}>
               {this.renderBodyText(trackName, artistName)}
               {this.renderTrackActions()}
               {this.renderSlider(duration, currentTime)}
               {this.renderPlayerActions(status, mode)}
-            </View>
+            </Animated.View>
           </View>
         </Interactable.View>
       </View>
@@ -151,13 +175,13 @@ class PlayerContainer extends React.Component<IProps, any> {
       <View style={[{ height: 120, flexDirection: 'row' ,...centering }]}>
         {this.renderMode(mode)}
         <View style={styles.playActions}>
-          <Icon name='skip-previous' size={50} color='#ccc' />
+          <Icon name='skip-previous' size={50} color='#ccc' onPress={this.prevTrack}/>
           {status === 'PLAYING'
-            ? <Icon name='pause-circle-outline' size={50} color='#ccc' />
-            : <Icon name='play-circle-outline' size={50} color='#ccc' />}
+            ? <Icon name='pause-circle-outline' size={50} color='#ccc' onPress={this.togglePlayPause}/>
+            : <Icon name='play-circle-outline' size={50} color='#ccc' onPress={this.togglePlayPause}/>}
           <Icon name='skip-next' size={50} color='#ccc' />
         </View>
-        <FaIcon size={20} style={styles.trackAction} name='list-ul' color='#ccc' />
+        <FaIcon size={20} style={styles.trackAction} name='list-ul' color='#ccc' onPress={this.nextTrack}/>
       </View>
     )
   }
@@ -165,12 +189,15 @@ class PlayerContainer extends React.Component<IProps, any> {
   renderMode = (mode) => {
     return (
       mode === 'SEQUE'
-        ? <CustomIcon size={22} style={styles.trackAction} name='seque' color='#ccc' />
+        ? <CustomIcon size={22} style={styles.trackAction} name='seque' color='#ccc' onPress={this.setMode('RANDOM')}/>
         : mode === 'RANDOM'
-          ? <CustomIcon size={22} style={styles.trackAction} name='random' color='#ccc' />
-          : <CustomIcon size={22} style={styles.trackAction} name='seque1' color='#ccc' />
+          // tslint:disable-next-line:max-line-length
+          ? <CustomIcon size={22} style={styles.trackAction} name='random' color='#ccc' onPress={this.setMode('REPEAT')}/>
+          : <CustomIcon size={22} style={styles.trackAction} name='seque1' color='#ccc' onPress={this.setMode('SEQUE')} />
     )
   }
+
+  setMode = (mode) => () => this.props.setMode(mode)
 
   renderTrackActions = () => {
     return (
@@ -362,7 +389,7 @@ function mapStateToProps (
 
 export default connect(
   mapStateToProps,
-  (dispatch) => ({
+  (dispatch, ownProps: IProps) => ({
     prev() {
       return dispatch(prevTrackAction())
     },
@@ -377,6 +404,24 @@ export default connect(
     },
     setDuration(duration) {
       return dispatch(durationAction(duration))
+    },
+    popup() {
+      return dispatch(popupTrackActionSheet(ownProps.track))
+    },
+    setMode(mode) {
+      let modeStr
+      if (mode === 'SEQUE') {
+        modeStr = '顺序播放'
+      } else if (mode === 'RANDOM') {
+        modeStr = '随机播放'
+      } else {
+        modeStr = '单曲循环'
+      }
+      dispatch(toastAction('info', `开始${modeStr}`))
+      return dispatch(setModeAction(mode))
+    },
+    download() {
+      return dispatch(downloadTracksAction([ownProps.track]))
     }
   })
 )(PlayerContainer)

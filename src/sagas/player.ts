@@ -86,6 +86,23 @@ function* prevTrack () {
   }
 }
 
+function* getLyrcis({ payload }) {
+  const lyrics = yield select((state: any) => state.player.lyrics)
+  if (!lyrics[payload]) {
+    yield put({ type: 'player/lyric/start' })
+    const response = yield* ajaxCall(api.getLyric, payload)
+    if (response.code === 200) {
+      yield put({
+        type: 'player/lyric/save',
+        payload: {
+          [payload]: response.lyrics
+        }
+      })
+    }
+    yield put({ type: 'player/lyric/end' })
+  }
+}
+
 function* playPersonalFM() {
   yield put(playTrackAction({
     playing: {
@@ -112,6 +129,12 @@ function* playPersonalFM() {
 function* playTrack ({ payload: { playing, prev } }) {
   const playerState: IPlayerState = yield select((state: any) => state.player)
   const { playlist } = playerState
+  if (playerState.lyricsVisable && playlist[playing.index] && playlist[playing.index].id) {
+    yield put({
+      type: 'player/lyric',
+      payload: playlist[playing.index].id
+    })
+  }
   if (playlist.length) {
     const track = playlist[playing.index]
     let uri = get(track, 'mp3Url', '')
@@ -185,6 +208,7 @@ export default function* watchPlayer () {
     takeLatest('player/history/merge', setHisotrySaga),
     takeLatest('player/history/save', setHisotrySaga),
     takeLatest('player/history/delete', delelteHistory),
-    takeLatest('player/fm/play', playPersonalFM)
+    takeLatest('player/fm/play', playPersonalFM),
+    takeEvery('player/lyric', getLyrcis)
   ]
 }
