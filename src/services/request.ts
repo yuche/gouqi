@@ -52,7 +52,7 @@ function checkStatusFilter (response: any) {
   }
 }
 
-function parseJSONFilter (response: IResponse) {
+function parseJSONFilter (response) {
   return response.text()
     .then(text => text.startsWith('<!DOCTYPE html>') ?
       text :
@@ -60,14 +60,14 @@ function parseJSONFilter (response: IResponse) {
     )
 }
 
-function addUserIdToCookies (response: any) {
+function addUserIdToCookies (response) {
   if (response && response.profile && response.profile.userId) {
     setCookies(`uid=${response.profile.userId}`)
   }
   return response
 }
 
-function setCookiesFilter (response: IResponse) {
+function setCookiesFilter (response) {
   const cookies = response.headers.getAll('set-cookie')
   if (cookies.length && cookies[0]) {
     setCookies(cookies[0])

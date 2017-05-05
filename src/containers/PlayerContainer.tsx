@@ -57,6 +57,8 @@ class PlayerContainer extends React.Component<IProps, any> {
 
   private bodyAnimation: any
 
+  private tabbarAnimation: any
+
   constructor(props: IProps) {
     super(props)
     this.deltaY = new Animated.Value(0)
@@ -82,6 +84,12 @@ class PlayerContainer extends React.Component<IProps, any> {
           outputRange: [90, 0, 0]
         })
       }]
+    }
+    this.tabbarAnimation = {
+      opacity: this.deltaY.interpolate({
+        inputRange: [-VIEW_POSITION_Y, -100, 0],
+        outputRange: [0, 0, 1]
+      })
     }
     this.bodyAnimation = {
       opacity: this.deltaY.interpolate({
@@ -179,12 +187,14 @@ class PlayerContainer extends React.Component<IProps, any> {
           {status === 'PLAYING'
             ? <Icon name='pause-circle-outline' size={50} color='#ccc' onPress={this.togglePlayPause}/>
             : <Icon name='play-circle-outline' size={50} color='#ccc' onPress={this.togglePlayPause}/>}
-          <Icon name='skip-next' size={50} color='#ccc' />
+          <Icon name='skip-next' size={50} color='#ccc' onPress={this.nextTrack}/>
         </View>
-        <FaIcon size={20} style={styles.trackAction} name='list-ul' color='#ccc' onPress={this.nextTrack}/>
+        <FaIcon size={20} style={styles.trackAction} name='list-ul' color='#ccc' onPress={this.popup}/>
       </View>
     )
   }
+
+  popup = () => (this.props.popup())
 
   renderMode = (mode) => {
     return (
@@ -211,7 +221,7 @@ class PlayerContainer extends React.Component<IProps, any> {
 
   renderTabbarText = (title: string, subtitle: string) => {
     return (
-      <View style={styles.titleContainer}>
+      <Animated.View style={[styles.titleContainer, this.tabbarAnimation]}>
         <View>
           <Text style={styles.title}  numberOfLines={1}>
             {title}
@@ -222,7 +232,7 @@ class PlayerContainer extends React.Component<IProps, any> {
             {subtitle}
           </Text>
         </View>
-      </View>
+      </Animated.View>
     )
   }
 
@@ -241,7 +251,7 @@ class PlayerContainer extends React.Component<IProps, any> {
 
   renderTabbarBtns = (status) => {
     return (
-      <View style={styles.btns}>
+      <Animated.View style={[styles.btns, this.tabbarAnimation]}>
         <TouchableOpacity style={[styles.component, styles.btn]} onPress={this.togglePlayPause}>
           {status === 'PLAYING'
             ? <Icon name='pause-circle-outline' size={32} color='#ccc' />
@@ -250,7 +260,7 @@ class PlayerContainer extends React.Component<IProps, any> {
         <TouchableOpacity style={[styles.component, styles.btn]} onPress={this.nextTrack}>
           <Icon name='skip-next' size={32} color='#ccc'/>
         </TouchableOpacity>
-      </View>
+      </Animated.View>
     )
   }
 
@@ -320,6 +330,7 @@ const styles = {
   titleContainer: {
     flex: 1,
     height: 60,
+    justifyContent: 'center',
     flexDirection: 'column'
   } as ViewStyle,
   btns: {
@@ -333,6 +344,7 @@ const styles = {
   } as ViewStyle,
   title: {
     marginLeft: 10,
+    marginBottom: 5,
     fontSize: 14
   } as TextStyle,
   subtitle: {
@@ -389,7 +401,7 @@ function mapStateToProps (
 
 export default connect(
   mapStateToProps,
-  (dispatch, ownProps: IProps) => ({
+  (dispatch, ownProps: any) => ({
     prev() {
       return dispatch(prevTrackAction())
     },

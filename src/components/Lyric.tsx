@@ -5,6 +5,7 @@ import {
   ViewStyle,
   TextStyle,
   FlatList,
+  FlatListStatic,
   ActivityIndicator
 } from 'react-native'
 import { isEmpty, findIndex } from 'lodash'
@@ -91,7 +92,7 @@ export default class Lyrics extends React.PureComponent<IProps, IState> {
 
   private timer: number
 
-  private Flatlist: any
+  private Flatlist: FlatListStatic<any>
 
   private lyricList: ILyric[] = []
 
@@ -134,8 +135,7 @@ export default class Lyrics extends React.PureComponent<IProps, IState> {
           this.Flatlist.scrollToIndex({
             animated: true,
             index: index + 1,
-            viewPosition: .5,
-            ViewOffset: Number(lineHeight) / 2
+            viewPosition: .5
           })
         }
       }

@@ -127,7 +127,7 @@ function* playPersonalFM() {
 }
 
 function* playTrack ({ payload: { playing, prev } }) {
-  const playerState: IPlayerState = yield select((state: any) => state.player)
+  const playerState = yield select((state: any) => state.player)
   const { playlist } = playerState
   if (playerState.lyricsVisable && playlist[playing.index] && playlist[playing.index].id) {
     yield put({

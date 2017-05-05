@@ -2,9 +2,9 @@
 # yarn lockfile v1
 
 
-"@types/isomorphic-fetch@0.0.31":
-  version "0.0.31"
-  resolved "https://registry.npmjs.org/@types/isomorphic-fetch/-/isomorphic-fetch-0.0.31.tgz#ec120166ce22f0b134e8770f40c97cd076068fae"
+"@types/isomorphic-fetch@^0.0.34":
+  version "0.0.34"
+  resolved "https://registry.npmjs.org/@types/isomorphic-fetch/-/isomorphic-fetch-0.0.34.tgz#3c3483e606c041378438e951464f00e4e60706d6"
 
 "@types/lodash@^4.14.62":
   version "4.14.62"
@@ -14,9 +14,9 @@
   version "6.2.31"
   resolved "https://registry.npmjs.org/@types/qs/-/qs-6.2.31.tgz#7d929bd877f9cd3ece6415c602b7cf9b077133f1"
 
-"@types/react-native@^0.42.14":
-  version "0.42.16"
-  resolved "https://registry.npmjs.org/@types/react-native/-/react-native-0.42.16.tgz#fc1e16547d6d604d71c5343b8afe2410830010d5"
+"@types/react-native@^0.43.10":
+  version "0.43.10"
+  resolved "https://registry.npmjs.org/@types/react-native/-/react-native-0.43.10.tgz#95f552c67d24d0620b261dc455ae80e07b085e4f"
   dependencies:
     "@types/react" "*"
 
@@ -4971,13 +4971,6 @@ react-addons-pure-render-mixin@^15.0.2, react-addons-pure-render-mixin@^15.4.0, 
     fbjs "^0.8.4"
     object-assign "^4.1.0"
 
-react-addons-shallow-compare@^15.0.2:
-  version "15.5.2"
-  resolved "https://registry.npmjs.org/react-addons-shallow-compare/-/react-addons-shallow-compare-15.5.2.tgz#7cb0ee7acc8d7c93fcc202df0bf47ba916a7bdad"
-  dependencies:
-    fbjs "^0.8.4"
-    object-assign "^4.1.0"
-
 react-addons-test-utils@^15.4.0:
   version "15.5.1"
   resolved "https://registry.npmjs.org/react-addons-test-utils/-/react-addons-test-utils-15.5.1.tgz#e0d258cda2a122ad0dff69f838260d0c3958f5f7"
@@ -5028,10 +5021,6 @@ react-mixin@^3.0.5:
   dependencies:
     object-assign "^4.0.1"
     smart-mixin "^2.0.0"
-
-react-native-animatable@^1.1.1:
-  version "1.1.1"
-  resolved "https://registry.npmjs.org/react-native-animatable/-/react-native-animatable-1.1.1.tgz#00ddc72985f62f62a11a505abb1a06e77a92cd8a"
 
 react-native-blur@^2.0.0:
   version "2.0.0"
@@ -5139,19 +5128,6 @@ react-native-scrollable-tab-view@^0.7.2:
   dependencies:
     react-static-container "^1.0.1"
     react-timer-mixin "^0.13.3"
-
-react-native-slider@^0.9.1:
-  version "0.9.1"
-  resolved "https://registry.npmjs.org/react-native-slider/-/react-native-slider-0.9.1.tgz#f8ea5e3c48aa3577656719b911fd7dd4c62bf81a"
-  dependencies:
-    react-addons-shallow-compare "^15.0.2"
-    style-equal "^1.0.0"
-
-react-native-slider@jeanregisser/react-native-slider#6bd2fa4aa4fc93cc33a854dda5b157f691c814ae:
-  version "0.10.0"
-  resolved "https://codeload.github.com/jeanregisser/react-native-slider/tar.gz/6bd2fa4aa4fc93cc33a854dda5b157f691c814ae"
-  dependencies:
-    prop-types "^15.5.6"
 
 react-native-swipe-out@~2.0.12:
   version "2.0.14"
@@ -6221,10 +6197,6 @@ strip-json-comments@~2.0.1:
   version "2.0.1"
   resolved "https://registry.npmjs.org/strip-json-comments/-/strip-json-comments-2.0.1.tgz#3c531942e908c2697c0ec344858c286c7ca0a60a"
 
-style-equal@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.npmjs.org/style-equal/-/style-equal-1.0.0.tgz#98a1c5922226bfe13c196e73f1940e91b8e66595"
-
 supports-color@^2.0.0:
   version "2.0.0"
   resolved "https://registry.npmjs.org/supports-color/-/supports-color-2.0.0.tgz#535d045ce6b6363fa40117084629995e9df324c7"
@@ -6455,9 +6427,9 @@ typedarray@^0.0.6:
   version "0.0.6"
   resolved "https://registry.npmjs.org/typedarray/-/typedarray-0.0.6.tgz#867ac74e3864187b1d3d47d996a78ec5c8830777"
 
-typescript@2.2.0:
-  version "2.2.0"
-  resolved "https://registry.npmjs.org/typescript/-/typescript-2.2.0.tgz#626f2fc70087d2480f21ebb12c1888288c8614e3"
+typescript@^2.3.2:
+  version "2.3.2"
+  resolved "https://registry.npmjs.org/typescript/-/typescript-2.3.2.tgz#f0f045e196f69a72f06b25fd3bd39d01c3ce9984"
 
 ua-parser-js@^0.7.9:
   version "0.7.12"

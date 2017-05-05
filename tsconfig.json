@@ -23,7 +23,6 @@
   "exclude": [
     "node_modules",
     "dist",
-    "typings",
     "tests",
     "lib"
   ],
