@@ -3,7 +3,6 @@ import { ITrack } from '../services/api'
 import { IPlayerProps as IProps } from '../interfaces'
 import Video from 'react-native-video'
 import MusicControl from 'react-native-music-control/index.ios.js'
-import * as api from '../services/api'
 
 interface IState {
   duration: number
@@ -70,8 +69,6 @@ class Player extends React.Component<IProps, any> {
         repeat={repeat}
         playInBackground={true}
         playWhenInactive={true}
-        onLoadStart={() => console.log('load start')}
-        onBuffer={() => console.log('on buffer')}
         onError={this.onError}
         onLoad={this.onLoad(track)}
         onProgress={this.onProgress}
@@ -85,7 +82,6 @@ class Player extends React.Component<IProps, any> {
   }
 
   onError = (e: any) => {
-    console.log(e)
     this.props.changeStatus('PAUSED')
   }
 
@@ -101,6 +97,9 @@ class Player extends React.Component<IProps, any> {
 
   onProgress = ({ currentTime }: { currentTime: number }) => {
     this.props.setCurrentTime(currentTime)
+    if (!this.props.isSliding) {
+      this.props.setSlideTime(currentTime)
+    }
   }
 
   onEnd = () => {

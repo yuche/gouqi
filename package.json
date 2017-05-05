@@ -51,7 +51,7 @@
     "@types/lodash": "^4.14.62",
     "@types/qs": "^6.2.30",
     "@types/react": "^0.14.37",
-    "@types/react-native": "^0.43.10",
+    "@types/react-native": "^0.43.11",
     "@types/react-redux": "4.4.32",
     "@types/redux-actions": "0.8.30",
     "ava": "^0.16.0",

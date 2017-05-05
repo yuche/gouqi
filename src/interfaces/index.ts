@@ -78,6 +78,8 @@ export interface IPlayerProps {
   currentTime: number,
   duration: number,
   uri: string,
+  slideTime: number,
+  isSliding: boolean,
   setMode: (mode) => Redux.Action,
   download: () => Redux.Action,
   popup: () => Redux.Action,
@@ -87,5 +89,7 @@ export interface IPlayerProps {
   next: () => Redux.Action,
   changeStatus: (status: IPlayerStatus) => Redux.Action,
   setCurrentTime: (currentTime) => Redux.Action,
-  setDuration: (duration) => Redux.Action
+  setDuration: (duration) => Redux.Action,
+  setSlideTime: (time) => Redux.Action,
+  toggleSlide: (bool) => Redux.Action
 }

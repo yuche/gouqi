@@ -432,4 +432,4 @@ var defaultStyles = StyleSheet.create({
     backgroundColor: 'green',
     opacity: 0.5,
   }
-});
+})

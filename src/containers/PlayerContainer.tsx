@@ -12,7 +12,9 @@ import {
   downloadTracksAction,
   popupTrackActionSheet,
   setModeAction,
-  toastAction
+  toastAction,
+  toggleSlide,
+  slideTimeAction
 } from '../actions'
 import {
   View,
@@ -41,9 +43,9 @@ function padding(num: number) {
   return num < 10 ? '0' + num : num
 }
 
-function formatTime(time: number) {
+function formatTime(time = 0) {
   const min = Math.floor(time / 60)
-  const sec = time % 60
+  const sec = Math.floor(time % 60)
   return `${padding(min)}:${padding(sec)}`
 }
 
@@ -58,6 +60,8 @@ class PlayerContainer extends React.Component<IProps, any> {
   private bodyAnimation: any
 
   private tabbarAnimation: any
+
+  private Player: any
 
   constructor(props: IProps) {
     super(props)
@@ -105,23 +109,25 @@ class PlayerContainer extends React.Component<IProps, any> {
 
   expand = () => (this.Interactable.snapTo({ index: 1 }))
 
+  mapPlayer = (component) => (this.Player = component)
+
   render () {
     const {
       track,
       status,
       mode,
       duration,
-      currentTime
+      currentTime,
+      slideTime
     } = this.props
     const picUrl = get(track, 'album.picUrl', '')
     const trackName = get(track, 'name', '')
-    const albumName = get(track, 'album.name', '')
     const artistName = track
       && track.artists
       && track.artists.reduce((str, acc, index) => str + (index !== 0 ? ' & ' : '') + acc.name, '')
     return (
       <View style={styles.container}>
-        <Player {...this.props} />
+        <Player {...this.props} ref={this.mapPlayer}/>
         <Interactable.View
           ref={this.mapInteractable}
           verticalOnly={true}
@@ -133,14 +139,14 @@ class PlayerContainer extends React.Component<IProps, any> {
             <TouchableWithoutFeedback onPress={this.expand}>
               <View style={styles.tabbar}>
                 {this.renderImage(picUrl)}
-                {this.renderTabbarText(trackName, albumName)}
+                {this.renderTabbarText(trackName, artistName)}
                 {this.renderTabbarBtns(status)}
               </View>
             </TouchableWithoutFeedback>
             <Animated.View style={[styles.body, this.bodyAnimation]}>
               {this.renderBodyText(trackName, artistName)}
               {this.renderTrackActions()}
-              {this.renderSlider(duration, currentTime)}
+              {this.renderSlider(duration, slideTime)}
               {this.renderPlayerActions(status, mode)}
             </Animated.View>
           </View>
@@ -163,19 +169,42 @@ class PlayerContainer extends React.Component<IProps, any> {
   }
 
   renderSlider = (duration, currentTime) => {
-    const value = Math.floor((currentTime / duration) * 100)
+    const value = parseFloat(((currentTime / duration) * 100 || 0).toFixed(2))
     return (
-      <View style={{ height: 50, flexDirection: 'row', alignItems: 'center' }}>
+      <View style={styles.slider}>
         <Slider
-          style={{ width: width - 40, marginHorizontal: 20 }}
+          style={{ width: width - 40, marginHorizontal: 20, height: 30}}
           maximumValue={100}
           minimumTrackTintColor={Color.main}
           maximumTrackTintColor='#d3d3d3'
+          trackStyle={{ height: 2, borderRadius: 1 }}
+          thumbStyle={{height: 16, width: 16, borderRadius: 8}}
           thumbTintColor={Color.main}
-          value={0}
+          onSlidingStart={this.onSlidingStart}
+          onSlidingComplete={this.onSlidingComplete}
+          onValueChange={this.onValueChange}
+          value={value >= 100 ? 100 : value}
         />
+        <View style={styles.time}>
+          <Text style={{ color: '#ccc' }}>{formatTime(currentTime)}</Text>
+          <Text style={{ color: '#ccc' }}>{formatTime(duration - currentTime)}</Text>
+        </View>
       </View>
     )
+  }
+
+  onValueChange = (value) => {
+    const time = Math.floor(this.props.duration * (value / 100))
+    this.props.setSlideTime(time)
+  }
+
+  onSlidingStart = (value) => {
+    this.props.toggleSlide(true)
+  }
+
+  onSlidingComplete = (value) => {
+    this.props.toggleSlide(false)
+    this.Player.audio.seek(Math.floor(this.props.duration * (value / 100)))
   }
 
   renderPlayerActions = (status, mode) => {
@@ -213,11 +242,13 @@ class PlayerContainer extends React.Component<IProps, any> {
     return (
       <View style={styles.trackActions}>
         <CustomIcon size={22} style={styles.trackAction} name='ci' color='#ccc' />
-        <CustomIcon size={22} style={styles.trackAction} name='download' color='#ccc' />
-        <CustomIcon size={22} style={styles.trackAction} name='more' color='#ccc' />
+        <CustomIcon size={22} style={styles.trackAction} name='download' color='#ccc' onPress={this.download}/>
+        <CustomIcon size={22} style={styles.trackAction} name='more' color='#ccc' onPress={this.popup}/>
       </View>
     )
   }
+
+  download = () => (this.props.download())
 
   renderTabbarText = (title: string, subtitle: string) => {
     return (
@@ -236,13 +267,13 @@ class PlayerContainer extends React.Component<IProps, any> {
     )
   }
 
-  renderBodyText = (title = 'Tribute', subtitle = 'John Newman') => {
+  renderBodyText = (title: string, subtitle: string) => {
     return (
-      <View style={{ alignItems: 'center', flex: 1, width}}>
+      <View style={{ ...centering, flex: 1, width}}>
         <Text style={{ fontSize: 22, marginBottom: 5 }} numberOfLines={1}>
-          {'fuckyou'}
+          {title}
         </Text>
-        <Text style={{ fontSize: 15, color: '#ccc' }} numberOfLines={1}>
+        <Text style={{ fontSize: 16, color: '#ccc' }} numberOfLines={1}>
           {subtitle}
         </Text>
       </View>
@@ -343,12 +374,10 @@ const styles = {
     marginLeft: 10
   } as ViewStyle,
   title: {
-    marginLeft: 10,
     marginBottom: 5,
     fontSize: 14
   } as TextStyle,
   subtitle: {
-    marginLeft: 10,
     fontSize: 12,
     color: '#777'
   } as TextStyle,
@@ -370,6 +399,16 @@ const styles = {
     flex: 1,
     flexDirection: 'column',
     ...centering
+  } as ViewStyle,
+  slider: {
+    height: 60,
+    ...centering
+  } as ViewStyle,
+  time: {
+    width: width - 40,
+    marginHorizontal: 20,
+    flexDirection: 'row',
+    justifyContent: 'space-between'
   } as ViewStyle
 }
 
@@ -384,7 +423,9 @@ function mapStateToProps (
       mode,
       uri,
       duration,
-      currentTime
+      currentTime,
+      slideTime,
+      isSliding
     }
   }: { player: IPlayerState }
 ) {
@@ -395,7 +436,9 @@ function mapStateToProps (
     track: track || {},
     uri,
     duration,
-    currentTime
+    currentTime,
+    slideTime,
+    isSliding
   }
 }
 
@@ -413,6 +456,12 @@ export default connect(
     },
     setCurrentTime(currentTime) {
       return dispatch(currentTimeAction(currentTime))
+    },
+    setSlideTime(time) {
+      return dispatch(slideTimeAction(time))
+    },
+    toggleSlide(bool) {
+      return dispatch(toggleSlide(bool))
     },
     setDuration(duration) {
       return dispatch(durationAction(duration))

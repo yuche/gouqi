@@ -14,9 +14,9 @@
   version "6.2.31"
   resolved "https://registry.npmjs.org/@types/qs/-/qs-6.2.31.tgz#7d929bd877f9cd3ece6415c602b7cf9b077133f1"
 
-"@types/react-native@^0.43.10":
-  version "0.43.10"
-  resolved "https://registry.npmjs.org/@types/react-native/-/react-native-0.43.10.tgz#95f552c67d24d0620b261dc455ae80e07b085e4f"
+"@types/react-native@^0.43.11":
+  version "0.43.11"
+  resolved "https://registry.npmjs.org/@types/react-native/-/react-native-0.43.11.tgz#cc39713dce3c7d147eb447c193c6132362682d25"
   dependencies:
     "@types/react" "*"
 

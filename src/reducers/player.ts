@@ -14,7 +14,9 @@ export interface IPlayerState {
   loadingLyric: boolean,
   lyrics: {
     [props: number]: any
-  }
+  },
+  slideTime: number,
+  isSliding: boolean
 }
 
 export interface IPlaying {
@@ -49,7 +51,9 @@ const initialState: IPlayerState = {
   duration: 0,
   seconds: 0,
   loadingLyric: false,
-  lyrics: {}
+  lyrics: {},
+  slideTime: 0,
+  isSliding: false
 }
 
 export default handleActions({
@@ -141,6 +145,18 @@ export default handleActions({
     return {
       ...state,
       duration: payload
+    }
+  },
+  'player/slideTime' (state, { payload }: any) {
+    return {
+      ...state,
+      slideTime: payload
+    }
+  },
+  'player/slide' (state, { payload }: any) {
+    return {
+      ...state,
+      isSliding: payload
     }
   },
   '🐸🐸🐸' (state, { payload }) {

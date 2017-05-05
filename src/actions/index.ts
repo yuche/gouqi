@@ -72,6 +72,10 @@ export const durationAction = createAction('player/duration')
 
 export const currentTimeAction = createAction('player/currentTime')
 
+export const slideTimeAction = createAction('player/slideTime')
+
+export const toggleSlide = createAction('player/slide')
+
 export const nextTrackAction = createAction('player/track/next')
 
 export const prevTrackAction = createAction('player/track/prev')
