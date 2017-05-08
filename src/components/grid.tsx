@@ -27,7 +27,9 @@ const Item = ({item, index, onPress}) => {
           style={styles.image}
           source={{uri}}
         />
-        {item.meta && <Text style={styles.meta}>{item.meta}</Text>}
+        {item.meta && <View style={styles.meta}>
+          <Text style={styles.metaText}>{item.meta}</Text>
+        </View>}
         <Text style={styles.title} numberOfLines={item.subtitle ? 1 : 2}>{item.name}</Text>
         {item.subtitle && <Text style={styles.subtitle} numberOfLines={1}>{item.subtitle}</Text>}
       </View>
@@ -61,11 +63,16 @@ const styles = {
   },
   meta: {
     position: 'absolute',
-    top: gridWidth - 20,
+    top: gridWidth - 17,
+    backgroundColor: 'rgba(255, 255, 255, .1)',
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.6
+  } as ViewStyle,
+  metaText: {
     color: 'white',
-    backgroundColor: 'transparent',
-    left: 5,
-    fontSize: 13
+    fontSize: 13,
+    marginLeft: 5,
   } as TextStyle,
   title: {
     marginLeft: 5,

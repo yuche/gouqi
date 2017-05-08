@@ -28,7 +28,7 @@ import {
   TouchableWithoutFeedback
 } from 'react-native'
 import { centering, Color } from '../styles'
-import { get } from 'lodash'
+import { get, isEmpty } from 'lodash'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import Interactable from 'react-native-interactable'
 import Navbar from '../components/navbar'
@@ -63,9 +63,12 @@ class PlayerContainer extends React.Component<IProps, any> {
 
   private Player: any
 
+  private translateY: Animated.Value
+
   constructor(props: IProps) {
     super(props)
     this.deltaY = new Animated.Value(0)
+    this.translateY = new Animated.Value(60)
     const imageWidth = this.deltaY.interpolate({
       inputRange: [-VIEW_POSITION_Y, 0, 0],
       outputRange: [200, 40, 40]
@@ -104,6 +107,16 @@ class PlayerContainer extends React.Component<IProps, any> {
       })
     }
   }
+  
+  componentWillReceiveProps(nextProps: IProps) {
+    if (nextProps.visable !== this.props.visable) {
+      if (nextProps.visable) {
+        Animated.timing(this.translateY, { toValue: 0 }).start()
+      } else {
+        Animated.timing(this.translateY, { toValue: 60 }).start()
+      }
+    }
+  }
 
   mapInteractable = component => (this.Interactable = component)
 
@@ -126,7 +139,11 @@ class PlayerContainer extends React.Component<IProps, any> {
       && track.artists
       && track.artists.reduce((str, acc, index) => str + (index !== 0 ? ' & ' : '') + acc.name, '')
     return (
-      <View style={styles.container}>
+      <Animated.View style={[styles.container, { 
+        transform: [{
+          translateY: this.translateY,
+        }]
+       }]}>
         <Player {...this.props} ref={this.mapPlayer}/>
         <Interactable.View
           ref={this.mapInteractable}
@@ -151,7 +168,7 @@ class PlayerContainer extends React.Component<IProps, any> {
             </Animated.View>
           </View>
         </Interactable.View>
-      </View>
+      </Animated.View>
     )
   }
 
@@ -170,6 +187,7 @@ class PlayerContainer extends React.Component<IProps, any> {
 
   renderSlider = (duration, currentTime) => {
     const value = parseFloat(((currentTime / duration) * 100 || 0).toFixed(2))
+    const isValid = duration && currentTime && (duration - currentTime > 0)
     return (
       <View style={styles.slider}>
         <Slider
@@ -186,8 +204,8 @@ class PlayerContainer extends React.Component<IProps, any> {
           value={value >= 100 ? 100 : value}
         />
         <View style={styles.time}>
-          <Text style={{ color: '#ccc' }}>{formatTime(currentTime)}</Text>
-          <Text style={{ color: '#ccc' }}>{formatTime(duration - currentTime)}</Text>
+          <Text style={{ color: '#ccc' }}>{formatTime(isValid ? currentTime : 0)}</Text>
+          <Text style={{ color: '#ccc' }}>{formatTime(isValid ? duration - currentTime : 0)}</Text>
         </View>
       </View>
     )
@@ -209,7 +227,7 @@ class PlayerContainer extends React.Component<IProps, any> {
 
   renderPlayerActions = (status, mode) => {
     return (
-      <View style={[{ height: 120, flexDirection: 'row' ,...centering }]}>
+      <View style={[{ height: 100, flexDirection: 'row' ,...centering }]}>
         {this.renderMode(mode)}
         <View style={styles.playActions}>
           <Icon name='skip-previous' size={50} color='#ccc' onPress={this.prevTrack}/>
@@ -228,11 +246,11 @@ class PlayerContainer extends React.Component<IProps, any> {
   renderMode = (mode) => {
     return (
       mode === 'SEQUE'
-        ? <CustomIcon size={22} style={styles.trackAction} name='seque' color='#ccc' onPress={this.setMode('RANDOM')}/>
+        ? <CustomIcon size={22} style={styles.orderAction()} name='seque' color='#ccc' onPress={this.setMode('RANDOM')}/>
         : mode === 'RANDOM'
           // tslint:disable-next-line:max-line-length
-          ? <CustomIcon size={22} style={styles.trackAction} name='random' color='#ccc' onPress={this.setMode('REPEAT')}/>
-          : <CustomIcon size={22} style={styles.trackAction} name='seque1' color='#ccc' onPress={this.setMode('SEQUE')} />
+          ? <CustomIcon size={22} style={styles.orderAction()} name='random' color='#ccc' onPress={this.setMode('REPEAT')}/>
+          : <CustomIcon size={22} style={styles.orderAction()} name='seque1' color='#ccc' onPress={this.setMode('SEQUE')} />
     )
   }
 
@@ -352,7 +370,9 @@ const styles = {
     backgroundColor: 'rgba(255, 255, 255, 0.95)',
     borderTopWidth: StyleSheet.hairlineWidth,
     height: height - Navbar.HEIGHT,
-    flexDirection: 'row'
+    flexDirection: 'row',
+    shadowColor: '#000000',
+    shadowOpacity: 0.4
   } as ViewStyle,
   component: {
     width: 40,
@@ -404,6 +424,13 @@ const styles = {
     height: 60,
     ...centering
   } as ViewStyle,
+  orderAction() {
+    return {
+      ...this.trackAction,
+      position: 'relative',
+      top: 2
+    }
+  },
   time: {
     width: width - 40,
     marginHorizontal: 20,
@@ -435,6 +462,7 @@ function mapStateToProps (
     status,
     track: track || {},
     uri,
+    visable: !isEmpty(playlist),
     duration,
     currentTime,
     slideTime,

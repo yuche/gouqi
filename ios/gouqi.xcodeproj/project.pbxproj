@@ -40,6 +40,7 @@
 		4A8BDF0DB90A4049B956BCC6 /* libRNBlur.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B37C18E5DB1A4656B928E17B /* libRNBlur.a */; };
 		5102A69C1E72010A00625571 /* iconfont.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 5102A69B1E72010A00625571 /* iconfont.ttf */; };
 		5102A69D1E72010A00625571 /* iconfont.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 5102A69B1E72010A00625571 /* iconfont.ttf */; };
+		52BA4931F97D48B98ED4C8B5 /* libInteractable.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6921441E2D39471993E143AF /* libInteractable.a */; };
 		5E9157361DD0AC6A00FF2AA8 /* libRCTAnimation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E9157331DD0AC6500FF2AA8 /* libRCTAnimation.a */; };
 		786C86095EE543BF9B72DF51 /* libMusicControl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2FB9E698EB60459ABEE81259 /* libMusicControl.a */; };
 		7BD330B843094D99A3482CF7 /* SimpleLineIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A3791963839E4FCAAEC671A7 /* SimpleLineIcons.ttf */; };
@@ -53,7 +54,6 @@
 		B48C21AFD6AF42F2B9DD7DE0 /* EvilIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3D72ACCB80E54A14875858FA /* EvilIcons.ttf */; };
 		B653B33103A541B2AAD05846 /* MaterialIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8FCED0CB8B844D07927660A3 /* MaterialIcons.ttf */; };
 		D2A70FF043334AA68632B0B4 /* MaterialCommunityIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B58832A9B5444AECB2F55217 /* MaterialCommunityIcons.ttf */; };
-		52BA4931F97D48B98ED4C8B5 /* libInteractable.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6921441E2D39471993E143AF /* libInteractable.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -232,6 +232,13 @@
 			remoteGlobalIDString = F12AFB9B1ADAF8F800E0535D;
 			remoteInfo = RNFS;
 		};
+		51267F5B1EBE13C700ABD85C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E609A331CF9B41FDB304ABE9 /* Interactable.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = CC0127971E3ACC3900B23C9F;
+			remoteInfo = Interactable;
+		};
 		519B0DE81E71B31300989313 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 10081126167F4BD49375A43F /* RNAudioStreamer.xcodeproj */;
@@ -321,6 +328,7 @@
 		5102A69B1E72010A00625571 /* iconfont.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = iconfont.ttf; path = ../assets/fonts/iconfont.ttf; sourceTree = "<group>"; };
 		5E91572D1DD0AC6500FF2AA8 /* RCTAnimation.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTAnimation.xcodeproj; path = "../node_modules/react-native/Libraries/NativeAnimation/RCTAnimation.xcodeproj"; sourceTree = "<group>"; };
 		5ECBD08936824F5D94969F95 /* RNVectorIcons.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNVectorIcons.xcodeproj; path = "../node_modules/react-native-vector-icons/RNVectorIcons.xcodeproj"; sourceTree = "<group>"; };
+		6921441E2D39471993E143AF /* libInteractable.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libInteractable.a; sourceTree = "<group>"; };
 		6D0BF112D6C64B43A6356737 /* libRNVectorIcons.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNVectorIcons.a; sourceTree = "<group>"; };
 		78C398B01ACF4ADC00677621 /* RCTLinking.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTLinking.xcodeproj; path = "../node_modules/react-native/Libraries/LinkingIOS/RCTLinking.xcodeproj"; sourceTree = "<group>"; };
 		832341B01AAA6A8300B99B32 /* RCTText.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTText.xcodeproj; path = "../node_modules/react-native/Libraries/Text/RCTText.xcodeproj"; sourceTree = "<group>"; };
@@ -337,9 +345,8 @@
 		C9F3051E28714C47A050C405 /* Zocial.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Zocial.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Zocial.ttf"; sourceTree = "<group>"; };
 		CFC03EAC37B94AE4BE1F68BF /* Octicons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Octicons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Octicons.ttf"; sourceTree = "<group>"; };
 		D2CB75B3C0644B36BC524CC3 /* libRNAudioStreamer.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNAudioStreamer.a; sourceTree = "<group>"; };
+		E609A331CF9B41FDB304ABE9 /* Interactable.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = Interactable.xcodeproj; path = "../node_modules/react-native-interactable/ios/Interactable.xcodeproj"; sourceTree = "<group>"; };
 		F6887586667D41ECA82628AE /* RCTVideo.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RCTVideo.xcodeproj; path = "../node_modules/react-native-video/ios/RCTVideo.xcodeproj"; sourceTree = "<group>"; };
-		E609A331CF9B41FDB304ABE9 /* Interactable.xcodeproj */ = {isa = PBXFileReference; name = "Interactable.xcodeproj"; path = "../node_modules/react-native-interactable/ios/Interactable.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
-		6921441E2D39471993E143AF /* libInteractable.a */ = {isa = PBXFileReference; name = "libInteractable.a"; path = "libInteractable.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -519,6 +526,14 @@
 			isa = PBXGroup;
 			children = (
 				5109F15D1E7477FA00AD62E8 /* libRNFS.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		51267F581EBE13C700ABD85C /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				51267F5C1EBE13C700ABD85C /* libInteractable.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -767,6 +782,10 @@
 			projectDirPath = "";
 			projectReferences = (
 				{
+					ProductGroup = 51267F581EBE13C700ABD85C /* Products */;
+					ProjectRef = E609A331CF9B41FDB304ABE9 /* Interactable.xcodeproj */;
+				},
+				{
 					ProductGroup = 519B0DED1E71B31300989313 /* Products */;
 					ProjectRef = B9AB7663C143410A91FF6E04 /* MusicControl.xcodeproj */;
 				},
@@ -1007,6 +1026,13 @@
 			remoteRef = 5109F15C1E7477FA00AD62E8 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
+		51267F5C1EBE13C700ABD85C /* libInteractable.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libInteractable.a;
+			remoteRef = 51267F5B1EBE13C700ABD85C /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		519B0DE91E71B31300989313 /* libRNAudioStreamer.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
@@ -1230,9 +1256,6 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				OTHER_LDFLAGS = (
 					"-ObjC",
@@ -1265,9 +1288,6 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				OTHER_LDFLAGS = (
 					"-ObjC",
@@ -1362,9 +1382,6 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				OTHER_LDFLAGS = (
 					"-ObjC",
@@ -1403,9 +1420,6 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				OTHER_LDFLAGS = (
 					"-ObjC",
@@ -1434,9 +1448,6 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.facebook.REACT.gouqi-tvOSTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1461,9 +1472,6 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.facebook.REACT.gouqi-tvOSTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";

@@ -37,13 +37,13 @@ function* nextTrack () {
       }
       yield put(playTrackAction({
         playing: {
-          index: index === length ? 0 : index + 1
+          index: index + 1 === length ? 0 : index + 1
         }
       }))
     }
 
     if (mode === 'RANDOM') {
-      const index = random(length)
+      const index = random(length - 1)
       yield put(playTrackAction({
         playing: {
           index
@@ -129,6 +129,7 @@ function* playPersonalFM() {
 function* playTrack ({ payload: { playing, prev } }) {
   const playerState = yield select((state: any) => state.player)
   const { playlist } = playerState
+  yield put(currentTimeAction(0))
   if (playerState.lyricsVisable && playlist[playing.index] && playlist[playing.index].id) {
     yield put({
       type: 'player/lyric',
@@ -152,7 +153,6 @@ function* playTrack ({ payload: { playing, prev } }) {
       type: 'player/track/play',
       payload: uri
     })
-    yield put(currentTimeAction(0))
     yield put(changeStatusAction('PLAYING'))
     if (!prev) {
       yield put({

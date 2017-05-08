@@ -80,6 +80,7 @@ export interface IPlayerProps {
   uri: string,
   slideTime: number,
   isSliding: boolean,
+  visable: boolean,
   setMode: (mode) => Redux.Action,
   download: () => Redux.Action,
   popup: () => Redux.Action,
