@@ -14,7 +14,8 @@ import { connect } from 'react-redux'
 import {
   popupCollectActionSheet,
   hideTrackActionSheet,
-  downloadTracksAction
+  downloadTracksAction,
+  shrinkPlayer
 } from '../actions'
 import Popup from './PopupContainer'
 import Router from '../routers'
@@ -27,7 +28,8 @@ interface IProps {
   popup: () => Redux.Action,
   hide: () => Redux.Action,
   toComment: () => Redux.Action,
-  download: (tracks) => Redux.Action
+  download: (tracks) => Redux.Action,
+  shrinkPlayer: () => Redux.Action
 }
 
 class PopupContent extends React.Component<IProps, any> {
@@ -78,11 +80,14 @@ class PopupContent extends React.Component<IProps, any> {
   }
 
   toComment = () => {
+    this.props.shrinkPlayer()
+    console.log('to comment')
     this.props.toComment()
   }
 
   toAlbum = (route) => {
     this.hide()
+    this.props.shrinkPlayer()
     InteractionManager.runAfterInteractions(() => {
       Router.toAlbumDetail({ route })
     })
@@ -90,6 +95,7 @@ class PopupContent extends React.Component<IProps, any> {
 
   toArtist = (route) => {
     this.hide()
+    this.props.shrinkPlayer()
     Router.toArtistsDetail({ route })
     // InteractionManager.runAfterInteractions(() => {
     //   Router.toArtistsDetail({ route })
@@ -170,6 +176,9 @@ export default connect(
     },
     download(track) {
       return dispatch(downloadTracksAction([track]))
+    },
+    shrinkPlayer() {
+      return dispatch(shrinkPlayer())
     }
   })
 )(PopupContent)

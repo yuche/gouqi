@@ -12,7 +12,8 @@ import {
 import {
   hideCollectActionSheet,
   collectTrackToPlayliast,
-  toCreatePlaylistAction
+  toCreatePlaylistAction,
+  shrinkPlayer
 } from '../actions'
 import PopupContainer from './PopupContainer'
 import { centering, Color } from '../styles'
@@ -25,7 +26,8 @@ interface IProps {
   visible: boolean,
   hide: () => Redux.Action,
   collect: (trackIds: number, pid: number) => Redux.Action,
-  toCreatePlaylist: (trackId: number) => Redux.Action
+  toCreatePlaylist: (trackId: number) => Redux.Action,
+  shrinkPlayer: () => Redux.Action
 }
 
 class Collect extends React.Component<IProps, any> {
@@ -74,7 +76,10 @@ class Collect extends React.Component<IProps, any> {
   }
 
   toCreatePlaylist = (trackId: number) => {
-    return () => this.props.toCreatePlaylist(trackId)
+    return () => {
+      this.props.shrinkPlayer()
+      this.props.toCreatePlaylist(trackId)
+    }
   }
 
   collect = (trackId: number, pid: number) => {
@@ -147,6 +152,9 @@ export default connect(
     },
     toCreatePlaylist(trackId: number) {
       return dispatch(toCreatePlaylistAction(trackId))
+    },
+    shrinkPlayer() {
+      return dispatch(shrinkPlayer())
     }
   })
 )(Collect)

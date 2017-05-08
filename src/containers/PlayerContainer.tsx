@@ -116,11 +116,18 @@ class PlayerContainer extends React.Component<IProps, any> {
         Animated.timing(this.translateY, { toValue: 60 }).start()
       }
     }
+
+    if (nextProps.shrink !== this.props.shrink) {
+      console.log('props')
+      this.shrink()
+    }
   }
 
   mapInteractable = component => (this.Interactable = component)
 
   expand = () => (this.Interactable.snapTo({ index: 1 }))
+
+  shrink = () => (this.Interactable.snapTo({ index: 0 }))
 
   mapPlayer = (component) => (this.Player = component)
 
@@ -241,7 +248,7 @@ class PlayerContainer extends React.Component<IProps, any> {
     )
   }
 
-  popup = () => (this.props.popup())
+  popup = () => (this.props.popup(this.props.track))
 
   renderMode = (mode) => {
     return (
@@ -266,7 +273,7 @@ class PlayerContainer extends React.Component<IProps, any> {
     )
   }
 
-  download = () => (this.props.download())
+  download = () => (this.props.download(this.props.track))
 
   renderTabbarText = (title: string, subtitle: string) => {
     return (
@@ -452,7 +459,8 @@ function mapStateToProps (
       duration,
       currentTime,
       slideTime,
-      isSliding
+      isSliding,
+      shrink
     }
   }: { player: IPlayerState }
 ) {
@@ -462,6 +470,7 @@ function mapStateToProps (
     status,
     track: track || {},
     uri,
+    shrink,
     visable: !isEmpty(playlist),
     duration,
     currentTime,
@@ -494,8 +503,8 @@ export default connect(
     setDuration(duration) {
       return dispatch(durationAction(duration))
     },
-    popup() {
-      return dispatch(popupTrackActionSheet(ownProps.track))
+    popup(track) {
+      return dispatch(popupTrackActionSheet(track))
     },
     setMode(mode) {
       let modeStr
@@ -509,8 +518,8 @@ export default connect(
       dispatch(toastAction('info', `开始${modeStr}`))
       return dispatch(setModeAction(mode))
     },
-    download() {
-      return dispatch(downloadTracksAction([ownProps.track]))
+    download(track) {
+      return dispatch(downloadTracksAction([track]))
     }
   })
 )(PlayerContainer)

@@ -1,5 +1,6 @@
 import { handleActions, Action } from 'redux-actions'
 import { ITrack } from '../services/api'
+import { uniqueId } from 'lodash'
 
 export interface IPlayerState {
   playing: IPlaying,
@@ -16,7 +17,8 @@ export interface IPlayerState {
     [props: number]: any
   },
   slideTime: number,
-  isSliding: boolean
+  isSliding: boolean,
+  shrink: string
 }
 
 export interface IPlaying {
@@ -53,7 +55,8 @@ const initialState: IPlayerState = {
   loadingLyric: false,
   lyrics: {},
   slideTime: 0,
-  isSliding: false
+  isSliding: false,
+  shrink: '0'
 }
 
 export default handleActions({
@@ -87,6 +90,12 @@ export default handleActions({
     return {
       ...state,
       loadingLyric: false
+    }
+  },
+  'player/shrink'(state) {
+    return {
+      ...state,
+      shrink: uniqueId()
     }
   },
   'player/lyric/start'(state) {

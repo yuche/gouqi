@@ -116,13 +116,13 @@ class Album extends React.Component<IProps, IState> {
   }
 
   renderHeader ( album: IAlbum, scrollY: Animated.Value ) {
-    const uri = album.picUrl + '?param=300y300'
-    const { artist } = album
+    const uri = get(album, 'picUrl', '') + '?param=300y300'
+    const { artist = {} } = album
     const opacity = scrollY.interpolate({
       inputRange: [0, 50, HEADER_HEIGHT],
       outputRange: [1, 1, 0]
     })
-    const avatarUrl = artist.picUrl + '?param=50y50'
+    const avatarUrl = get(artist, 'picUrl', '') + '?param=50y50'
     return (
       <View style={styles.headerContainer}>
         <Animated.View style={[styles.header, { opacity }]}>
