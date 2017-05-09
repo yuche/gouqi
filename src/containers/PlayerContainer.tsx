@@ -107,7 +107,7 @@ class PlayerContainer extends React.Component<IProps, any> {
       })
     }
   }
-  
+
   componentWillReceiveProps(nextProps: IProps) {
     if (nextProps.visable !== this.props.visable) {
       if (nextProps.visable) {
@@ -118,12 +118,11 @@ class PlayerContainer extends React.Component<IProps, any> {
     }
 
     if (nextProps.shrink !== this.props.shrink) {
-      console.log('props')
       this.shrink()
     }
   }
 
-  mapInteractable = component => (this.Interactable = component)
+  mapInteractable = (component) => (this.Interactable = component)
 
   expand = () => (this.Interactable.snapTo({ index: 1 }))
 
@@ -131,13 +130,12 @@ class PlayerContainer extends React.Component<IProps, any> {
 
   mapPlayer = (component) => (this.Player = component)
 
-  render () {
+  render() {
     const {
       track,
       status,
       mode,
       duration,
-      currentTime,
       slideTime
     } = this.props
     const picUrl = get(track, 'album.picUrl', '')
@@ -146,11 +144,7 @@ class PlayerContainer extends React.Component<IProps, any> {
       && track.artists
       && track.artists.reduce((str, acc, index) => str + (index !== 0 ? ' & ' : '') + acc.name, '')
     return (
-      <Animated.View style={[styles.container, { 
-        transform: [{
-          translateY: this.translateY,
-        }]
-       }]}>
+      <Animated.View style={[styles.container, {transform: [{translateY: this.translateY}]}]}>
         <Player {...this.props} ref={this.mapPlayer}/>
         <Interactable.View
           ref={this.mapInteractable}
@@ -234,7 +228,7 @@ class PlayerContainer extends React.Component<IProps, any> {
 
   renderPlayerActions = (status, mode) => {
     return (
-      <View style={[{ height: 100, flexDirection: 'row' ,...centering }]}>
+      <View style={[{ height: 100, flexDirection: 'row' , ...centering }]}>
         {this.renderMode(mode)}
         <View style={styles.playActions}>
           <Icon name='skip-previous' size={50} color='#ccc' onPress={this.prevTrack}/>
@@ -253,6 +247,7 @@ class PlayerContainer extends React.Component<IProps, any> {
   renderMode = (mode) => {
     return (
       mode === 'SEQUE'
+        // tslint:disable-next-line:max-line-length
         ? <CustomIcon size={22} style={styles.orderAction()} name='seque' color='#ccc' onPress={this.setMode('RANDOM')}/>
         : mode === 'RANDOM'
           // tslint:disable-next-line:max-line-length
@@ -294,7 +289,7 @@ class PlayerContainer extends React.Component<IProps, any> {
 
   renderBodyText = (title: string, subtitle: string) => {
     return (
-      <View style={{ ...centering, flex: 1, width}}>
+      <View style={{ ...centering, flex: 1, width, marginHorizontal: 20}}>
         <Text style={{ fontSize: 22, marginBottom: 5 }} numberOfLines={1}>
           {title}
         </Text>
@@ -446,7 +441,7 @@ const styles = {
   } as ViewStyle
 }
 
-function mapStateToProps (
+function mapStateToProps(
   {
     player: {
       playlist,

@@ -83,7 +83,7 @@ class Downloading extends React.Component<IProps, { visable: boolean }> {
           rightConfig={this.rightConfig}
         />
         <ListView
-          enableEmptySections
+          enableEmptySections={true}
           removeClippedSubviews={true}
           scrollRenderAheadDistance={90}
           initialListSize={15}
@@ -96,7 +96,7 @@ class Downloading extends React.Component<IProps, { visable: boolean }> {
   }
 }
 
-function mapStateToProps ({
+function mapStateToProps({
   download: {
     downloading,
     progress,
@@ -104,7 +104,7 @@ function mapStateToProps ({
   }
 }) {
   return {
-    tracks: downloading.map(track => ({
+    tracks: downloading.map((track) => ({
       ...track,
       progress: progress[track.id]
     })),

@@ -1,6 +1,7 @@
 import { handleActions, Action } from 'redux-actions'
 import { ITrack } from '../services/api'
 import { uniqueId } from 'lodash'
+import { ILyric } from '../interfaces'
 
 export interface IPlayerState {
   playing: IPlaying,
@@ -14,7 +15,7 @@ export interface IPlayerState {
   seconds: number,
   loadingLyric: boolean,
   lyrics: {
-    [props: number]: any
+    [props: number]: ILyric[]
   },
   slideTime: number,
   isSliding: boolean,
@@ -60,7 +61,7 @@ const initialState: IPlayerState = {
 }
 
 export default handleActions({
-  'player/play' (state, { payload }: any) {
+  'player/play'(state, { payload }: any) {
     const { playlist, playing } = payload
     return playlist ? {
       ...state,
@@ -77,7 +78,7 @@ export default handleActions({
       }
     }
   },
-  'player/lyric/save' (state, { payload }: any) {
+  'player/lyric/save'(state, { payload }: any) {
     return {
       ...state,
       lyrics: {
@@ -104,14 +105,14 @@ export default handleActions({
       loadingLyric: true
     }
   },
-  'player/playlist/merge' (state, { payload }: any) {
+  'player/playlist/merge'(state, { payload }: any) {
     return {
       ...state,
       playlist: state.playlist.concat(payload)
     }
   },
-  'player/history/merge' (state, { payload }: any) {
-    let { history } = state
+  'player/history/merge'(state, { payload }: any) {
+    const { history } = state
     if (history.length >= 101) {
       history.shift()
     }
@@ -120,55 +121,55 @@ export default handleActions({
       history: history.concat(payload || [])
     }
   },
-  'player/history/save' (state, { payload }: any) {
+  'player/history/save'(state, { payload }: any) {
     return {
       ...state,
       history: payload
     }
   },
-  'player/status' (state, { payload }: any) {
+  'player/status'(state, { payload }: any) {
     return {
       ...state,
       status: payload.status
     }
   },
-  'player/mode' (state, { payload }: Action<IPlayerMode>) {
+  'player/mode'(state, { payload }: Action<IPlayerMode>) {
     return {
       ...state,
       mode: payload
     }
   },
-  'player/track/play' (state, { payload }) {
+  'player/track/play'(state, { payload }) {
     return {
       ...state,
       uri: payload
     }
   },
-  'player/currentTime' (state, { payload }: any) {
+  'player/currentTime'(state, { payload }: any) {
     return {
       ...state,
       currentTime: payload
     }
   },
-  'player/duration' (state, { payload }: any) {
+  'player/duration'(state, { payload }: any) {
     return {
       ...state,
       duration: payload
     }
   },
-  'player/slideTime' (state, { payload }: any) {
+  'player/slideTime'(state, { payload }: any) {
     return {
       ...state,
       slideTime: payload
     }
   },
-  'player/slide' (state, { payload }: any) {
+  'player/slide'(state, { payload }: any) {
     return {
       ...state,
       isSliding: payload
     }
   },
-  '🐸🐸🐸' (state, { payload }) {
+  '🐸🐸🐸'(state, { payload }) {
     return {
       ...state,
       seconds: typeof payload === 'number'

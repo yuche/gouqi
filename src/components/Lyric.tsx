@@ -9,11 +9,7 @@ import {
   ActivityIndicator
 } from 'react-native'
 import { isEmpty, findIndex } from 'lodash'
-interface ILyric {
-  time: number,
-  text: string,
-  translation?: string
-}
+import { ILyric } from '../interfaces'
 
 function parseLyrics(lyrics: string) {
   return lyrics
@@ -30,7 +26,7 @@ function parselrcWithTranslation(s1: string, s2: string) {
   const original = parseLyrics(s1)
   const translations = parseLyrics(s2)
   return original.map(({ time, text }) => {
-    const lrc = translations.find(t => t.time === time)
+    const lrc = translations.find((t) => t.time === time)
     const translation = lrc ? lrc.text : ''
     return {
       time,
@@ -49,7 +45,7 @@ function parseLrcText(str: string) {
     return []
   }
   return times ?
-    parseMutipleTime(times).map(time => ({...time, text})) :
+    parseMutipleTime(times).map((time) => ({...time, text})) :
     []
 }
 
@@ -63,16 +59,13 @@ function parseMutipleTime(times: string[]) {
           parseInt(clock[3], 10) / ((clock[3] + '').length === 2 ? 100 : 1000)
       }] :
       []
-  }, [] as {
+  }, [] as Array<{
     time: number
-  }[])
+  }>)
 }
 
 interface IProps {
-  lyrics: {
-    original: string,
-    translations?: string
-  },
+  lyrics: ILyric[],
   currentTime: number,
   refreshing: boolean,
   lineHeight?: number,
@@ -94,33 +87,24 @@ export default class Lyrics extends React.PureComponent<IProps, IState> {
 
   private Flatlist: FlatListStatic<any>
 
-  private lyricList: ILyric[] = []
-
   constructor(props: IProps) {
     super(props)
     this.state = {
       currentIndex: 0
     }
-    const { lyrics: {
-      translations,
-      original
-    } } = props
-    this.lyricList = translations ?
-      parselrcWithTranslation(original, translations) :
-      parseLyrics(original)
   }
 
-  componentWillReceiveProps ({ currentTime, lyrics, lineHeight, refreshing }: IProps) {
+  componentWillReceiveProps({ currentTime, lyrics, lineHeight, refreshing }: IProps) {
     const {
       currentIndex
     } = this.state
     if (
       currentTime !== this.props.currentTime
-      && !isEmpty(this.lyricList)
+      && !isEmpty(this.props.lyrics)
       && !refreshing
     ) {
-      const index = findIndex(this.lyricList, (lrc, index) => {
-        const next = this.lyricList[index + 1]
+      const index = findIndex(this.props.lyrics, (lrc, i) => {
+        const next = this.props.lyrics[i + 1]
         return lrc.time >= currentTime &&
           (!next || currentTime < next.time)
       }) - 1
@@ -128,7 +112,7 @@ export default class Lyrics extends React.PureComponent<IProps, IState> {
         const isIndexValid = index >= 0
         // this.lyricList = this.lyricList.slice()
         this.setState({
-          currentIndex: isIndexValid ? index : this.lyricList.length - 1
+          currentIndex: isIndexValid ? index : this.props.lyrics.length - 1
         })
         if (!this.isScrolling && isIndexValid && this.Flatlist) {
           // scroll to
@@ -172,6 +156,7 @@ export default class Lyrics extends React.PureComponent<IProps, IState> {
 
   renderText = (text: string, isActive: boolean) => {
     return text ?
+      // tslint:disable-next-line:jsx-wrap-multiline
       <Text
         style={[styles.text, isActive && styles.active]}
       >
@@ -198,10 +183,10 @@ export default class Lyrics extends React.PureComponent<IProps, IState> {
       <View style={styles.container} onTouchStart={this.onTouch}>
         {
           this.props.refreshing ?
-            <ActivityIndicator animating size='large'/> :
+            <ActivityIndicator animating={true} size='large'/> :
             <FlatList
               ref={this.mapFlatlist}
-              data={this.lyricList}
+              data={this.props.lyrics}
               renderItem={this.renderItem}
               getItemLayout={this.getItemLayout}
               keyExtractor={this.keyExtractor}

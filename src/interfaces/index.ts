@@ -19,6 +19,12 @@ export interface IInfiList {
   isRefreshing: boolean
 }
 
+export interface ILyric {
+  time: number,
+  text: string,
+  translation?: string
+}
+
 export interface IPlaylistsProps extends IInfiList {
   playlists: api.IPlaylist[]
 }

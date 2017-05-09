@@ -16,7 +16,7 @@ import * as api from '../services/api'
 import { ajaxCall } from './common'
 import MusicControl from 'react-native-music-control/index.ios.js'
 
-function* nextTrack () {
+function* nextTrack() {
   const playerState: IPlayerState = yield select((state: any) => state.player)
 
   const { mode, playing, playlist, seconds } = playerState
@@ -56,7 +56,7 @@ function* nextTrack () {
 
 }
 
-function* prevTrack () {
+function* prevTrack() {
   const playerState: IPlayerState = yield select((state: any) => state.player)
 
   const { history, playlist, playing, seconds } = playerState
@@ -66,7 +66,7 @@ function* prevTrack () {
   if (playlist.length) {
     const historyLength = history.length
     const historyTrack = history[historyLength - 2]
-    const index = historyTrack && findIndex(playlist, t => t.id === historyTrack.id)
+    const index = historyTrack && findIndex(playlist, (t) => t.id === historyTrack.id)
     if (index) {
       yield put(playTrackAction({
         playing: {
@@ -75,10 +75,10 @@ function* prevTrack () {
         prev: true
       }))
     } else {
-      const index = playing.index
+      const i = playing.index
       yield put(playTrackAction({
         playing: {
-          index: index === 0 ? playlist.length - 1 : index - 1
+          index: i === 0 ? playlist.length - 1 : i - 1
         },
         prev: true
       }))
@@ -126,7 +126,7 @@ function* playPersonalFM() {
   }
 }
 
-function* playTrack ({ payload: { playing, prev } }) {
+function* playTrack({ payload: { playing, prev } }) {
   const playerState = yield select((state: any) => state.player)
   const { playlist } = playerState
   yield put(currentTimeAction(0))
@@ -163,13 +163,13 @@ function* playTrack ({ payload: { playing, prev } }) {
   }
 }
 
-function* setHisotrySaga () {
+function* setHisotrySaga() {
   const history = yield select((state: any) => state.player.history)
 
   yield fork(AsyncStorage.setItem, 'HISTORY', JSON.stringify(history))
 }
 
-function* delelteHistory ({ payload }) {
+function* delelteHistory({ payload }) {
   const history = yield select((state: any) => state.player.history.filter((_, index) => index !== payload))
 
   yield put({
@@ -178,7 +178,7 @@ function* delelteHistory ({ payload }) {
   })
 }
 
-function* watchStatus ({ payload: {status} }) {
+function* watchStatus({ payload: {status} }) {
   const currentTime = yield select((state: any) => state.player.currentTime)
   if (status === 'PLAYING') {
     MusicControl.updatePlayback({
@@ -198,7 +198,7 @@ function* watchCurrentTime() {
   yield put(addSecondsAction())
 }
 
-export default function* watchPlayer () {
+export default function* watchPlayer() {
   yield [
     takeLatest('player/track/next', nextTrack),
     takeLatest('player/track/prev', prevTrack),

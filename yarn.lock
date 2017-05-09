@@ -6376,9 +6376,9 @@ tslib@^1.6.0:
   version "1.7.0"
   resolved "https://registry.npmjs.org/tslib/-/tslib-1.7.0.tgz#6e8366695f72961252b35167b0dd4fbeeafba491"
 
-tslint-react@^1.0.0:
-  version "1.1.0"
-  resolved "https://registry.npmjs.org/tslint-react/-/tslint-react-1.1.0.tgz#a068d0624a99829098059f76c19d62babb82da5a"
+tslint-react@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.npmjs.org/tslint-react/-/tslint-react-3.0.0.tgz#00c48ab7f22e91533b62bdef2c162b49447af00a"
 
 tslint@^5.2.0:
   version "5.2.0"

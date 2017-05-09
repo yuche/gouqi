@@ -47,7 +47,7 @@ class DownloadBall extends React.Component<IProps, any> {
     Router.toDownloading()
   }
 
-  componentWillReceiveProps ({ visable }) {
+  componentWillReceiveProps({ visable }) {
     if (visable !== this.props.visable) {
       this.toggleVisable(visable)
     }
@@ -71,7 +71,7 @@ class DownloadBall extends React.Component<IProps, any> {
         >
           <TouchableWithoutFeedback onPress={this.onPress}>
             <Animated.View
-              style={[styles.ball,{
+              style={[styles.ball, {
                 transform: [{
                   scale: this.animation.interpolate({
                     inputRange: [0, .2, .4, .6, .8, 1],
@@ -94,7 +94,7 @@ class DownloadBall extends React.Component<IProps, any> {
 
 }
 
-function mapStateToProps ({
+function mapStateToProps({
   download: {
     downloading
   }

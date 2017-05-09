@@ -76,7 +76,7 @@
     "remote-redux-devtools": "^0.5.7",
     "remote-redux-devtools-on-debugger": "^0.7.0",
     "tslint": "^5.2.0",
-    "tslint-react": "^1.0.0"
+    "tslint-react": "^3.0.0"
   },
   "ava": {
     "files": [
