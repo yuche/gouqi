@@ -38,7 +38,7 @@ interface IProps {
 class DownloadBall extends React.Component<IProps, any> {
   private animation: Animated.Value
 
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.animation = new Animated.Value(0)
   }
@@ -47,13 +47,13 @@ class DownloadBall extends React.Component<IProps, any> {
     Router.toDownloading()
   }
 
-  componentWillReceiveProps({ visable }) {
+  componentWillReceiveProps ({ visable }) {
     if (visable !== this.props.visable) {
       this.toggleVisable(visable)
     }
   }
 
-  toggleVisable(visable: boolean) {
+  toggleVisable (visable: boolean) {
     Animated.timing(
       this.animation, {
         toValue: visable ? 1 : 0,
@@ -62,7 +62,7 @@ class DownloadBall extends React.Component<IProps, any> {
     ).start()
   }
 
-  render() {
+  render () {
     return (
       <View style={styles.frame} pointerEvents='box-none'>
         <Interactable.View
@@ -94,7 +94,7 @@ class DownloadBall extends React.Component<IProps, any> {
 
 }
 
-function mapStateToProps({
+function mapStateToProps ({
   download: {
     downloading
   }

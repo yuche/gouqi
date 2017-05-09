@@ -1,6 +1,6 @@
 import { put, fork, select } from 'redux-saga/effects'
 import { IPlayerState } from '../reducers/player'
-import { random, get, findIndex } from 'lodash'
+import { random, get, findIndex, isEmpty } from 'lodash'
 import { playTrackAction } from '../actions'
 import { takeLatest, takeEvery } from 'redux-saga'
 import {
@@ -15,8 +15,9 @@ import {
 import * as api from '../services/api'
 import { ajaxCall } from './common'
 import MusicControl from 'react-native-music-control/index.ios.js'
+import { parselrcWithTranslation, parseLyrics } from '../utils'
 
-function* nextTrack() {
+function* nextTrack () {
   const playerState: IPlayerState = yield select((state: any) => state.player)
 
   const { mode, playing, playlist, seconds } = playerState
@@ -56,7 +57,7 @@ function* nextTrack() {
 
 }
 
-function* prevTrack() {
+function* prevTrack () {
   const playerState: IPlayerState = yield select((state: any) => state.player)
 
   const { history, playlist, playing, seconds } = playerState
@@ -86,16 +87,23 @@ function* prevTrack() {
   }
 }
 
-function* getLyrcis({ payload }) {
-  const lyrics = yield select((state: any) => state.player.lyrics)
-  if (!lyrics[payload]) {
+function* getLyrcis () {
+  const playerState: IPlayerState = yield select((state: any) => state.player)
+  const { playlist, lyrics, playing } = playerState
+  const id = (playlist[playing.index] && playlist[playing.index].id) || 0
+  if (id && isEmpty(lyrics[id])) {
     yield put({ type: 'player/lyric/start' })
-    const response = yield* ajaxCall(api.getLyric, payload)
+    const response = yield* ajaxCall(api.getLyric, id)
     if (response.code === 200) {
+      const translation = get(response, 'tlyric.lyric', '')
+      const lrc = get(response, 'lrc.lyric', '')
+      const lrcList = translation.length
+        ? parselrcWithTranslation(lrc, translation)
+        : parseLyrics(lrc)
       yield put({
         type: 'player/lyric/save',
         payload: {
-          [payload]: response.lyrics
+          [id]: lrcList
         }
       })
     }
@@ -103,7 +111,7 @@ function* getLyrcis({ payload }) {
   }
 }
 
-function* playPersonalFM() {
+function* playPersonalFM () {
   yield put(playTrackAction({
     playing: {
       index: 0,
@@ -126,16 +134,17 @@ function* playPersonalFM() {
   }
 }
 
-function* playTrack({ payload: { playing, prev } }) {
+function* watchLyricShow () {
+  yield fork(getLyrcis)
+}
+
+function* playTrack ({ payload: { playing, prev } }) {
   const playerState = yield select((state: any) => state.player)
   const { playlist } = playerState
   yield put(currentTimeAction(0))
-  if (playerState.lyricsVisable && playlist[playing.index] && playlist[playing.index].id) {
-    yield put({
-      type: 'player/lyric',
-      payload: playlist[playing.index].id
-    })
-  }
+  yield put({
+    type: 'player/lyric'
+  })
   if (playlist.length) {
     const track = playlist[playing.index]
     let uri = get(track, 'mp3Url', '')
@@ -163,13 +172,13 @@ function* playTrack({ payload: { playing, prev } }) {
   }
 }
 
-function* setHisotrySaga() {
+function* setHisotrySaga () {
   const history = yield select((state: any) => state.player.history)
 
   yield fork(AsyncStorage.setItem, 'HISTORY', JSON.stringify(history))
 }
 
-function* delelteHistory({ payload }) {
+function* delelteHistory ({ payload }) {
   const history = yield select((state: any) => state.player.history.filter((_, index) => index !== payload))
 
   yield put({
@@ -178,7 +187,7 @@ function* delelteHistory({ payload }) {
   })
 }
 
-function* watchStatus({ payload: {status} }) {
+function* watchStatus ({ payload: {status} }) {
   const currentTime = yield select((state: any) => state.player.currentTime)
   if (status === 'PLAYING') {
     MusicControl.updatePlayback({
@@ -194,11 +203,11 @@ function* watchStatus({ payload: {status} }) {
   }
 }
 
-function* watchCurrentTime() {
+function* watchCurrentTime () {
   yield put(addSecondsAction())
 }
 
-export default function* watchPlayer() {
+export default function* watchPlayer () {
   yield [
     takeLatest('player/track/next', nextTrack),
     takeLatest('player/track/prev', prevTrack),
@@ -209,6 +218,7 @@ export default function* watchPlayer() {
     takeLatest('player/history/save', setHisotrySaga),
     takeLatest('player/history/delete', delelteHistory),
     takeLatest('player/fm/play', playPersonalFM),
-    takeEvery('player/lyric', getLyrcis)
+    takeEvery('player/lyric', getLyrcis),
+    takeLatest('player/lyric/show', watchLyricShow)
   ]
 }

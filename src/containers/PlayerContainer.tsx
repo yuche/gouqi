@@ -39,11 +39,11 @@ const { width, height } = Dimensions.get('window')
 
 const VIEW_POSITION_Y = height - Navbar.HEIGHT - Navbar.HEIGHT
 
-function padding(num: number) {
+function padding (num: number) {
   return num < 10 ? '0' + num : num
 }
 
-function formatTime(time = 0) {
+function formatTime (time = 0) {
   const min = Math.floor(time / 60)
   const sec = Math.floor(time % 60)
   return `${padding(min)}:${padding(sec)}`
@@ -65,7 +65,7 @@ class PlayerContainer extends React.Component<IProps, any> {
 
   private translateY: Animated.Value
 
-  constructor(props: IProps) {
+  constructor (props: IProps) {
     super(props)
     this.deltaY = new Animated.Value(0)
     this.translateY = new Animated.Value(60)
@@ -108,7 +108,7 @@ class PlayerContainer extends React.Component<IProps, any> {
     }
   }
 
-  componentWillReceiveProps(nextProps: IProps) {
+  componentWillReceiveProps (nextProps: IProps) {
     if (nextProps.visable !== this.props.visable) {
       if (nextProps.visable) {
         Animated.timing(this.translateY, { toValue: 0 }).start()
@@ -130,7 +130,7 @@ class PlayerContainer extends React.Component<IProps, any> {
 
   mapPlayer = (component) => (this.Player = component)
 
-  render() {
+  render () {
     const {
       track,
       status,
@@ -426,7 +426,7 @@ const styles = {
     height: 60,
     ...centering
   } as ViewStyle,
-  orderAction() {
+  orderAction () {
     return {
       ...this.trackAction,
       position: 'relative',
@@ -441,7 +441,7 @@ const styles = {
   } as ViewStyle
 }
 
-function mapStateToProps(
+function mapStateToProps (
   {
     player: {
       playlist,
@@ -477,31 +477,31 @@ function mapStateToProps(
 export default connect(
   mapStateToProps,
   (dispatch, ownProps: any) => ({
-    prev() {
+    prev () {
       return dispatch(prevTrackAction())
     },
-    next() {
+    next () {
       return dispatch(nextTrackAction())
     },
-    changeStatus(status: IPlayerStatus) {
+    changeStatus (status: IPlayerStatus) {
       return dispatch(changeStatusAction(status))
     },
-    setCurrentTime(currentTime) {
+    setCurrentTime (currentTime) {
       return dispatch(currentTimeAction(currentTime))
     },
-    setSlideTime(time) {
+    setSlideTime (time) {
       return dispatch(slideTimeAction(time))
     },
-    toggleSlide(bool) {
+    toggleSlide (bool) {
       return dispatch(toggleSlide(bool))
     },
-    setDuration(duration) {
+    setDuration (duration) {
       return dispatch(durationAction(duration))
     },
-    popup(track) {
+    popup (track) {
       return dispatch(popupTrackActionSheet(track))
     },
-    setMode(mode) {
+    setMode (mode) {
       let modeStr
       if (mode === 'SEQUE') {
         modeStr = '顺序播放'
@@ -513,7 +513,7 @@ export default connect(
       dispatch(toastAction('info', `开始${modeStr}`))
       return dispatch(setModeAction(mode))
     },
-    download(track) {
+    download (track) {
       return dispatch(downloadTracksAction([track]))
     }
   })

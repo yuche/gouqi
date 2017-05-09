@@ -34,7 +34,7 @@ class Downloading extends React.Component<IProps, { visable: boolean }> {
 
   private ds: ListViewDataSource
 
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.ds = new ListView.DataSource({
       rowHasChanged: (r1, r2) => r1.id !== r2.id || r1.progress !== r2.progress
@@ -67,7 +67,7 @@ class Downloading extends React.Component<IProps, { visable: boolean }> {
     )
   }
 
-  render() {
+  render () {
     const {
       tracks,
       remove,
@@ -96,7 +96,7 @@ class Downloading extends React.Component<IProps, { visable: boolean }> {
   }
 }
 
-function mapStateToProps({
+function mapStateToProps ({
   download: {
     downloading,
     progress,
@@ -115,13 +115,13 @@ function mapStateToProps({
 export default connect(
   mapStateToProps,
   (dispatch) => ({
-    remove(id: number) {
+    remove (id: number) {
       return dispatch(removeDownloadingItem(id))
     },
-    clear() {
+    clear () {
       return dispatch(clearDownloading())
     },
-    stop() {
+    stop () {
       return dispatch(stopCurrentDownload())
     }
   })

@@ -11,59 +11,6 @@ import {
 import { isEmpty, findIndex } from 'lodash'
 import { ILyric } from '../interfaces'
 
-function parseLyrics(lyrics: string) {
-  return lyrics
-    .split('\n')
-    .reduce((arr: ILyric[], str: string) => {
-      return [...arr, ...parseLrcText(str)]
-    }, [] as ILyric[])
-    .sort((a, b) => {
-      return a.time - b.time
-    })
-}
-
-function parselrcWithTranslation(s1: string, s2: string) {
-  const original = parseLyrics(s1)
-  const translations = parseLyrics(s2)
-  return original.map(({ time, text }) => {
-    const lrc = translations.find((t) => t.time === time)
-    const translation = lrc ? lrc.text : ''
-    return {
-      time,
-      text,
-      translation
-    }
-  })
-}
-
-function parseLrcText(str: string) {
-  const times = str.match(/\[(\d{2}):(\d{2})\.(\d{2,3})]/g)
-  const text = str
-    .replace(/\[(\d{2}):(\d{2})\.(\d{2,3})]/g, '')
-    .replace(/^\s+|\s+$/g, '')
-  if (!text) {
-    return []
-  }
-  return times ?
-    parseMutipleTime(times).map((time) => ({...time, text})) :
-    []
-}
-
-function parseMutipleTime(times: string[]) {
-  return times.reduce((arr, str) => {
-    const clock = /\[(\d{2}):(\d{2})\.(\d{2,3})]/.exec(str)
-    return clock ?
-      [...arr, {
-        time: Number(clock[1]) * 60 +
-          parseInt(clock[2], 10) +
-          parseInt(clock[3], 10) / ((clock[3] + '').length === 2 ? 100 : 1000)
-      }] :
-      []
-  }, [] as Array<{
-    time: number
-  }>)
-}
-
 interface IProps {
   lyrics: ILyric[],
   currentTime: number,
@@ -87,14 +34,14 @@ export default class Lyrics extends React.PureComponent<IProps, IState> {
 
   private Flatlist: FlatListStatic<any>
 
-  constructor(props: IProps) {
+  constructor (props: IProps) {
     super(props)
     this.state = {
       currentIndex: 0
     }
   }
 
-  componentWillReceiveProps({ currentTime, lyrics, lineHeight, refreshing }: IProps) {
+  componentWillReceiveProps ({ currentTime, lyrics, lineHeight, refreshing }: IProps) {
     const {
       currentIndex
     } = this.state
@@ -126,11 +73,11 @@ export default class Lyrics extends React.PureComponent<IProps, IState> {
     }
   }
 
-  componentWillUnmount() {
+  componentWillUnmount () {
     this.clearTimer()
   }
 
-  clearTimer() {
+  clearTimer () {
     if (this.timer) {
       clearTimeout(this.timer)
     }
@@ -178,7 +125,7 @@ export default class Lyrics extends React.PureComponent<IProps, IState> {
 
   mapFlatlist = (component) => ( this.Flatlist = component )
 
-  render() {
+  render () {
     return (
       <View style={styles.container} onTouchStart={this.onTouch}>
         {

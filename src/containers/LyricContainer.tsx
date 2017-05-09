@@ -14,11 +14,11 @@ interface IProps {
 
 class Lyrics extends React.Component<IProps, any> {
 
-  constructor(props) {
+  constructor (props) {
     super(props)
   }
 
-  render() {
+  render () {
     return (
       <View></View>
     )
