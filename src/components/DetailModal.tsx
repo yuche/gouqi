@@ -24,14 +24,14 @@ interface IProps {
 
 export default class DetailModal extends React.Component<IProps, { visible: boolean }> {
   private canRouterPop = true
-  constructor(props: IProps) {
+  constructor (props: IProps) {
     super(props)
     this.state = {
       visible: false
     }
   }
 
-  render() {
+  render () {
     const {
       route
     } = this.props
@@ -43,7 +43,7 @@ export default class DetailModal extends React.Component<IProps, { visible: bool
             <View style={{ flex: 1, marginBottom: 60 }}>
               <Navbar
                 title=''
-                hideLeft
+                hideLeft={true}
                 style={styles.navbar}
                 rightConfig={{iconName: 'times', fontSize: 20, onPress: this.hide}}
               />

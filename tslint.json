@@ -9,6 +9,7 @@
     "jsx-alignment": true,
     "jsx-self-close": true,
     "jsx-no-multiline-js": false,
+    "no-unused-variable": true,
     "quotemark": [true, "single", "avoid-escape"],
     "semicolon": [true, "never"],
     "no-string-literal": false,

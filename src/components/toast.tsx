@@ -53,11 +53,11 @@ class Toast extends React.Component<IProps, IState> {
     }
   }
 
-  componentWillUnmount() {
+  componentWillUnmount () {
     this.clearTimer()
   }
 
-  componentWillReceiveProps(nextProps: IProps) {
+  componentWillReceiveProps (nextProps: IProps) {
     this.show()
   }
 
@@ -104,9 +104,8 @@ class Toast extends React.Component<IProps, IState> {
     const transform = {transform: [{translateY: this.state.slideAnim}]}
 
     return visible ?
-      <View
-        style={styles.container}
-      >
+    // tslint:disable-next-line:jsx-wrap-multiline
+    <View style={styles.container}>
         <TouchableWithoutFeedback onPress={this.onPress}>
           <Animated.View
             style={[typeStyleFilter(this.props.kind), styles.wrapper, transform]}
@@ -181,7 +180,7 @@ const styles = StyleSheet.create({
   } as ViewStyle
 })
 
-/** 
+/**
  * [TODO]
  * I can't get "styles[this.state.type]" through
  * TypeScript validation

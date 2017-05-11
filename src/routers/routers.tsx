@@ -27,13 +27,14 @@ import FavoriteArtists from '../containers/FavoriteArtistScene'
 import Downloading from '../containers/DownloadingScene'
 import DownloadBall from '../components/DownloadBall'
 import Player from '../containers/PlayerContainer'
+import Lyrics from '../containers/LyricContainer'
 
 const scenes = Actions.create(
   <Scene key='root' sceneStyle={{ height }}>
-    <Scene key='home' component={Home} hideNavBar initial sceneStyle={{ minHeight: height, flex: 1}}/>
+    <Scene key='home' component={Home} hideNavBar={true} initial={true} sceneStyle={{ minHeight: height, flex: 1}}/>
     <Scene key='login' component={Login} title='登录' direction='vertical'/>
     <Scene key='playlist' component={PlayList}/>
-    <Scene key='search' component={Search} direction='vertical' hideNavBar panHandlers={undefined}/>
+    <Scene key='search' component={Search} direction='vertical' hideNavBar={true} panHandlers={undefined}/>
     <Scene key='comment' component={Comment} title='评论'/>
     <Scene key='DownloadPlaylistScene' component={DownloadPlaylistScene}/>
     <Scene key='PersonalPlaylistScene' component={PersonalPlaylistScene}/>
@@ -52,6 +53,7 @@ const scenes = Actions.create(
 
 const Routers = () => (
   <View style={{flex: 1}}>
+    <Lyrics />
     <DownloadBall />
     <Router scenes={scenes}/>
     <UIContainer />

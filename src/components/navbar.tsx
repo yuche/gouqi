@@ -18,7 +18,7 @@ interface IProps {
   title: string,
   style?: ViewStyle,
   hideBorder?: boolean,
-  titleStyle?: Object,
+  titleStyle?: {},
   textColor?: string,
   rightConfig?: IBtnProps,
   hideLeft?: boolean
@@ -34,7 +34,7 @@ interface IBtnProps {
 class NavBar extends React.Component<IProps, any> {
   static HEIGHT = Platform.OS === 'ios' ? 64 : 32
 
-  constructor(props: any) {
+  constructor (props: any) {
     super(props)
   }
 

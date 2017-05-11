@@ -55,7 +55,7 @@ export function* syncSearchResource (
             return Object.assign({}, p, {
               [picUrlKey]: p[picUrlKey] === null ?
               // TODO:
-              // placeholder image. maybe use local image instead 
+              // placeholder image. maybe use local image instead
               PLACEHOLDER_IMAGE :
               p[picUrlKey] + `?param=${picSize}`
             })

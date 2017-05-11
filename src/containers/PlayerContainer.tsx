@@ -261,12 +261,14 @@ class PlayerContainer extends React.Component<IProps, any> {
   renderTrackActions = () => {
     return (
       <View style={styles.trackActions}>
-        <CustomIcon size={22} style={styles.trackAction} name='ci' color='#ccc' />
+        <CustomIcon size={22} style={styles.trackAction} name='ci' color='#ccc' onPress={this.showLrc}/>
         <CustomIcon size={22} style={styles.trackAction} name='download' color='#ccc' onPress={this.download}/>
         <CustomIcon size={22} style={styles.trackAction} name='more' color='#ccc' onPress={this.popup}/>
       </View>
     )
   }
+
+  showLrc = () => (this.props.showLrc())
 
   download = () => (this.props.download(this.props.track))
 
@@ -500,6 +502,9 @@ export default connect(
     },
     popup (track) {
       return dispatch(popupTrackActionSheet(track))
+    },
+    showLrc () {
+      return dispatch({ type: 'player/lyric/show' })
     },
     setMode (mode) {
       let modeStr

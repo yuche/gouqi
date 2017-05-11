@@ -37,8 +37,8 @@ export function playCount (num: number) {
   return Math.round(n / 10000) + ' 万次播放'
 }
 
-export function parseLyrics (lyrics: string) {
-  return lyrics
+function parseLyric (lyric: string) {
+  return lyric
     .split('\n')
     .reduce((arr: ILyric[], str: string) => {
       return [...arr, ...parseLrcText(str)]
@@ -48,9 +48,12 @@ export function parseLyrics (lyrics: string) {
     })
 }
 
-export function parselrcWithTranslation (s1: string, s2: string) {
-  const original = parseLyrics(s1)
-  const translations = parseLyrics(s2)
+export function parseLyrics (s1: string, s2?: string) {
+  const original = parseLyric(s1)
+  if (!s2) {
+    return original
+  }
+  const translations = parseLyric(s2)
   return original.map(({ time, text }) => {
     const lrc = translations.find((t) => t.time === time)
     const translation = lrc ? lrc.text : ''
@@ -70,21 +73,19 @@ function parseLrcText (str: string) {
   if (!text) {
     return []
   }
-  return times ?
-    parseMutipleTime(times).map((time) => ({ ...time, text })) :
-    []
+  return times ? parseMutipleTime(times).map((time) => ({ ...time, text })) : []
 }
 
 function parseMutipleTime (times: string[]) {
   return times.reduce((arr, str) => {
     const clock = /\[(\d{2}):(\d{2})\.(\d{2,3})]/.exec(str)
-    return clock ?
-      [...arr, {
+    return clock
+      ? [...arr, {
         time: Number(clock[1]) * 60 +
         parseInt(clock[2], 10) +
         parseInt(clock[3], 10) / ((clock[3] + '').length === 2 ? 100 : 1000)
-      }] :
-      []
+      }]
+      : []
   }, [] as Array<{
     time: number
   }>)

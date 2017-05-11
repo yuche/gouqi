@@ -7,7 +7,8 @@ import {
   changeStatusAction,
   currentTimeAction,
   addSecondsAction,
-  toastAction
+  toastAction,
+  slideTimeAction
 } from '../actions'
 import {
   AsyncStorage
@@ -15,7 +16,7 @@ import {
 import * as api from '../services/api'
 import { ajaxCall } from './common'
 import MusicControl from 'react-native-music-control/index.ios.js'
-import { parselrcWithTranslation, parseLyrics } from '../utils'
+import { parseLyrics } from '../utils'
 
 function* nextTrack () {
   const playerState: IPlayerState = yield select((state: any) => state.player)
@@ -97,13 +98,10 @@ function* getLyrcis () {
     if (response.code === 200) {
       const translation = get(response, 'tlyric.lyric', '')
       const lrc = get(response, 'lrc.lyric', '')
-      const lrcList = translation.length
-        ? parselrcWithTranslation(lrc, translation)
-        : parseLyrics(lrc)
       yield put({
         type: 'player/lyric/save',
         payload: {
-          [id]: lrcList
+          [id]: parseLyrics(lrc, translation)
         }
       })
     }
@@ -138,13 +136,16 @@ function* watchLyricShow () {
   yield fork(getLyrcis)
 }
 
-function* playTrack ({ payload: { playing, prev } }) {
-  const playerState = yield select((state: any) => state.player)
-  const { playlist } = playerState
-  yield put(currentTimeAction(0))
-  yield put({
-    type: 'player/lyric'
-  })
+function* playTrack ({ payload: { playing, prev }  }) {
+  yield put(changeStatusAction('PAUSED'))
+  yield put(slideTimeAction(0))
+  const playerState: IPlayerState = yield select((state: any) => state.player)
+  const { playlist, lyricsVisable } = playerState
+  if (lyricsVisable) {
+    yield put({
+      type: 'player/lyric'
+    })
+  }
   if (playlist.length) {
     const track = playlist[playing.index]
     let uri = get(track, 'mp3Url', '')

@@ -6,10 +6,14 @@ import {
   TextStyle,
   FlatList,
   FlatListStatic,
-  ActivityIndicator
+  ActivityIndicator,
+  Dimensions
 } from 'react-native'
 import { isEmpty, findIndex } from 'lodash'
 import { ILyric } from '../interfaces'
+import { Color } from '../styles'
+
+const { width }  = Dimensions.get('window')
 
 interface IProps {
   lyrics: ILyric[],
@@ -65,7 +69,7 @@ export default class Lyrics extends React.PureComponent<IProps, IState> {
           // scroll to
           this.Flatlist.scrollToIndex({
             animated: true,
-            index: index + 1,
+            index,
             viewPosition: .5
           })
         }
@@ -88,7 +92,7 @@ export default class Lyrics extends React.PureComponent<IProps, IState> {
     this.isScrolling = true
     this.timer = setTimeout(() => {
       this.isScrolling = false
-    }, 3000)
+    }, 2000)
   }
 
   renderItem = ({item , index}) => {
@@ -130,8 +134,10 @@ export default class Lyrics extends React.PureComponent<IProps, IState> {
       <View style={styles.container} onTouchStart={this.onTouch}>
         {
           this.props.refreshing ?
-            <ActivityIndicator animating={true} size='large'/> :
+            <ActivityIndicator animating={true}/> :
+            this.props.lyrics.length ?
             <FlatList
+              style={{ width: width - 40, paddingHorizontal: 20}}
               ref={this.mapFlatlist}
               data={this.props.lyrics}
               renderItem={this.renderItem}
@@ -139,7 +145,8 @@ export default class Lyrics extends React.PureComponent<IProps, IState> {
               keyExtractor={this.keyExtractor}
               extraData={this.state.currentIndex}
               refreshing={this.props.refreshing}
-            />
+            /> :
+            <Text>没有找到歌词。</Text>
         }
       </View>
     )
@@ -153,15 +160,15 @@ const styles = {
     alignItems: 'center'
   } as ViewStyle,
   active: {
-    color: 'red'
+    color: Color.main
   } as TextStyle,
   text: {
     textAlign: 'center',
+    color: '#bbb',
     lineHeight: 17
   } as TextStyle,
   container: {
     flex: 1,
-    marginHorizontal: 20,
     justifyContent: 'center',
     alignItems: 'center'
   } as ViewStyle

@@ -55,7 +55,7 @@ export const setHistoryAction = createAction('player/history/save')
 
 export const playTrackAction: IPlayTrackAction = createAction('player/play',
   ({playing, playlist, prev}: IPlayPayload) => {
-    let playingCopy = playing
+    const playingCopy = playing
     playingCopy.index = Number(playing.index)
     return {
       playing: playingCopy,
@@ -107,36 +107,36 @@ export const syncAlbumDetail: ISyncDetail = createAction('albums/detail',
 
 export type ISyncDetail = (id: number) => Action<string>
 export const syncPlaylistDetail: ISyncDetail = createAction('details/playlist',
-  id => id
+  (id) => id
 )
 export const removeDownloadingItem: ISyncDetail = createAction('download/downloading/remove',
-  id => id
+  (id) => id
 )
 export const syncArtistTracks: ISyncDetail = createAction('artists/detail/track',
-  id => id
+  (id) => id
 )
 export const syncArtistAlbums: ISyncDetail = createAction('artists/detail/album',
-  id => id
+  (id) => id
 )
 export const syncArtistDescription: ISyncDetail = createAction('artists/detail/description',
-  id => id
+  (id) => id
 )
 export const followArtist: ISyncDetail = createAction('artists/detail/follow',
-  id => id
+  (id) => id
 )
 
 export const downloadSuccess = createAction('download/tracks/merge')
 
 export const subscribePlaylist: ISyncDetail = createAction('details/playlist/subscribe',
-  id => id
+  (id) => id
 )
 
 export const getComments: ISyncDetail = createAction('comments/sync',
-  id => id
+  (id) => id
 )
 
 export const getMoreComments: ISyncDetail = createAction('comments/more',
-  id => id
+  (id) => id
 )
 
 export const stopCurrentDownload = createAction('download/stop')

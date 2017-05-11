@@ -13,11 +13,11 @@ class Player extends React.Component<IProps, any> {
 
   private audio: any
 
-  constructor(props: IProps) {
+  constructor (props: IProps) {
     super(props)
   }
 
-  componentDidMount() {
+  componentDidMount () {
     // setTimeout(() => {
     //   api.favoriteArtists().then(res => {
     //   console.log(res)
@@ -30,12 +30,12 @@ class Player extends React.Component<IProps, any> {
     MusicControl.enableControl('previousTrack', true)
     MusicControl.enableControl('seekForward', false)
     MusicControl.enableControl('seekBackward', false)
-    MusicControl.on('play', () => {
-      this.props.changeStatus('PLAYING')
-    })
-    MusicControl.on('pause', () => {
-      this.props.changeStatus('PAUSED')
-    })
+    // MusicControl.on('play', () => {
+    //   this.props.changeStatus('PLAYING')
+    // })
+    // MusicControl.on('pause', () => {
+    //   this.props.changeStatus('PAUSED')
+    // })
     MusicControl.on('nextTrack', () => {
       this.props.next()
     })
@@ -48,7 +48,7 @@ class Player extends React.Component<IProps, any> {
     MusicControl.resetNowPlaying()
   }
 
-  render() {
+  render () {
     const {
       track,
       status,
@@ -59,6 +59,7 @@ class Player extends React.Component<IProps, any> {
     const paused = status !== 'PLAYING'
     const repeat = mode === 'REPEAT'
     return (
+      // tslint:disable-next-line:jsx-wrap-multiline
       uri ? <Video
         style={{ height: 0, width: 0 }}
         ref={this.mapAudio}
@@ -69,10 +70,12 @@ class Player extends React.Component<IProps, any> {
         repeat={repeat}
         playInBackground={true}
         playWhenInactive={true}
+        onLoadStart={this.onLoadStart}
         onError={this.onError}
         onLoad={this.onLoad(track)}
         onProgress={this.onProgress}
         onEnd={this.onEnd}
+        ignoreSilentSwitch={'ignore'}
       /> : null
     )
   }
@@ -81,11 +84,16 @@ class Player extends React.Component<IProps, any> {
     this.audio = component
   }
 
+  onLoadStart = () => {
+    // this.props.changeStatus('BUFFERING')
+  }
+
   onError = (e: any) => {
     this.props.changeStatus('PAUSED')
   }
 
   onLoad = (track: ITrack) => ({ duration }: { duration: number }) => {
+    // this.props.changeStatus('PLAYING')
     this.props.setDuration(duration)
     MusicControl.setNowPlaying({
       title: track.name,

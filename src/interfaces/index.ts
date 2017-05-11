@@ -88,6 +88,7 @@ export interface IPlayerProps {
   isSliding: boolean,
   visable: boolean,
   shrink: string,
+  showLrc: () => Redux.Action,
   setMode: (mode) => Redux.Action,
   download: (track) => Redux.Action,
   popup: (track) => Redux.Action,

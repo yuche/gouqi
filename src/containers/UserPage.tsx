@@ -36,7 +36,7 @@ interface IListProps {
 class UserPage extends React.Component<IProps, any> {
   private list: IListProps[]
 
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.list = [
       {
@@ -66,7 +66,7 @@ class UserPage extends React.Component<IProps, any> {
     return (
       <View style={styles.header}>
         <Image source={{uri}} style={styles.headImg}/>
-        { nickname && <Text>{nickname}</Text>}
+        {nickname && <Text>{nickname}</Text>}
         <Text>{seconds}</Text>
       </View>
     )
@@ -82,13 +82,11 @@ class UserPage extends React.Component<IProps, any> {
         renderLeft={
           <View style={centering}>
             <Icon name={iconName} size={20} color='#ccc'/>
-          </View>
-        }
+          </View>}
         renderRight={
           <View style={centering}>
             <Icon name='angle-right' size={20} color='#ccc'/>
-          </View>
-        }
+          </View>}
         onPress={onPress}
       />
     )
@@ -98,7 +96,7 @@ class UserPage extends React.Component<IProps, any> {
     this.props.playFM()
   }
 
-  render() {
+  render () {
     const {
       profile,
       seconds,
@@ -115,7 +113,7 @@ class UserPage extends React.Component<IProps, any> {
         <TouchableWithoutFeedback onPress={Router.toLogin()}>
             <Image source={{ uri }} style={styles.headImg} />
         </TouchableWithoutFeedback>
-          { nickname && <Text>{nickname}</Text>}
+          {nickname && <Text>{nickname}</Text>}
           <Text>{seconds}</Text>
         </View>
         <ListItem
@@ -126,13 +124,11 @@ class UserPage extends React.Component<IProps, any> {
           renderLeft={
             <View style={centering}>
               <Ionicons name='md-radio' size={20} color='#ccc'/>
-            </View>
-          }
+            </View>}
           renderRight={
             <View style={centering}>
               {fmIcon}
-            </View>
-          }
+            </View>}
         />
         {this.list.map(this.renderListItem)}
         <ListItem
@@ -142,32 +138,13 @@ class UserPage extends React.Component<IProps, any> {
           renderLeft={
             <View style={centering}>
               <CustomIcon name='artist' size={20} color='#ccc'/>
-            </View>
-          }
+            </View>}
           renderRight={
             <View style={centering}>
               <Icon name='angle-right' size={20} color='#ccc'/>
-            </View>
-          }
+            </View>}
           // tslint:disable-next-line:jsx-no-lambda
           onPress={() => Router.toFavoriteArtists()}
-        />
-        <ListItem
-          title='正在下载'
-          titleStyle={styles.title}
-          containerStyle={styles.list}
-          renderLeft={
-            <View style={centering}>
-              <CustomIcon name='artist' size={20} color='#ccc'/>
-            </View>
-          }
-          renderRight={
-            <View style={centering}>
-              <Icon name='angle-right' size={20} color='#ccc'/>
-            </View>
-          }
-          // tslint:disable-next-line:jsx-no-lambda
-          onPress={() => Router.toDownloading()}
         />
       </View>
     )
@@ -215,7 +192,7 @@ function mapStateToProps ({
 export default connect(
   mapStateToProps,
   (dispatch) => ({
-    playFM() {
+    playFM () {
       return dispatch({type: 'player/fm/play'})
     }
   })
