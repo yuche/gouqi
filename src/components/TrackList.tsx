@@ -40,12 +40,12 @@ class TrackList extends React.Component<IProps, any> {
   }
   private ds: ListViewDataSource
 
-  constructor(props: IProps) {
+  constructor (props: IProps) {
     super(props)
     this.ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1.id !== r2.id})
   }
 
-  componentDidMount() {
+  componentDidMount () {
     this.sync()
   }
 
@@ -65,39 +65,41 @@ class TrackList extends React.Component<IProps, any> {
         `${artistName} - ${albumName}` :
         albumName
       const colorStyle = isPlaying && { color: Color.main }
-      return <ListItem
-        title={track.name}
-        containerStyle={{ paddingVertical: 0, paddingRight: 0 }}
-        picURI={showIndex ? undefined : track.album.picUrl + '?param=75y75'}
-        subTitle={subTitle}
-        renderLeft={
-          showIndex ? <View style={[centering, { width: 30 }]}>
-            <Text style={{ fontSize: 18, fontWeight: 'bold', color: '#ddd' }}>
-              {Number(rowId) + 1}
-            </Text>
-          </View> : undefined
-        }
-        textContainer={{ paddingVertical: 10 }}
-        picStyle={{ width: 40, height: 40}}
-        titleStyle={[{ fontSize: 15 }, colorStyle]}
-        subTitleStyle={colorStyle}
-        onPress={!isPlaying ? this.listItemOnPress(index) : undefined}
-        renderRight={
-          <TouchableWithoutFeedback
-            onPress={this.moreIconOnPress(track)}
-          >
-            <View style={{flexDirection: 'row', paddingRight: 10}}>
-              {isPlaying && <View style={{ justifyContent: 'center' }}>
-                <Ionic size={22} name='md-volume-up' color={Color.main} style={{ paddingLeft: 10 }}/>
-              </View>}
-              <View style={{ justifyContent: 'center' }}>
-                <Ionic size={22} name='ios-more' color='#777' style={{ paddingLeft: 10 }}/>
+      // tslint:disable-next-line:jsx-wrap-multiline
+      return (
+        <ListItem
+          title={track.name}
+          containerStyle={{ paddingVertical: 0, paddingRight: 0 }}
+          picURI={showIndex ? undefined : track.album.picUrl + '?param=75y75'}
+          subTitle={subTitle}
+          renderLeft={
+            showIndex ? <View style={[centering, { width: 30 }]}>
+              <Text style={{ fontSize: 18, fontWeight: 'bold', color: '#ddd' }}>
+                {Number(rowId) + 1}
+              </Text>
+            </View> : undefined}
+          textContainer={{ paddingVertical: 10 }}
+          picStyle={{ width: 40, height: 40 }}
+          titleStyle={[{ fontSize: 15 }, colorStyle]}
+          subTitleStyle={colorStyle}
+          onPress={!isPlaying ? this.listItemOnPress(index) : undefined}
+          renderRight={
+            <TouchableWithoutFeedback
+              onPress={this.moreIconOnPress(track)}
+            >
+              <View style={{ flexDirection: 'row', paddingRight: 10 }}>
+                {isPlaying && <View style={{ justifyContent: 'center' }}>
+                  <Ionic size={22} name='md-volume-up' color={Color.main} style={{ paddingLeft: 10 }} />
+                </View>}
+                <View style={{ justifyContent: 'center' }}>
+                  <Ionic size={22} name='ios-more' color='#777' style={{ paddingLeft: 10 }} />
+                </View>
               </View>
-            </View>
-          </TouchableWithoutFeedback>
-        }
-        key={track.id}
-      />
+            </TouchableWithoutFeedback>
+          }
+          key={track.id}
+        />
+      )
     }
   }
 
@@ -120,11 +122,11 @@ class TrackList extends React.Component<IProps, any> {
 
   renderFooter = () => {
     return this.props.isLoading && !this.props.canRefresh ?
-      <ActivityIndicator animating style={{marginTop: 10}}/> :
+      <ActivityIndicator animating={true} style={{marginTop: 10}}/> :
       <View />
   }
 
-  render() {
+  render () {
     const {
       tracks,
       playing,
@@ -141,7 +143,7 @@ class TrackList extends React.Component<IProps, any> {
 
     return (
       <ListView
-        enableEmptySections
+        enableEmptySections={true}
         removeClippedSubviews={true}
         scrollRenderAheadDistance={120}
         initialListSize={15}
@@ -151,8 +153,7 @@ class TrackList extends React.Component<IProps, any> {
         renderFooter={this.renderFooter}
         onEndReached={this.sync}
         refreshControl={
-          canRefresh ? <RefreshControl refreshing={isLoading} onRefresh={sync}/> : undefined
-        }
+          canRefresh ? <RefreshControl refreshing={isLoading} onRefresh={sync}/> : undefined}
         renderScrollComponent={renderScrollComponent}
       />
     )
@@ -177,10 +178,10 @@ function mapStateToProps (
 export default connect(
   mapStateToProps,
   (dispatch, ownProps: IOwnProps) => ({
-    popup(track: ITrack) {
+    popup (track: ITrack) {
       return dispatch(popupTrackActionSheet(track))
     },
-    play(index: number, tracks: ITrack[]) {
+    play (index: number, tracks: ITrack[]) {
       return dispatch(playTrackAction({
         playing: {
           index,

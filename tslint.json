@@ -13,6 +13,7 @@
     "quotemark": [true, "single", "avoid-escape"],
     "semicolon": [true, "never"],
     "no-string-literal": false,
+    "jsx-wrap-multiline": false,
     "space-before-function-paren": true,
     "object-literal-key-quotes": [false, "as-needed"],
     "trailing-comma": [true, {"multiline": "never", "singleline": "never"}]

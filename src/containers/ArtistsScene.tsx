@@ -20,7 +20,7 @@ interface IProps extends IInfiList {
 class Artists extends React.Component<IProps, any> {
   private ds: ListViewDataSource
 
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1.id !== r2.id})
   }
@@ -30,7 +30,7 @@ class Artists extends React.Component<IProps, any> {
       <ListItem
         title={artist.name}
         picURI={artist.img1v1Url}
-        roundPic
+        roundPic={true}
         key={artist.id}
         // tslint:disable-next-line:jsx-no-lambda
         onPress={() => Router.toArtistsDetail({ route: artist })}
@@ -52,7 +52,7 @@ class Artists extends React.Component<IProps, any> {
 
   renderFooter = () => {
     return this.props.isLoading ?
-      <ActivityIndicator animating style={{marginTop: 10}}/> :
+      <ActivityIndicator animating={true} style={{marginTop: 10}}/> :
       <View />
   }
 
@@ -60,7 +60,7 @@ class Artists extends React.Component<IProps, any> {
     this.props.refresh()
   }
 
-  render() {
+  render () {
     const {
       isRefreshing
     } = this.props
@@ -73,8 +73,8 @@ class Artists extends React.Component<IProps, any> {
           hideBorder={false}
         />
         <ListView
-          showsVerticalScrollIndicator
-          enableEmptySections
+          showsVerticalScrollIndicator={true}
+          enableEmptySections={true}
           dataSource={this.ds}
           initialListSize={15}
           pagingEnabled={false}
@@ -85,8 +85,7 @@ class Artists extends React.Component<IProps, any> {
           renderRow={this.renderAlbum}
           renderFooter={this.renderFooter}
           refreshControl={
-            <RefreshControl refreshing={isRefreshing} onRefresh={this.refresh}/>
-          }
+            <RefreshControl refreshing={isRefreshing} onRefresh={this.refresh}/>}
         />
       </View>
     )
@@ -110,10 +109,10 @@ function mapStateToProps ({
 export default connect(
   mapStateToProps,
   (dispatch) => ({
-    syncMore() {
+    syncMore () {
       return dispatch({ type: 'artists/sync' })
     },
-    refresh() {
+    refresh () {
       return dispatch( {type: 'artists/refresh' })
     }
   })

@@ -13,7 +13,7 @@
  * 还有一个方法，使用 [react-native-interactable](https://github.com/wix/react-native-interactable)
  * 来实现视差滚动，这样一来 DOM 结构和代码都能得到大幅简化，性能也会有所提升。
  * 可惜目前 react-native-interactable 也不支持滚动元素。see issues: #50, #35
- * 
+ *
  */
 
 import { connect } from 'react-redux'
@@ -61,7 +61,7 @@ class Artist extends React.Component<IProps, IState> {
   private descriptionPage: any
   private events = ['', '', '']
 
-  constructor(props: any) {
+  constructor (props: any) {
     super(props)
     this.state = {
       scrollY: new Animated.Value(0),
@@ -69,7 +69,7 @@ class Artist extends React.Component<IProps, IState> {
     }
   }
 
-  componentDidMount() {
+  componentDidMount () {
     this.setState({
       scrollY: this.tracksPage.getWrappedInstance().scrollComponent.state.scrollY
     } as IState, () => {
@@ -77,7 +77,7 @@ class Artist extends React.Component<IProps, IState> {
     })
   }
 
-  componentWillUnmount() {
+  componentWillUnmount () {
     this.state.scrollY.removeAllListeners()
   }
 
@@ -100,7 +100,7 @@ class Artist extends React.Component<IProps, IState> {
     // } as IState)
   }
 
-  render() {
+  render () {
     const {
       artist,
       isSubscribing
@@ -221,7 +221,7 @@ class Artist extends React.Component<IProps, IState> {
       <Animated.View style={[styles.action, { transform }]}>
         <TouchableWithoutFeedback onPress={this.follow}>
           <Animated.View style={[styles.btn, opacity]}>
-            {isSubscribing && <ActivityIndicator animating color='white' style={{ width: 15, height: 15 }} />}
+            {isSubscribing && <ActivityIndicator animating={true} color='white' style={{ width: 15, height: 15 }} />}
             {!isSubscribing && followed && <Icon name='check' size={16} color='#fff' />}
             {!isSubscribing && !followed && <Icon name='plus' size={16} color='#fff' />}
             <Text style={{ color: 'white', marginLeft: 3 }}>{followed ? '已收藏' : '收藏'}</Text>
@@ -252,7 +252,7 @@ class Artist extends React.Component<IProps, IState> {
       >
         <Image
           // tslint:disable-next-line:jsx-no-lambda
-          ref={c => this.image = c}
+          ref={(c) => this.image = c}
           source={{ uri }}
           style={styles.bg}
           blurRadius={0}
@@ -345,8 +345,8 @@ function mapStatetoProps (
 export default connect(
   mapStatetoProps,
   (dispatch, ownProps: IProps) => ({
-    follow() {
+    follow () {
       return dispatch(followArtist(ownProps.route.id))
     }
-  }),
+  })
 )(Artist)

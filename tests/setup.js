@@ -19,12 +19,12 @@ mockery.warnOnUnregistered(false)
 // mockery.registerMock('reactotron-redux', {})
 // mockery.registerMock('reactotron-apisauce', {})
 
-// Mock all images for React Native
-const originalLoader = m._load
-m._load = (request, parent, isMain) => {
-  if (request.match(/.jpeg|.jpg|.png|.gif$/)) {
-    return { uri: request }
-  }
+// // Mock all images for React Native
+// const originalLoader = m._load
+// m._load = (request, parent, isMain) => {
+//   if (request.match(/.jpeg|.jpg|.png|.gif$/)) {
+//     return { uri: request }
+//   }
 
-  return originalLoader(request, parent, isMain)
-}
+//   return originalLoader(request, parent, isMain)
+// }

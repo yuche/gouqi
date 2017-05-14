@@ -5,7 +5,8 @@ import {
   Animated,
   TouchableWithoutFeedback,
   Dimensions,
-  Text
+  Text,
+  TextStyle
 } from 'react-native'
 import Lyric from '../components/Lyric'
 import { IPlayerState } from '../reducers/player'
@@ -13,6 +14,8 @@ import { ITrack } from '../services/api'
 import { connect } from 'react-redux'
 import { centering } from '../styles'
 import { get, isEmpty } from 'lodash'
+import Icon from 'react-native-vector-icons/Ionicons'
+
 const { height, width } = Dimensions.get('window')
 
 interface IProps {
@@ -75,6 +78,7 @@ class Lyrics extends React.Component<IProps, any> {
               {trackName + ' / '}
               <Text style={{ color: '#ccc' }}>{artistName}</Text>
             </Text>
+            <Icon name={'md-close'} size={20} color='#ccc' style={styles.close} onPress={this.hide} />
           </View>
         </View>
       </Animated.View>
@@ -103,7 +107,12 @@ const styles = {
     backgroundColor: '#f5f5f5',
     height: 30,
     ...centering
-  } as ViewStyle
+  } as ViewStyle,
+  close: {
+    position: 'absolute',
+    right: 20,
+    zIndex: 999
+  } as TextStyle
 }
 
 function mapStateToProps (

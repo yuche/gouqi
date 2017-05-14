@@ -138,7 +138,6 @@ function* watchLyricShow () {
 
 function* playTrack ({ payload: { playing, prev }  }) {
   yield put(changeStatusAction('PAUSED'))
-  yield put(slideTimeAction(0))
   const playerState: IPlayerState = yield select((state: any) => state.player)
   const { playlist, lyricsVisable } = playerState
   if (lyricsVisable) {

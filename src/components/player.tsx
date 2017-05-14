@@ -30,12 +30,12 @@ class Player extends React.Component<IProps, any> {
     MusicControl.enableControl('previousTrack', true)
     MusicControl.enableControl('seekForward', false)
     MusicControl.enableControl('seekBackward', false)
-    // MusicControl.on('play', () => {
-    //   this.props.changeStatus('PLAYING')
-    // })
-    // MusicControl.on('pause', () => {
-    //   this.props.changeStatus('PAUSED')
-    // })
+    MusicControl.on('play', () => {
+      this.props.changeStatus('PLAYING')
+    })
+    MusicControl.on('pause', () => {
+      this.props.changeStatus('PAUSED')
+    })
     MusicControl.on('nextTrack', () => {
       this.props.next()
     })
@@ -94,6 +94,8 @@ class Player extends React.Component<IProps, any> {
 
   onLoad = (track: ITrack) => ({ duration }: { duration: number }) => {
     // this.props.changeStatus('PLAYING')
+    this.props.setCurrentTime(0)
+    this.props.setSlideTime(0)
     this.props.setDuration(duration)
     MusicControl.setNowPlaying({
       title: track.name,

@@ -26,12 +26,12 @@ interface IForm extends TextInputProperties {
   onClear?: () => void
  }
 
- interface IFormStates {
+interface IFormStates {
    focus: boolean
  }
 
 export class Form extends React.Component<IForm, IFormStates> {
-  constructor(props: IForm) {
+  constructor (props: IForm) {
     super(props)
   }
 
@@ -80,7 +80,7 @@ export class Form extends React.Component<IForm, IFormStates> {
             value={value}
             onSubmitEditing={onSubmitEditing}
           />
-          { value && this.state.focus ? clearIcon : null }
+          {value && this.state.focus ? clearIcon : null}
       </View>
     </View>
   }
