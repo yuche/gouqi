@@ -55,15 +55,15 @@ class PlaylistPopup extends React.Component<IProps, any> {
   renderModeBtn = (iconName, text) => {
     return (
       <CustomIcon.Button
-        size={16}
+        size={20}
         name={iconName}
         color='#ccc'
         backgroundColor='white'
         onPress={this.setMode}
         underlayColor='white'
-        style={{marginLeft: 10}}
+        style={styles.mode}
       >
-        <Text>{text}</Text>
+        <Text style={{ position: 'relative', top: -1 }}>{text}</Text>
       </CustomIcon.Button>
     )
   }
@@ -123,11 +123,11 @@ class PlaylistPopup extends React.Component<IProps, any> {
             </View>
             <View style={{ flexDirection: 'row' }}>
               {isPlaying && <View style={{ justifyContent: 'center' }}>
-                <Ionic size={20} name='md-volume-up' color={Color.main} />
+                <Ionic size={22} name='md-volume-up' color={Color.main} />
               </View>}
               <TouchableWithoutFeedback onPress={this.remove(Number(rowId))}>
-                <View style={{ justifyContent: 'center', paddingHorizontal: 10 }}>
-                  <Ionic name={'md-close'} size={20} color='#ccc' onPress={this.remove(Number(rowId))} />
+                <View style={styles.remove}>
+                  <Ionic name={'md-close'} size={22} color='#ccc' onPress={this.remove(Number(rowId))} />
                 </View>
               </TouchableWithoutFeedback>
             </View>
@@ -159,12 +159,12 @@ class PlaylistPopup extends React.Component<IProps, any> {
               {this.renderMode(mode, tracks.length)}
             </View>
             <View style={styles.action} >
-              <Icon name='download' size={20} color='#ccc' onPress={undefined} />
-            </View>
-            <View style={styles.action} >
               <Icon name='plus-square-o' size={20} color='#ccc' onPress={undefined} />
             </View>
             <View style={styles.action} >
+              <Icon name='download' size={20} color='#ccc' onPress={undefined} />
+            </View>
+            <View style={[styles.action, { marginRight: 10 }]} >
               <Icon name='trash-o' size={20} color='#ccc' onPress={undefined} />
             </View>
           </View>
@@ -243,7 +243,7 @@ export default connect(
 
 const styles = {
   container: {
-    height: Math.round(height * 7 / 10)
+    height: Math.round(height * 3 / 5)
   } as ViewStyle,
   header: {
     flexDirection: 'row',
@@ -255,8 +255,10 @@ const styles = {
     borderBottomWidth: StyleSheet.hairlineWidth
   } as ViewStyle,
   footer: {
+    borderTopColor: '#ccc',
+    borderTopWidth: StyleSheet.hairlineWidth,
     height: 50,
-    backgroundColor: '#e7e7e7'
+    backgroundColor: 'white'
   } as ViewStyle,
   row: {
     flexDirection: 'row',
@@ -264,13 +266,17 @@ const styles = {
     height: 50
   } as ViewStyle,
   mode: {
-    flexDirection: 'row',
-    alignContent: 'center'
-    // justifyContent: 'center'
+    position: 'relative',
+    top: 1
   } as ViewStyle,
   action: {
-    marginHorizontal: 10,
+    marginHorizontal: 15,
     justifyContent: 'center',
     alignContent: 'center'
+  } as TextStyle,
+  remove: {
+    justifyContent: 'center',
+    paddingRight: 10,
+    paddingLeft: 20
   } as TextStyle
 }
