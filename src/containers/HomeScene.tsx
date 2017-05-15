@@ -10,18 +10,15 @@ import Toplist from '../containers/ToplistPage'
 class Home extends React.Component<any, any> {
   private tabbar: any
 
-  constructor(props: any) {
+  constructor (props: any) {
     super(props)
-    this.state = {
-      time: 60
-    }
   }
 
-  componentDidMount() {
+  componentDidMount () {
     this.props.init()
   }
 
-  render() {
+  render () {
     return (
       <ScrollableTabView
         style={{marginTop: 20}}
@@ -41,14 +38,14 @@ class Home extends React.Component<any, any> {
 
   private renderTabBar = () => {
     // tslint:disable-next-line:jsx-no-lambda
-    return <TabBar ref={component => this.tabbar = component}/>
+    return <TabBar ref={(component) => this.tabbar = component}/>
   }
 }
 
 export default connect(
   () => ({}),
   (dispatch: any) => ({
-    init() {
+    init () {
       return dispatch({type: 'app/init'})
     }
   })

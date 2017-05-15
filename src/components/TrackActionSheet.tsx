@@ -33,7 +33,7 @@ interface IProps {
 }
 
 class PopupContent extends React.Component<IProps, any> {
-  constructor(props: IProps) {
+  constructor (props: IProps) {
     super(props)
   }
 
@@ -81,7 +81,6 @@ class PopupContent extends React.Component<IProps, any> {
 
   toComment = () => {
     this.props.shrinkPlayer()
-    console.log('to comment')
     this.props.toComment()
   }
 
@@ -165,19 +164,19 @@ export default connect(
     }
   },
   (dispatch) => ({
-    popup() {
+    popup () {
       return dispatch(popupCollectActionSheet())
     },
-    hide() {
+    hide () {
       return dispatch(hideTrackActionSheet())
     },
-    toComment() {
+    toComment () {
       return dispatch({type: 'playlists/router/comment'})
     },
-    download(track) {
+    download (track) {
       return dispatch(downloadTracksAction([track]))
     },
-    shrinkPlayer() {
+    shrinkPlayer () {
       return dispatch(shrinkPlayer())
     }
   })

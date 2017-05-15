@@ -12,7 +12,7 @@ import Login from '../containers/LoginScene'
 import Search from '../containers/SearchScene'
 import PlayList from '../containers/PlaylistDetailScene'
 import Comment from '../containers/CommentScene'
-import UIContainer from '../containers/UIContainer'
+import Siblings from '../containers/SiblingsContainer'
 import DetailModal from '../components/DetailModal'
 import CreatePlaylist from '../containers/CreatePlaylistScene'
 import DownloadPlaylistScene from '../containers/DownloadPlaylistScene'
@@ -56,7 +56,7 @@ const Routers = () => (
     <Lyrics />
     <DownloadBall />
     <Router scenes={scenes}/>
-    <UIContainer />
+    <Siblings />
     <Player />
   </View>
 )

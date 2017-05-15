@@ -13,6 +13,10 @@ const initState = {
     collect: {
       visible: false,
       id: 0
+    },
+    playlist: {
+      visible: false,
+      id: 0
     }
   }
 }
@@ -25,6 +29,7 @@ const next = () => {
 const toastId = next()
 const trackId = next()
 const collectId = next()
+const playlistId = next()
 
 export default handleActions({
   'ui/toast' (state: any, {
@@ -53,6 +58,18 @@ export default handleActions({
       }
     }
   },
+  'ui/popup/playlist/show' (state) {
+    return {
+      ...state,
+      popup: {
+        ...state.popup,
+        playlist: {
+          visible: true,
+          id: playlistId()
+        }
+      }
+    }
+  },
   'ui/popup/collect/show' (state) {
     return {
       ...state,
@@ -73,6 +90,18 @@ export default handleActions({
         track: {
           visible: false,
           id: trackId()
+        }
+      }
+    }
+  },
+  'ui/popup/playlist/hide' (state) {
+    return {
+      ...state,
+      popup: {
+        ...state.popup,
+        playlist: {
+          visible: false,
+          id: playlistId()
         }
       }
     }

@@ -44,27 +44,64 @@ interface IProps extends ILoadingProps {
   download: (tracks: ITrack[]) => Redux.Action
 }
 
-interface IState {
-  scrollY: Animated.Value
-}
-
 const HEADER_HEIGHT = 180
 
-class PlayList extends React.Component<IProps, IState> {
+class PlayList extends React.Component<IProps, any> {
   private scrollComponent: any
 
-  constructor(props: IProps) {
+  private scrollY: Animated.Value
+
+  private navOpacity: any
+
+  private headerOpacity: any
+
+  private blurTransform: any
+
+  private playlistTransform: any
+
+  constructor (props: IProps) {
     super(props)
-    this.state = {
-      scrollY: new Animated.Value(0)
-    }
+    this.scrollY = new Animated.Value(0)
   }
 
   componentDidMount () {
     this.props.sync()
-    this.setState({
-      scrollY: this.scrollComponent.state.scrollY
-    })
+    this.scrollY = this.scrollComponent.state.scrollY
+    this.navOpacity = {
+      opacity: this.scrollY.interpolate({
+        inputRange: [0, 100, HEADER_HEIGHT],
+        outputRange: [0, 0, 1]
+      })
+    }
+    this.headerOpacity = {
+      opacity: this.scrollY.interpolate({
+        inputRange: [0, 50, HEADER_HEIGHT],
+        outputRange: [1, 1, 0]
+      })
+    }
+    this.blurTransform = {
+      transform: [
+        {
+          translateY: this.scrollY.interpolate({
+            inputRange: [-HEADER_HEIGHT, 0, HEADER_HEIGHT, HEADER_HEIGHT],
+            outputRange: [HEADER_HEIGHT / 2, 0, -HEADER_HEIGHT / 3, -HEADER_HEIGHT / 3]
+          })
+        },
+        {
+          scale: this.scrollY.interpolate({
+            inputRange: [-HEADER_HEIGHT, 0, HEADER_HEIGHT],
+            outputRange: [2, 1, 1]
+          })
+        }
+      ]
+    }
+    this.playlistTransform = {
+      transform: [{
+      translateY: this.scrollY.interpolate({
+        inputRange: [0, HEADER_HEIGHT, HEADER_HEIGHT],
+        outputRange: [0, -HEADER_HEIGHT, -HEADER_HEIGHT]
+      })}]
+    }
   }
 
   render () {
@@ -74,44 +111,33 @@ class PlayList extends React.Component<IProps, IState> {
       playing,
       isPlaylist
     } = this.props
-    const {
-      scrollY
-    } = this.state
     return (
       <View style={{flex: 1, backgroundColor: 'white'}}>
-        {this.renderBlur(playlist, scrollY)}
-        {this.renderNavbar(playlist, scrollY)}
-        {this.renderHeader(playlist, scrollY)}
-        {this.renderPlayList(isLoading, scrollY, playlist.tracks || [], playing, isPlaylist)}
+        {this.renderBlur(playlist)}
+        {this.renderNavbar(playlist)}
+        {this.renderHeader(playlist)}
+        {this.renderPlayList(isLoading, playlist.tracks || [], playing, isPlaylist)}
       </View>
     )
   }
 
-  renderNavbar (playlist: IPlaylist, scrollY: Animated.Value ) {
-    const opacity = scrollY.interpolate({
-      inputRange: [0, 100, HEADER_HEIGHT],
-      outputRange: [0, 0, 1]
-    })
+  renderNavbar (playlist: IPlaylist) {
     return (
       <Navbar
         title={playlist.name}
         style={styles.navbar}
-        titleStyle={{ opacity }}
+        titleStyle={this.navOpacity}
       />
     )
   }
 
-  renderHeader ( playlist: IPlaylist, scrollY: Animated.Value ) {
+  renderHeader ( playlist: IPlaylist) {
     const uri = playlist.coverImgUrl
     const { creator } = playlist
-    const opacity = scrollY.interpolate({
-      inputRange: [0, 50, HEADER_HEIGHT],
-      outputRange: [1, 1, 0]
-    })
     const avatarUrl = creator.avatarUrl + '?param=30y30'
     return (
       <View style={styles.headerContainer}>
-        <Animated.View style={[styles.header, { opacity }]}>
+        <Animated.View style={[styles.header, this.headerOpacity]}>
           <View style={{ flexDirection: 'row'}}>
             <Image source={{uri}} style={styles.headerPic}/>
             <View style={{ flex: 1, marginLeft: 14 }}>
@@ -178,7 +204,7 @@ class PlayList extends React.Component<IProps, IState> {
     subscribe: () => Redux.Action
   ) => {
     if (subscribing) {
-      return <ActivityIndicator animating color='white' style={{ width: 30, height: 30}}/>
+      return <ActivityIndicator animating={true} color='white' style={{ width: 30, height: 30}}/>
     } else {
       return subscribed ?
         this.renderBtn('star', subscribe) :
@@ -197,24 +223,10 @@ class PlayList extends React.Component<IProps, IState> {
     )
   }
 
-  renderBlur (playlist: IPlaylist, scrollY: Animated.Value) {
+  renderBlur (playlist: IPlaylist) {
     const uri = playlist.coverImgUrl
-    const transform = [
-      {
-        translateY: scrollY.interpolate({
-          inputRange: [-HEADER_HEIGHT, 0, HEADER_HEIGHT, HEADER_HEIGHT],
-          outputRange: [HEADER_HEIGHT / 2, 0, -HEADER_HEIGHT / 3, -HEADER_HEIGHT / 3]
-        })
-      },
-      {
-        scale: scrollY.interpolate({
-          inputRange: [-HEADER_HEIGHT, 0, HEADER_HEIGHT],
-          outputRange: [2, 1, 1]
-        })
-      }
-    ]
     return (
-      <Animated.Image source={{uri}} style={[styles.bg, { transform }]}>
+      <Animated.Image source={{uri}} style={[styles.bg, this.blurTransform]}>
         <BlurView blurType='light' blurAmount={25} style={styles.blur} />
       </Animated.Image>
     )
@@ -222,17 +234,12 @@ class PlayList extends React.Component<IProps, IState> {
 
   renderPlayList = (
     isLoading: boolean,
-    scrollY: Animated.Value,
     tracks: ITrack[],
     playing: IPlaying,
     isPlaylist: boolean
   ) => {
-    const containerY = scrollY.interpolate({
-      inputRange: [0 , HEADER_HEIGHT, HEADER_HEIGHT],
-      outputRange: [0, -HEADER_HEIGHT, -HEADER_HEIGHT]
-    })
     return (
-      <Animated.View style={[styles.playlistContainer, { transform: [{ translateY: containerY }] }]}>
+      <Animated.View style={[styles.playlistContainer, this.playlistTransform]}>
         <View style={{ height: height - Navbar.HEIGHT, backgroundColor: 'white'}}>
           <TrackList
             isLoading={isLoading}
@@ -356,10 +363,10 @@ function mapStateToProps (
 export default connect(
   mapStateToProps,
   (dispatch, ownProps: IProps) => ({
-    sync() {
+    sync () {
       return dispatch(syncPlaylistDetail(ownProps.route.id))
     },
-    subscribe() {
+    subscribe () {
       return dispatch(subscribePlaylist(ownProps.route.id))
     },
     download (track: ITrack[]) {

@@ -32,11 +32,11 @@ interface IProps {
 
 class Collect extends React.Component<IProps, any> {
 
-  constructor(props: IProps) {
+  constructor (props: IProps) {
     super(props)
   }
 
-  render() {
+  render () {
     const {
       created,
       visible,
@@ -60,8 +60,7 @@ class Collect extends React.Component<IProps, any> {
               renderLeft={
                 <View style={styles.leftIcon}>
                   <Icon name='md-add' size={20} color={Color.main}/>
-                </View>
-              }
+                </View>}
               onPress={this.toCreatePlaylist(track.id)}
             />
             {created.map(this.renderPlaylist)}
@@ -141,19 +140,19 @@ export default connect(
     }
   },
   (dispatch) => ({
-    hide() {
+    hide () {
       return dispatch(hideCollectActionSheet())
     },
-    collect(trackIds: number, pid: number) {
+    collect (trackIds: number, pid: number) {
       return dispatch(collectTrackToPlayliast({
         trackIds,
         pid
       }))
     },
-    toCreatePlaylist(trackId: number) {
+    toCreatePlaylist (trackId: number) {
       return dispatch(toCreatePlaylistAction(trackId))
     },
-    shrinkPlayer() {
+    shrinkPlayer () {
       return dispatch(shrinkPlayer())
     }
   })

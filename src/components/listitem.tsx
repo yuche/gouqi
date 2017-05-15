@@ -65,16 +65,16 @@ class ListItem extends React.Component<IListItem, any> {
         onPress={onPress}
       >
         <View style={[styles.wrapper, wrapperStyle && wrapperStyle]}>
-          { this.renderLeft(picURI, roundPic, picStyle, renderLeft) }
+          {this.renderLeft(picURI, roundPic, picStyle, renderLeft)}
           <View style={[styles.titleContainer, !subTitle && { justifyContent: 'center' }, textContainer]}>
             <View style={[mainTitleContainerStyle && mainTitleContainerStyle]}>
               <Text style={[styles.title, titleStyle && titleStyle]} numberOfLines={numeberOfLines} onPress={onPress}>
-                { title }
+                {title}
               </Text>
             </View>
-            { this.renderSubtitle(subTitle, subTitleStyle, subTitleContainerStyle) }
+            {this.renderSubtitle(subTitle, subTitleStyle, subTitleContainerStyle)}
           </View>
-          { renderRight && renderRight }
+          {renderRight && renderRight}
         </View>
       </Component>
     )
@@ -107,7 +107,7 @@ class ListItem extends React.Component<IListItem, any> {
       return (
         <View style={[ subTitleContainer && subTitleContainer ]}>
           <Text style={[styles.subTitle, subTitleStyle && subTitleStyle]} numberOfLines={1}>
-            { subTitle }
+            {subTitle}
           </Text>
         </View>
       )

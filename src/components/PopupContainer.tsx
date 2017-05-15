@@ -5,7 +5,7 @@ import {
 } from 'react-native'
 import Modal from 'rc-dialog/lib/Modal'
 
-type animationType = 'none' | 'slide-up' | 'slide-down' | 'fade';
+type animationType = 'none' | 'slide-up' | 'slide-down' | 'fade'
 
 interface IPopupProps {
   animationType?: string
@@ -16,14 +16,14 @@ interface IPopupProps {
 }
 
 export default class PopupContainer extends React.Component<IPopupProps, any> {
-  constructor(props: IPopupProps) {
+  constructor (props: IPopupProps) {
     super(props)
     this.state = {
       visible: false
     }
   }
 
-  componentWillReceiveProps(nextProps: IPopupProps) {
+  componentWillReceiveProps (nextProps: IPopupProps) {
     if (nextProps.visible !== this.state.visible) {
       this.setState({
         visible: nextProps.visible
@@ -38,10 +38,10 @@ export default class PopupContainer extends React.Component<IPopupProps, any> {
     }
   }
 
-  render() {
+  render () {
     return (
       <Modal
-        animateAppear
+        animateAppear={true}
         onAnimationEnd={this.props.onAnimationEnd}
         animationType={this.props.animationType as animationType}
         wrapStyle={this.props.animationType === 'slide-up' ? styles.wrap : styles.wrapTop}

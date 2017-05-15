@@ -16,36 +16,43 @@ class ParallaxScroll extends React.Component<any, IState> {
 
   private scrollComponent: any
 
-  constructor(props: any) {
+  private translateY: any
+
+  constructor (props: any) {
     super(props)
     this.state = {
       scrollY: new Animated.Value(0)
     }
+    const { headerHeight } = this.props
+    this.translateY = this.state.scrollY.interpolate({
+      inputRange: [0, headerHeight, headerHeight],
+      outputRange: [0, headerHeight, headerHeight]
+    })
   }
 
   /*
    * Expose `ScrollView` API so this component is composable with any component that expects a `ScrollView`.
    * see: https://github.com/exponent/react-native-scrollable-mixin
    */
-  getScrollResponder() {
+  getScrollResponder () {
     return this.scrollComponent.getScrollResponder()
   }
 
-  setNativeProps(props: any) {
+  setNativeProps (props: any) {
     this.scrollComponent.setNativeProps(props)
   }
 
-  getScrollableNode() {
+  getScrollableNode () {
     return this.getScrollResponder().getScrollableNode()
   }
-  getInnerViewNode() {
+  getInnerViewNode () {
     return this.getScrollResponder().getInnerViewNode()
   }
-  scrollTo(...args: any[]) {
+  scrollTo (...args: any[]) {
     this.getScrollResponder().scrollTo(...args)
   }
 
-  render() {
+  render () {
     const {
       children,
       renderScrollComponent,
@@ -57,11 +64,11 @@ class ParallaxScroll extends React.Component<any, IState> {
       scrollY
     } = this.state
 
-    const bodyComponent = this.renderBodyComponent(scrollY, children)
+    const bodyComponent = this.renderBodyComponent(children)
 
     return React.cloneElement(
       renderScrollComponent(scrollViewProps), {
-        ref: component => { this.scrollComponent = component },
+        ref: (component) => { this.scrollComponent = component },
         onScroll: Animated.event(
             [{nativeEvent: {contentOffset: {y: scrollY}}}],
             { listener: onScroll }
@@ -72,16 +79,11 @@ class ParallaxScroll extends React.Component<any, IState> {
     )
   }
 
-  renderBodyComponent (scrollY: Animated.Value, children: any) {
-    const headerHeight = this.props.headerHeight
-
-    const translateY = scrollY.interpolate({
-      inputRange: [0, headerHeight, headerHeight],
-      outputRange: [0, headerHeight, headerHeight]
-    })
+  renderBodyComponent (children: any) {
+    const { headerHeight } = this.props
 
     return (
-      <Animated.View style={{transform: [{ translateY }], paddingBottom: headerHeight + 60}}>
+      <Animated.View style={{transform: [{ translateY: this.translateY }], paddingBottom: headerHeight + 60}}>
         {children}
       </Animated.View>
     )

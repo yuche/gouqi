@@ -10,7 +10,7 @@ import { changeCoverImgUrl } from '../utils'
 
 function* recommendSaga () {
   const isLogin = !!api.getUserId()
-  let promises = [
+  const promises = [
     api.topPlayList('30'),
     api.newAlbums('30'),
     api.topArtists('30')
@@ -55,7 +55,7 @@ function* recommendSaga () {
     if (songs.code === 200) {
       yield put({
         type: 'personal/daily/save',
-        payload: sampleSize(songs.recommend, 6)
+        payload: songs.recommend.slice(0, 6)
       })
     }
   } catch (error) {

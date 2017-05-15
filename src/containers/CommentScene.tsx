@@ -45,7 +45,7 @@ interface ICommentRoute {
 class Comments extends React.Component<IProps, any> {
   private ds: ListViewDataSource
 
-  constructor(props: IProps) {
+  constructor (props: IProps) {
     super(props)
     this.ds = new ListView.DataSource({
       rowHasChanged: (r1, r2) => r1 !== r2,
@@ -83,7 +83,7 @@ class Comments extends React.Component<IProps, any> {
         />
         <ListView
           dataSource={this.ds}
-          enableEmptySections
+          enableEmptySections={true}
           scrollRenderAheadDistance={90}
           renderRow={this.renderComment}
           initialListSize={20}
@@ -129,16 +129,15 @@ class Comments extends React.Component<IProps, any> {
           subTitleStyle={{fontSize: 13, color: '#bbb' }}
           mainTitleContainerStyle={{marginTop: 10}}
           subTitleContainerStyle={{marginBottom: 10}}
-          noBorder
+          noBorder={true}
           // tslint:disable-next-line:jsx-no-multiline-js
           renderRight={
             <View style={[centering, { marginLeft: 10 }]}>
               {playlist && <Icon size={15} color='#ddd' name='chevron-right'/>}
-            </View>
-          }
+            </View>}
           onPress={playlist && Router.toPlayList({ route: playlist })}
         />
-        {isLoading && <ActivityIndicator animating style={{paddingVertical: 15}}/>}
+        {isLoading && <ActivityIndicator animating={true} style={{paddingVertical: 15}}/>}
       </View>
     )
   }
@@ -159,7 +158,7 @@ class Comments extends React.Component<IProps, any> {
 
   renderFooter = () => {
     return this.props.isLoadingMore ?
-      <ActivityIndicator animating style={{paddingVertical: 15}}/> :
+      <ActivityIndicator animating={true} style={{paddingVertical: 15}}/> :
       <View />
   }
 
@@ -186,9 +185,9 @@ class Comments extends React.Component<IProps, any> {
           picURI={user.avatarUrl + '?param=50y50'}
           subTitle={timeagoStr}
           picStyle={{ width: 30, height : 30 }}
-          roundPic
+          roundPic={true}
           titleStyle={{fontSize: 13}}
-          noBorder
+          noBorder={true}
           // tslint:disable-next-line:jsx-no-multiline-js
           renderRight={
             <View style={{ flexDirection: 'row' }}>
@@ -196,8 +195,7 @@ class Comments extends React.Component<IProps, any> {
                 {likedCount}
               </Text>
               <Icon name='thumbs-o-up' size={14} color='#bbb'/>
-            </View>
-          }
+            </View>}
           key={id}
         />
         <View style={{marginLeft: 50, marginRight: 10}}>
@@ -291,10 +289,10 @@ function mapStateToProps (
 export default connect(
   mapStateToProps,
   (dispatch, ownProps: IProps) => ({
-    sync() {
+    sync () {
       return dispatch(getComments(ownProps.route.id))
     },
-    more() {
+    more () {
       return dispatch(getMoreComments(ownProps.route.id))
     }
   })

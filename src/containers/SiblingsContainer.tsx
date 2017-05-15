@@ -5,13 +5,15 @@ import {
 import TrackPopup from '../components/TrackActionSheet'
 import CollectPopup from '../components/CollectActionSheet'
 import Toast from '../components/ToastContainer'
+import PlaylistPopup from '../components/PlaylistPopup'
 
-const UI = () => (
+const Siblings = () => (
   <View>
     <TrackPopup />
+    <PlaylistPopup />
     <CollectPopup />
     <Toast />
   </View>
 )
 
-export default UI
+export default Siblings

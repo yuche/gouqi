@@ -142,3 +142,9 @@ export const getMoreComments: ISyncDetail = createAction('comments/more',
 export const stopCurrentDownload = createAction('download/stop')
 
 export const setModeAction = createAction('player/mode')
+
+export const setPlaylistTracks = createAction('player/playlist/save')
+
+export const hidePlaylistPopup = createAction('ui/popup/playlist/hide')
+
+export const showPlaylistPopup = createAction('ui/popup/playlist/show')

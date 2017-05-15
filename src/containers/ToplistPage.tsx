@@ -6,7 +6,6 @@ import {
 import Grid from '../components/grid'
 import Router from '../routers'
 
-
 interface IProps {
   tabLabel: string
 }
@@ -15,10 +14,10 @@ class Toplist extends React.Component<IProps, any> {
 
   private toplist: any[]
 
-  constructor(props: IProps) {
+  constructor (props: IProps) {
     super(props)
     this.toplist = TOP_LIST
-    this.toplist = this.toplist.map(list => {
+    this.toplist = this.toplist.map((list) => {
       return {
         ...list,
         creator: {
@@ -38,7 +37,7 @@ class Toplist extends React.Component<IProps, any> {
     Router.toPlayList({route: item})()
   }
 
-  render() {
+  render () {
     return (
       <ScrollView style={{flex: 1}}>
         <Grid data={this.toplist} onPress={this.toPlaylist}/>

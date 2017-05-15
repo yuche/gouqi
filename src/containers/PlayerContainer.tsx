@@ -14,7 +14,8 @@ import {
   setModeAction,
   toastAction,
   toggleSlide,
-  slideTimeAction
+  slideTimeAction,
+  showPlaylistPopup
 } from '../actions'
 import {
   View,
@@ -173,15 +174,14 @@ class PlayerContainer extends React.Component<IProps, any> {
     )
   }
 
-  renderImage = (picUrl: string) => {
-    const uri = picUrl || 'http://p4.music.126.net/YhnGyy3LtMFhoCvDI59JNA==/2589349883413112.jpg'
+  renderImage = (uri) => {
     return (
       <View style={[centering, { height: 60, width: 60 }]}>
-        <Animated.Image
+        {uri ? <Animated.Image
           source={{ uri }}
           resizeMode='contain'
           style={[styles.component, this.imageAnimation]}
-        />
+        /> : <View/>}
       </View>
     )
   }
@@ -237,7 +237,7 @@ class PlayerContainer extends React.Component<IProps, any> {
             : <Icon name='play-circle-outline' size={50} color='#ccc' onPress={this.togglePlayPause}/>}
           <Icon name='skip-next' size={50} color='#ccc' onPress={this.nextTrack}/>
         </View>
-        <FaIcon size={20} style={styles.trackAction} name='list-ul' color='#ccc' onPress={this.popup}/>
+        <FaIcon size={20} style={styles.trackAction} name='list-ul' color='#ccc' onPress={this.showPlaylist}/>
       </View>
     )
   }
@@ -267,6 +267,8 @@ class PlayerContainer extends React.Component<IProps, any> {
       </View>
     )
   }
+
+  showPlaylist = () => (this.props.showPlaylist())
 
   showLrc = () => (this.props.showLrc())
 
@@ -520,6 +522,9 @@ export default connect(
     },
     download (track) {
       return dispatch(downloadTracksAction([track]))
+    },
+    showPlaylist () {
+      return dispatch(showPlaylistPopup())
     }
   })
 )(PlayerContainer)

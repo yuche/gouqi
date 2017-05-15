@@ -125,6 +125,12 @@ export default handleActions({
       playlist: state.playlist.concat(payload)
     }
   },
+  'player/playlist/save' (state, { payload }: any) {
+    return {
+      ...state,
+      playlist: payload
+    }
+  },
   'player/history/merge' (state, { payload }: any) {
     const { history } = state
     if (history.length >= 101) {
