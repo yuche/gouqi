@@ -22,31 +22,35 @@ function streamLength (length: number) {
   return (length / 10e5).toFixed(1)
 }
 
-type ITracksPayload = { payload: ITrack[] }
+interface ITracksPayload { payload: ITrack[] }
 
 let currentDownloadJob = Object.create(null)
 
-function downloadTrackChannel(track: ITrack) {
-  return eventChannel(emit => {
+function downloadTrackChannel (track: ITrack) {
+  return eventChannel((emit) => {
+    const toFile = `${FILES_FOLDER}/${track.id}.mp3`
     RNFS.downloadFile({
       fromUrl: track.mp3Url,
-      toFile: `${FILES_FOLDER}/${track.id}.mp3`,
+      toFile,
       background: true,
-      begin({ jobId }) {
+      begin ({ jobId }) {
         currentDownloadJob.jobId = jobId
         currentDownloadJob.trackId = track.id
       },
-      progress({ contentLength, bytesWritten }) {
+      progress ({ contentLength, bytesWritten }) {
         emit(downloadProgress({
           total: streamLength(contentLength),
           receive: streamLength(bytesWritten),
           id: track.id
         }))
       }
-    }).promise.then(_ => {
+    }).promise.then((_) => {
       currentDownloadJob = Object.create(null)
       emit(removeDownloadingItem(track.id))
-      emit(downloadSuccess(track))
+      emit(downloadSuccess({
+        ...track,
+        mp3Url: toFile
+      }))
       emit(END)
     }).catch((err: Error) => {
       currentDownloadJob = Object.create(null)
@@ -62,7 +66,7 @@ function downloadTrackChannel(track: ITrack) {
 
 function* downloadSingleTrack (track: ITrack) {
   const downloading: ITrack[] = yield select((state: any) => state.download.downloading)
-  const isExist = downloading.some(t => t.id === track.id)
+  const isExist = downloading.some((t) => t.id === track.id)
   if (!isExist) {
     return false
   }
@@ -80,20 +84,20 @@ export async function MergeDownloadedTracks (original, tracks) {
 
 function* downloadTracksSaga ({ payload }: ITracksPayload) {
   yield put(hideTrackActionSheet())
-  const downloadedTracks: number[] = yield select((state: any) => state.download.tracks.map(t => t.id))
-  let tasks = payload.filter(t => downloadedTracks.indexOf(t.id) === -1)
+  const downloadedTracks: number[] = yield select((state: any) => state.download.tracks.map((t) => t.id))
+  let tasks = payload.filter((t) => downloadedTracks.indexOf(t.id) === -1)
 
   if (tasks.length > 0) {
     if (IS_LOGIN) {
-      const response = yield call(batchSongDetailsNew, tasks.map(t => t.id.toString()))
+      const response = yield call(batchSongDetailsNew, tasks.map((t) => t.id.toString()))
       if (response.code === 200) {
-        tasks = response.data.map(data => ({...data, mp3Url: data.url}))
+        tasks = response.data.map((data) => ({...data, mp3Url: data.url}))
       }
     }
 
     yield put(setDownloading(tasks))
 
-    for (let task of tasks) {
+    for (const task of tasks) {
       yield call(downloadSingleTrack, task)
     }
 
@@ -122,7 +126,7 @@ function* setTracksSaga ({ payload }: ITracksPayload) {
 
 function* clearAllDownload () {
   const downloads: any[] = yield call(RNFS.readDir, FILES_FOLDER)
-  yield call(Promise.all, downloads.map(d => RNFS.unlink(d.path)))
+  yield call(Promise.all, downloads.map((d) => RNFS.unlink(d.path)))
 
   yield put({
     type: 'download/tracks/set',
@@ -133,7 +137,7 @@ function* clearAllDownload () {
 }
 
 function* deleteDownloadTrackSaga ({ payload }) {
-  const tracks: ITrack[] = yield select((state: any) => state.download.tracks.filter(t => t.id !== payload))
+  const tracks: ITrack[] = yield select((state: any) => state.download.tracks.filter((t) => t.id !== payload))
 
   yield put({
     type: 'download/tracks/set',

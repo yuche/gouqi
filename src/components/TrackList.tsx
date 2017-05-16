@@ -65,7 +65,6 @@ class TrackList extends React.Component<IProps, any> {
         `${artistName} - ${albumName}` :
         albumName
       const colorStyle = isPlaying && { color: Color.main }
-      // tslint:disable-next-line:jsx-wrap-multiline
       return (
         <ListItem
           title={track.name}

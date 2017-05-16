@@ -63,9 +63,11 @@ class Lyrics extends React.Component<IProps, any> {
       && track.artists
       && track.artists.reduce((str, acc, index) => str + (index !== 0 ? ' & ' : '') + acc.name, '')
     const lineHeight = lyric.some((lrc) => lrc['translation']) ? 60 : 40
+    if (!visable) {
+      return null
+    }
     return (
-      // tslint:disable-next-line:jsx-wrap-multiline
-      visable ? <Animated.View style={[styles.frame, { opacity: this.opacity }]} pointerEvents='box-none'>
+      <Animated.View style={[styles.frame, { opacity: this.opacity }]} pointerEvents='box-none'>
         <View style={styles.container}>
           <Lyric
             currentTime={currentTime}
@@ -82,7 +84,6 @@ class Lyrics extends React.Component<IProps, any> {
           </View>
         </View>
       </Animated.View>
-      : null
     )
   }
 }

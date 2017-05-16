@@ -6,12 +6,14 @@ import TrackPopup from '../components/TrackActionSheet'
 import CollectPopup from '../components/CollectActionSheet'
 import Toast from '../components/ToastContainer'
 import PlaylistPopup from '../components/PlaylistPopup'
+import BatchOps from '../components/BatchOpsModal'
 
 const Siblings = () => (
   <View>
     <TrackPopup />
     <PlaylistPopup />
     <CollectPopup />
+    <BatchOps />
     <Toast />
   </View>
 )

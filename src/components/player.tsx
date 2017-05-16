@@ -58,9 +58,11 @@ class Player extends React.Component<IProps, any> {
 
     const paused = status !== 'PLAYING'
     const repeat = mode === 'REPEAT'
+    if (uri) {
+      return null
+    }
     return (
-      // tslint:disable-next-line:jsx-wrap-multiline
-      uri ? <Video
+      <Video
         style={{ height: 0, width: 0 }}
         ref={this.mapAudio}
         source={{ uri }}
@@ -75,8 +77,8 @@ class Player extends React.Component<IProps, any> {
         onLoad={this.onLoad(track)}
         onProgress={this.onProgress}
         onEnd={this.onEnd}
-        ignoreSilentSwitch={'ignore'}
-      /> : null
+        ignoreSilentSwitch={'obey'}
+      />
     )
   }
 

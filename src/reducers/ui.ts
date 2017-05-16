@@ -18,6 +18,12 @@ const initState = {
       visible: false,
       id: 0
     }
+  },
+  modal: {
+    playlist: {
+      visible: false,
+      id: 0
+    }
   }
 }
 
@@ -30,6 +36,7 @@ const toastId = next()
 const trackId = next()
 const collectId = next()
 const playlistId = next()
+const modalId = next()
 
 export default handleActions({
   'ui/toast' (state: any, {
@@ -45,6 +52,18 @@ export default handleActions({
         id: toastId()
       }
     })
+  },
+  'ui/modal/playlist/show' (state) {
+    return {
+      ...state,
+      modal: {
+        ...state.modal,
+        playlist: {
+          visible: true,
+          id: modalId()
+        }
+      }
+    }
   },
   'ui/popup/track/show' (state) {
     return {

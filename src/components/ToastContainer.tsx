@@ -14,17 +14,17 @@ class ToastContainer extends React.Component<IToastPayload, any> {
     super(props)
   }
 
-  componentWillReceiveProps({ kind, text }: IToastPayload) {
+  componentWillReceiveProps ({ kind, text }: IToastPayload) {
     this.toast.update(
       <Toast kind={kind} text={text} visible={true}/>
     )
   }
 
-  componentWillMount() {
+  componentWillMount () {
     this.toast = new RootSiblings(<Toast visible={false}/>)
   }
 
-  componentWillUnmount() {
+  componentWillUnmount () {
     this.toast.destroy()
   }
 

@@ -38,7 +38,7 @@ const HEADER_HEIGHT = 180
 
 class Description extends React.Component<IProps, any> {
 
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.state = {
       scrollY: new Animated.Value(0)
@@ -77,7 +77,7 @@ class Description extends React.Component<IProps, any> {
     })
   }
 
-  render() {
+  render () {
     const {
       isLoading,
       description: {
@@ -101,7 +101,7 @@ class Description extends React.Component<IProps, any> {
           )}
         >
           <Animated.View style={{transform: [{ translateY }], paddingBottom: HEADER_HEIGHT + 60}}>
-            {isLoading && <ActivityIndicator animating style={{marginTop: 10}}/>}
+            {isLoading && <ActivityIndicator animating={true} style={{marginTop: 10}}/>}
             {!isLoading && this.renderBrief(name, brief)}
             {!isLoading && this.renderIntroduction(introduction)}
           </Animated.View>
@@ -148,7 +148,7 @@ const styles = StyleSheet.create({
 export default connect(
   mapStateToProps,
   (dispatch, ownProps: IProps) => ({
-    sync() {
+    sync () {
       return dispatch(syncArtistDescription(ownProps.id))
     }
   }),

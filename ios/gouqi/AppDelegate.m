@@ -18,10 +18,16 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+  AVAudioSession *audioSession = [AVAudioSession sharedInstance];
+  NSError *setCategoryError = nil;
+  BOOL success = [audioSession setCategory:AVAudioSessionCategoryPlayback error:&setCategoryError];
+  if (!success) { /* handle the error condition */ }
+  NSError *activationError = nil;
+  success = [audioSession setActive:YES error:&activationError];
+  if (!success) { /* handle the error condition */ }
   NSURL *jsCodeLocation;
 
   jsCodeLocation = [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index.ios" fallbackResource:nil];
-  [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryAmbient error:nil];  // allow
 
 
   RCTRootView *rootView = [[RCTRootView alloc] initWithBundleURL:jsCodeLocation

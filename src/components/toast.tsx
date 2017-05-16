@@ -102,10 +102,11 @@ class Toast extends React.Component<IProps, IState> {
   render () {
     const visible = this.state.visable
     const transform = {transform: [{translateY: this.state.slideAnim}]}
-
-    return visible ?
-    // tslint:disable-next-line:jsx-wrap-multiline
-    <View style={styles.container}>
+    if (!visible) {
+      return null
+    }
+    return (
+      <View style={styles.container}>
         <TouchableWithoutFeedback onPress={this.onPress}>
           <Animated.View
             style={[typeStyleFilter(this.props.kind), styles.wrapper, transform]}
@@ -121,8 +122,8 @@ class Toast extends React.Component<IProps, IState> {
             </View>
           </Animated.View>
         </TouchableWithoutFeedback>
-      </View> :
-      null
+      </View>
+    )
   }
 
   private iconNameFilter () {

@@ -39,7 +39,8 @@ interface IProps {
   play: (index: number) => Redux.Action,
   setTracks: (tracks: ITrack[]) => Redux.Action,
   remove: (index) => Redux.Action,
-  clear: () => Redux.Action
+  clear: () => Redux.Action,
+  download: () => Redux.Action
 }
 
 class PlaylistPopup extends React.Component<IProps, any> {
@@ -104,6 +105,8 @@ class PlaylistPopup extends React.Component<IProps, any> {
 
   clear = () => (this.props.clear())
 
+  download = () => (this.props.download())
+
   renderRow = (index) => {
     return (track: ITrack, sectionId, rowId) => {
       const isPlaying = index === Number(rowId)
@@ -166,7 +169,7 @@ class PlaylistPopup extends React.Component<IProps, any> {
               <Icon name='plus-square-o' size={20} color='#ccc' onPress={undefined} />
             </View>
             <View style={styles.action} >
-              <Icon name='download' size={20} color='#ccc' onPress={undefined} />
+              <Icon name='download' size={20} color='#ccc' onPress={this.download} />
             </View>
             <View style={[styles.action, { marginRight: 10 }]} >
               <Icon name='trash-o' size={20} color='#ccc' onPress={this.clear} />
@@ -247,6 +250,9 @@ export default connect(
     },
     remove (index) {
       return disptach(removePlaylist(index))
+    },
+    download () {
+      return disptach({ type: 'ui/modal/playlist/show' })
     }
   })
 )(PlaylistPopup)
