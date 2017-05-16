@@ -60,7 +60,7 @@ class Album extends React.Component<IProps, IState> {
   private ds: ListViewDataSource
   private scrollComponent: any
 
-  constructor(props: IProps) {
+  constructor (props: IProps) {
     super(props)
     this.ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1.id !== r2.id})
     this.state = {
@@ -117,7 +117,7 @@ class Album extends React.Component<IProps, IState> {
 
   renderHeader ( album: IAlbum, scrollY: Animated.Value ) {
     const uri = get(album, 'picUrl', '') + '?param=300y300'
-    const { artist = {} } = album
+    const { artist = { name: '' } } = album
     const opacity = scrollY.interpolate({
       inputRange: [0, 50, HEADER_HEIGHT],
       outputRange: [1, 1, 0]
@@ -135,7 +135,7 @@ class Album extends React.Component<IProps, IState> {
                 <Text style={[styles.white, { marginLeft: 5 }]}>{artist.name}</Text>
               </View>
               <Text style={[styles.white, { fontSize: 12, marginTop: 5 }]}>
-                { `发行时间：${formatDate(album.publishTime)}` }
+                {`发行时间：${formatDate(album.publishTime)}`}
               </Text>
             </View>
           </View>
@@ -147,7 +147,7 @@ class Album extends React.Component<IProps, IState> {
 
   collectTracks = () => {
     this.props.collectAlbums({
-      id: this.props.album.songs.map(t => t.id)
+      id: this.props.album.songs.map((t) => t.id)
     })
   }
 
@@ -356,7 +356,7 @@ function mapStateToProps (
 export default connect(
   mapStateToProps,
   (dispatch, ownProps: IProps) => ({
-    sync() {
+    sync () {
       return dispatch(syncAlbumDetail(ownProps.route.id))
     },
     collectAlbums (tracks) {

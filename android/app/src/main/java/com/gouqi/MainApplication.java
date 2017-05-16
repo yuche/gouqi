@@ -3,13 +3,12 @@ package com.gouqi;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.brentvatne.react.ReactVideoPackage;
+import com.oblador.vectoricons.VectorIconsPackage;
+import com.tanguyantoine.react.MusicControl;
 import com.wix.interactable.Interactable;
 import com.rnfs.RNFSPackage;
-import com.oblador.vectoricons.VectorIconsPackage;
-import com.brentvatne.react.ReactVideoPackage;
-import com.tanguyantoine.react.MusicControl;
 import com.cmcewen.blurview.BlurViewPackage;
-import fm.indiecast.rnaudiostreamer.RNAudioStreamerPackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
@@ -30,13 +29,12 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new ReactVideoPackage(),
+            new VectorIconsPackage(),
+            new MusicControl(),
             new Interactable(),
             new RNFSPackage(),
-            new VectorIconsPackage(),
-            new ReactVideoPackage(),
-            new MusicControl(),
-            new BlurViewPackage(),
-            new RNAudioStreamerPackage()
+            new BlurViewPackage()
       );
     }
   };

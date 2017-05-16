@@ -58,7 +58,7 @@ class Player extends React.Component<IProps, any> {
 
     const paused = status !== 'PLAYING'
     const repeat = mode === 'REPEAT'
-    if (uri) {
+    if (!uri) {
       return null
     }
     return (

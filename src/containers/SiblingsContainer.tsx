@@ -4,7 +4,7 @@ import {
 } from 'react-native'
 import TrackPopup from '../components/TrackActionSheet'
 import CollectPopup from '../components/CollectActionSheet'
-import Toast from '../components/ToastContainer'
+// import Toast from '../components/ToastContainer'
 import PlaylistPopup from '../components/PlaylistPopup'
 import BatchOps from '../components/BatchOpsModal'
 
@@ -14,7 +14,6 @@ const Siblings = () => (
     <PlaylistPopup />
     <CollectPopup />
     <BatchOps />
-    <Toast />
   </View>
 )
 
