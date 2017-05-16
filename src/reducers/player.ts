@@ -34,7 +34,8 @@ export type IPlayerMode = 'SEQUE' | 'REPEAT' | 'RANDOM'
 
 export interface IPlayPayload {
   playlist?: ITrack[],
-  prev?: boolean
+  prev?: boolean,
+  saveOnly?: boolean,
   playing: {
     pid?: IPlayingType,
     index: number

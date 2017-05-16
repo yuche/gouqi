@@ -8,7 +8,11 @@ import {
   currentTimeAction,
   addSecondsAction,
   toastAction,
-  slideTimeAction
+  slideTimeAction,
+  setPlaylistTracks,
+  shrinkPlayer,
+  hidePlaylistPopup,
+  clearPlaylist
 } from '../actions'
 import {
   AsyncStorage
@@ -136,17 +140,20 @@ function* watchLyricShow () {
   yield fork(getLyrcis)
 }
 
-function* playTrack ({ payload: { playing, prev }  }) {
+function* playTrack ({ payload: { playing, prev, saveOnly }  }) {
+  if (saveOnly) {
+    return false
+  }
   yield put(changeStatusAction('PAUSED'))
   const playerState: IPlayerState = yield select((state: any) => state.player)
   const { playlist, lyricsVisable } = playerState
+  const track = playlist[playing.index]
   if (lyricsVisable) {
     yield put({
       type: 'player/lyric'
     })
   }
   if (playlist.length) {
-    const track = playlist[playing.index]
     let uri = get(track, 'mp3Url', '')
     if (uri.startsWith('http') || !uri) {
       const response = yield* ajaxCall(api.batchSongDetailsNew, [track.id])
@@ -187,6 +194,45 @@ function* delelteHistory ({ payload }) {
   })
 }
 
+function* removePlaylist ({ payload }) {
+  const index = Number(payload)
+  const playerState: IPlayerState = yield select((state: any) => state.player)
+  const { playlist, playing } = playerState
+  if (playlist.length <= 1) {
+    yield put(clearPlaylist())
+  } else {
+    yield put(setPlaylistTracks(
+      playlist.filter((t, i) => i !== index)
+    ))
+    if (playing.index === index) {
+      yield put(playTrackAction({
+        playing: {
+          index: index + 1 === playlist.length  ? index - 1 : index
+        }
+      }))
+    } else if (playing.index > index) {
+      yield put(playTrackAction({
+        playing: {
+          index: playing.index - 1
+        },
+        saveOnly: true
+      }))
+    }
+  }
+}
+
+function* clearPlaylistSaga () {
+  yield put(shrinkPlayer())
+  yield put(setPlaylistTracks([]))
+  yield put(hidePlaylistPopup())
+  yield put(playTrackAction({
+    playing: {
+      pid: 0,
+      index: 0
+    }
+  }))
+}
+
 function* watchStatus ({ payload: {status} }) {
   const currentTime = yield select((state: any) => state.player.currentTime)
   if (status === 'PLAYING') {
@@ -219,6 +265,8 @@ export default function* watchPlayer () {
     takeLatest('player/history/delete', delelteHistory),
     takeLatest('player/fm/play', playPersonalFM),
     takeEvery('player/lyric', getLyrcis),
+    takeLatest('player/playlist/remove', removePlaylist),
+    takeLatest('player/playlist/clear', clearPlaylistSaga),
     takeLatest('player/lyric/show', watchLyricShow)
   ]
 }

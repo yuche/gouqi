@@ -54,12 +54,14 @@ export const deleteHistoryAction = createAction('player/history/delete')
 export const setHistoryAction = createAction('player/history/save')
 
 export const playTrackAction: IPlayTrackAction = createAction('player/play',
-  ({playing, playlist, prev}: IPlayPayload) => {
+  ({playing, playlist, prev, saveOnly}) => {
     const playingCopy = playing
     playingCopy.index = Number(playing.index)
     return {
       playing: playingCopy,
-      playlist
+      playlist,
+      prev,
+      saveOnly
     }
   }
 )
@@ -148,3 +150,7 @@ export const setPlaylistTracks = createAction('player/playlist/save')
 export const hidePlaylistPopup = createAction('ui/popup/playlist/hide')
 
 export const showPlaylistPopup = createAction('ui/popup/playlist/show')
+
+export const clearPlaylist = createAction('player/playlist/clear')
+
+export const removePlaylist = createAction('player/playlist/remove')

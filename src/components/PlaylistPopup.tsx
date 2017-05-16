@@ -22,7 +22,9 @@ import {
   setModeAction,
   playTrackAction,
   hidePlaylistPopup,
-  setPlaylistTracks
+  setPlaylistTracks,
+  removePlaylist,
+  clearPlaylist
 } from '../actions'
 
 const { height } = Dimensions.get('window')
@@ -35,7 +37,9 @@ interface IProps {
   setMode: (mode: string) => Redux.Action,
   hide: () => Redux.Action,
   play: (index: number) => Redux.Action,
-  setTracks: (tracks: ITrack[]) => Redux.Action
+  setTracks: (tracks: ITrack[]) => Redux.Action,
+  remove: (index) => Redux.Action,
+  clear: () => Redux.Action
 }
 
 class PlaylistPopup extends React.Component<IProps, any> {
@@ -93,12 +97,12 @@ class PlaylistPopup extends React.Component<IProps, any> {
   hide = () => (this.props.hide())
 
   remove = (index) => () => {
-    this.props.setTracks(
-      this.props.tracks.filter((t, i) => i !== index)
-    )
+    this.props.remove(index)
   }
 
   play = (index) => () => (this.props.play(index))
+
+  clear = () => (this.props.clear())
 
   renderRow = (index) => {
     return (track: ITrack, sectionId, rowId) => {
@@ -165,7 +169,7 @@ class PlaylistPopup extends React.Component<IProps, any> {
               <Icon name='download' size={20} color='#ccc' onPress={undefined} />
             </View>
             <View style={[styles.action, { marginRight: 10 }]} >
-              <Icon name='trash-o' size={20} color='#ccc' onPress={undefined} />
+              <Icon name='trash-o' size={20} color='#ccc' onPress={this.clear} />
             </View>
           </View>
           <ListView
@@ -237,6 +241,12 @@ export default connect(
           index
         }
       }))
+    },
+    clear () {
+      return disptach(clearPlaylist())
+    },
+    remove (index) {
+      return disptach(removePlaylist(index))
     }
   })
 )(PlaylistPopup)
@@ -263,7 +273,7 @@ const styles = {
   row: {
     flexDirection: 'row',
     justifyContent: 'center',
-    height: 50
+    height: 45
   } as ViewStyle,
   mode: {
     position: 'relative',
