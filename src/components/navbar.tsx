@@ -21,6 +21,7 @@ interface IProps {
   titleStyle?: {},
   textColor?: string,
   rightConfig?: IBtnProps,
+  leftConfig?: IBtnProps,
   hideLeft?: boolean
 }
 
@@ -46,12 +47,13 @@ class NavBar extends React.Component<IProps, any> {
       titleStyle,
       title,
       textColor,
-      rightConfig = {}
+      rightConfig = {},
+      leftConfig
     } = this.props
     const colorStyle = textColor && { color: textColor }
     return (
       <View style={[styles.container, style && style, !hideBorder && styles.border]}>
-        {!hideLeft && this.renderBtn({ iconName: 'chevron-left', onPress: this.back })}
+        {!hideLeft && this.renderBtn(leftConfig ? leftConfig : { iconName: 'chevron-left', onPress: this.back })}
         <View style={{ flex: 1, alignItems: 'center' }}>
           <Animated.Text
             numberOfLines={1}
@@ -60,19 +62,20 @@ class NavBar extends React.Component<IProps, any> {
             {title}
           </Animated.Text>
         </View>
-        {this.renderBtn(rightConfig)}
+        {this.renderBtn(rightConfig, 'right')}
       </View>
     )
   }
 
-  renderBtn = (config: IBtnProps) => {
+  renderBtn = (config: IBtnProps, place = 'left') => {
     const { textColor } = this.props
     const color = textColor || 'white'
     const fontSize = config.fontSize || 16
+    const margin = place === 'left' ? { marginLeft: 10 } : { marginRight: 10, textAlign: 'right' }
     return (
       <TouchableOpacity onPress={config.onPress} style={styles.btn}>
-        {config.iconName && <Icon name={config.iconName} size={fontSize} color={color}/>}
-        {config.text && <Text style={[{ fontSize}, { color }]}>{config.text}</Text>}
+        {config.iconName && <Icon name={config.iconName} size={fontSize} color={color} style={margin}/>}
+        {config.text && <Text style={[{ fontSize, color}, margin]}>{config.text}</Text>}
       </TouchableOpacity>
     )
   }
@@ -103,15 +106,11 @@ const styles = StyleSheet.create({
   title: {
     color: 'white',
     fontSize: 16
-    // position: 'relative',
-    // right: 20
-    // marginLeft: -30
   } as TextStyle,
   btn: {
-    width: 40,
+    width: 60,
     height: 40,
-    justifyContent: 'center',
-    alignItems: 'center'
+    justifyContent: 'center'
     // position: 'absolute'
   } as ViewStyle
 })

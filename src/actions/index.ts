@@ -107,6 +107,10 @@ export const syncAlbumDetail: ISyncDetail = createAction('albums/detail',
   (id: number) => id
 )
 
+export const hideBatchOpsModal = createAction('ui/modal/playlist/hide')
+
+export const showBatchOpsModal = createAction('ui/modal/playlist/show')
+
 export type ISyncDetail = (id: number) => Action<string>
 export const syncPlaylistDetail: ISyncDetail = createAction('details/playlist',
   (id) => id

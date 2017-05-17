@@ -24,8 +24,10 @@ import {
   hidePlaylistPopup,
   setPlaylistTracks,
   removePlaylist,
-  clearPlaylist
+  clearPlaylist,
+  showBatchOpsModal
 } from '../actions'
+import BatchOps from '../components/BatchOpsModal'
 
 const { height } = Dimensions.get('window')
 
@@ -40,7 +42,7 @@ interface IProps {
   setTracks: (tracks: ITrack[]) => Redux.Action,
   remove: (index) => Redux.Action,
   clear: () => Redux.Action,
-  download: () => Redux.Action
+  batchOps: (type) => any
 }
 
 class PlaylistPopup extends React.Component<IProps, any> {
@@ -105,7 +107,9 @@ class PlaylistPopup extends React.Component<IProps, any> {
 
   clear = () => (this.props.clear())
 
-  download = () => (this.props.download())
+  download = () => (this.props.batchOps('download'))
+
+  collect = () => (this.props.batchOps('collect'))
 
   renderRow = (index) => {
     return (track: ITrack, sectionId, rowId) => {
@@ -120,8 +124,9 @@ class PlaylistPopup extends React.Component<IProps, any> {
           onPress={isPlaying ? undefined : this.play(Number(rowId))}
         >
           <View style={[styles.row, styles.border]}>
+            <BatchOps />
             <View style={{ flex: 1, justifyContent: 'center', marginLeft: 10 }}>
-              <Text style={{ color: isPlaying ? Color.main : '#777' }}>
+              <Text style={{ color: isPlaying ? Color.main : '#777' }} numberOfLines={1}>
                 {name}
                 <Text style={{ color: isPlaying ? Color.main : '#ccc', fontSize: 13 }}>
                   {` - ${artistName}`}
@@ -166,7 +171,7 @@ class PlaylistPopup extends React.Component<IProps, any> {
               {this.renderMode(mode, tracks.length)}
             </View>
             <View style={styles.action} >
-              <Icon name='plus-square-o' size={20} color='#ccc' onPress={undefined} />
+              <Icon name='plus-square-o' size={20} color='#ccc' onPress={this.collect} />
             </View>
             <View style={styles.action} >
               <Icon name='download' size={20} color='#ccc' onPress={this.download} />
@@ -251,8 +256,8 @@ export default connect(
     remove (index) {
       return disptach(removePlaylist(index))
     },
-    download () {
-      return disptach({ type: 'ui/modal/playlist/show' })
+    batchOps (type) {
+      return disptach(showBatchOpsModal(type))
     }
   })
 )(PlaylistPopup)

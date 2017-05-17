@@ -27,12 +27,12 @@ interface IProps extends IPlaylistProps {
 class Playlist extends React.Component<IProps, any> {
   private ds: ListViewDataSource
 
-  constructor(props: IProps) {
+  constructor (props: IProps) {
     super(props)
     this.ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1.id !== r2.id})
   }
 
-  componentDidMount() {
+  componentDidMount () {
     this.sync()
   }
 
@@ -93,7 +93,7 @@ class Playlist extends React.Component<IProps, any> {
     this.props.sync()
   }
 
-  render() {
+  render () {
     const {
       tracks,
       playing,
@@ -113,7 +113,7 @@ class Playlist extends React.Component<IProps, any> {
           hideBorder={false}
         />
         <ListView
-          enableEmptySections
+          enableEmptySections={true}
           removeClippedSubviews={true}
           scrollRenderAheadDistance={120}
           initialListSize={10}
@@ -121,8 +121,7 @@ class Playlist extends React.Component<IProps, any> {
           renderRow={this.renderTrack(playing, isPlaylist)}
           showsVerticalScrollIndicator={true}
           refreshControl={
-            <RefreshControl refreshing={isLoading} onRefresh={sync}/>
-          }
+            <RefreshControl refreshing={isLoading} onRefresh={sync}/>}
         />
       </View>
     )
@@ -155,10 +154,10 @@ export default connect(
     sync () {
       return dispatch({type: 'personal/daily'})
     },
-    popup(track: ITrack) {
+    popup (track: ITrack) {
       return dispatch(popupTrackActionSheet(track))
     },
-    play(index: number, tracks: ITrack[]) {
+    play (index: number, tracks: ITrack[]) {
       return dispatch(playTrackAction({
         playing: {
           index,

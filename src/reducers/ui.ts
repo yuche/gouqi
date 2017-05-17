@@ -22,7 +22,8 @@ const initState = {
   modal: {
     playlist: {
       visible: false,
-      id: 0
+      id: 0,
+      kind: 'collect'
     }
   }
 }
@@ -53,13 +54,26 @@ export default handleActions({
       }
     })
   },
-  'ui/modal/playlist/show' (state) {
+  'ui/modal/playlist/show' (state, { payload }) {
     return {
       ...state,
       modal: {
         ...state.modal,
         playlist: {
           visible: true,
+          id: modalId(),
+          kind: payload
+        }
+      }
+    }
+  },
+  'ui/modal/playlist/hide' (state) {
+    return {
+      ...state,
+      modal: {
+        ...state.modal,
+        playlist: {
+          visible: false,
           id: modalId()
         }
       }

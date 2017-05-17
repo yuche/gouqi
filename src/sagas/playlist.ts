@@ -1,7 +1,8 @@
 import { take, put, fork, select, call } from 'redux-saga/effects'
 import { takeLatest } from 'redux-saga'
 import {
-  toastAction
+  toastAction,
+  hideBatchOpsModal
 } from '../actions'
 import * as api from '../services/api'
 import {
@@ -127,10 +128,16 @@ function* popupCollectActionSheet () {
 function* collectTrackToPlayliast () {
   while (true) {
     const { payload } = yield take('playlists/collect')
+    const batchOpsVisable = yield select((state: any) => state.ui.modal.playlist.visible)
 
     yield put({
       type: 'ui/popup/collect/hide'
     })
+
+    if (batchOpsVisable) {
+      yield call(InteractionManager.runAfterInteractions)
+      yield put(hideBatchOpsModal())
+    }
 
     const response = yield* ajaxCall(
       api.opMuiscToPlaylist,

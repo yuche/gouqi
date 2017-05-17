@@ -39,7 +39,7 @@ interface IState {
   underlineWidth: Animated.Value
 }
 
-type tabMeasurement = {
+interface ITabMeasurement {
   left: number,
   width: number
 }
@@ -49,9 +49,9 @@ class TabBar extends React.Component<ITabBarProps, IState> {
     [text: string]: any
   }
 
-  private tabMeasurements: tabMeasurement[]
+  private tabMeasurements: ITabMeasurement[]
 
-  constructor(props: any) {
+  constructor (props: any) {
     super(props)
     this.tabMeasurements = []
     this.state = {
@@ -60,11 +60,11 @@ class TabBar extends React.Component<ITabBarProps, IState> {
     }
   }
 
-  componentDidMount() {
+  componentDidMount () {
    this.props.scrollValue.addListener(this.updateView)
   }
 
-  componentWillUnmount() {
+  componentWillUnmount () {
     this.props.scrollValue.removeAllListeners()
   }
 

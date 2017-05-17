@@ -293,11 +293,11 @@ class PlayerContainer extends React.Component<IProps, any> {
 
   renderBodyText = (title: string, subtitle: string) => {
     return (
-      <View style={{ ...centering, flex: 1, width, marginHorizontal: 20}}>
-        <Text style={{ fontSize: 22, marginBottom: 5 }} numberOfLines={1}>
+      <View style={{ ...centering, flex: 1, width}}>
+        <Text style={{ fontSize: 22, marginBottom: 5, marginHorizontal: 20 }} numberOfLines={1}>
           {title}
         </Text>
-        <Text style={{ fontSize: 16, color: '#ccc' }} numberOfLines={1}>
+        <Text style={{ fontSize: 16, color: '#ccc', marginHorizontal: 20 }} numberOfLines={1}>
           {subtitle}
         </Text>
       </View>
