@@ -109,9 +109,9 @@ function* syncArtistDescription () {
   }
 }
 
-function* toggleSubscribeArtist ({ payload }) {
+function* toggleSubscribeArtist ({ payload }: any) {
   const id = payload.toString()
-  let { followed } = yield select((state: any) => state.artist.detail[payload].artist)
+  const { followed } = yield select((state: any) => state.artist.detail[payload].artist)
   yield put({
     type: 'artists/detail/follow/start'
   })
@@ -152,7 +152,7 @@ function* favorites () {
   })
 }
 
-export default function* watchArtists() {
+export default function* watchArtists () {
   yield [
     takeLatest('artists/refresh', refreshArtists),
     takeLatest('artists/sync', syncMoreArtists),

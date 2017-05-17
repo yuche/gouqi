@@ -82,7 +82,7 @@ export async function MergeDownloadedTracks (original, tracks) {
   return await AsyncStorage.setItem(DOWNLOADED_TRACKS, JSON.stringify(merged))
 }
 
-function* downloadTracksSaga ({ payload }: ITracksPayload) {
+function* downloadTracksSaga ({ payload }: any) {
   yield put(hideTrackActionSheet())
   const downloadedTracks: number[] = yield select((state: any) => state.download.tracks.map((t) => t.id))
   let tasks = payload.filter((t) => downloadedTracks.indexOf(t.id) === -1)
@@ -106,7 +106,7 @@ function* downloadTracksSaga ({ payload }: ITracksPayload) {
   }
 }
 
-function* mergeTracksSaga ({ payload }: ITracksPayload) {
+function* mergeTracksSaga ({ payload }: any) {
   const downloadedTracks: ITrack[] = yield select((state: any) => state.download.tracks)
 
   yield call(MergeDownloadedTracks, downloadedTracks, payload)
@@ -120,7 +120,7 @@ function* stopCurrentDownloadSaga () {
   }
 }
 
-function* setTracksSaga ({ payload }: ITracksPayload) {
+function* setTracksSaga ({ payload }: any) {
   yield call(AsyncStorage.setItem, DOWNLOADED_TRACKS, JSON.stringify(payload))
 }
 
@@ -136,7 +136,7 @@ function* clearAllDownload () {
   yield put(toastAction('success', '所有下载项目都清除成功'))
 }
 
-function* deleteDownloadTrackSaga ({ payload }) {
+function* deleteDownloadTrackSaga ({ payload }: any) {
   const tracks: ITrack[] = yield select((state: any) => state.download.tracks.filter((t) => t.id !== payload))
 
   yield put({

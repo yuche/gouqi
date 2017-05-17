@@ -24,7 +24,7 @@ const syncMoreAlbums = syncMoreResource(
   api.newAlbums
 )
 
-function* syncAlbum ( { payload } ) {
+function* syncAlbum ( { payload }: any ) {
   yield call(InteractionManager.runAfterInteractions)
   const album: api.IAlbum = yield select((state: any) => state.details.albums[payload])
 
@@ -56,7 +56,7 @@ function* syncAlbum ( { payload } ) {
   })
 }
 
-export default function* watchAlbums() {
+export default function* watchAlbums () {
   yield [
     takeLatest('albums/refresh', refreshAlbums),
     takeLatest('albums/sync', syncMoreAlbums),

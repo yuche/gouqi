@@ -54,7 +54,7 @@ interface IState {
   blurRadius: number
 }
 
-class Artist extends React.Component<IProps, IState> {
+class Artist extends React.PureComponent<IProps, IState> {
   private image: any
   private albumsPage: any
   private tracksPage: any

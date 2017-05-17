@@ -21,6 +21,7 @@ import * as api from '../services/api'
 import { ajaxCall } from './common'
 import MusicControl from 'react-native-music-control/index.ios.js'
 import { parseLyrics } from '../utils'
+import { Action } from 'redux-actions'
 
 function* nextTrack () {
   const playerState: IPlayerState = yield select((state: any) => state.player)
@@ -140,7 +141,7 @@ function* watchLyricShow () {
   yield fork(getLyrcis)
 }
 
-function* playTrack ({ payload: { playing, prev, saveOnly }  }) {
+function* playTrack ({ payload: { playing, prev, saveOnly } }: any) {
   if (saveOnly) {
     return false
   }
@@ -185,7 +186,7 @@ function* setHisotrySaga () {
   yield fork(AsyncStorage.setItem, 'HISTORY', JSON.stringify(history))
 }
 
-function* delelteHistory ({ payload }) {
+function* delelteHistory ({ payload }: any) {
   const history = yield select((state: any) => state.player.history.filter((_, index) => index !== payload))
 
   yield put({
@@ -194,7 +195,7 @@ function* delelteHistory ({ payload }) {
   })
 }
 
-function* removePlaylist ({ payload }) {
+function* removePlaylist ({ payload }: any) {
   const index = Number(payload)
   const playerState: IPlayerState = yield select((state: any) => state.player)
   const { playlist, playing } = playerState
@@ -233,7 +234,7 @@ function* clearPlaylistSaga () {
   }))
 }
 
-function* watchStatus ({ payload: {status} }) {
+function* watchStatus ({ payload: {status} }: any) {
   const currentTime = yield select((state: any) => state.player.currentTime)
   if (status === 'PLAYING') {
     MusicControl.updatePlayback({
