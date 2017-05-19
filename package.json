@@ -8,7 +8,7 @@
     "link": "node node_modules/react-native/local-cli/cli.js link",
     "quickbuild": "tsc",
     "dev": "node_modules/.bin/tsc  -w",
-    "test": "ava --verbose",
+    "test": "jest",
     "test:watch": "ava --watch --verbose",
     "coverage": "nyc ava --verbose && nyc report --reporter=html",
     "coverage:check": "open coverage/index.html",
@@ -47,6 +47,7 @@
   },
   "devDependencies": {
     "@types/isomorphic-fetch": "^0.0.34",
+    "@types/jest": "^19.2.3",
     "@types/lodash": "^4.14.62",
     "@types/qs": "^6.2.30",
     "@types/react": "^0.14.37",
@@ -55,6 +56,7 @@
     "@types/redux-actions": "0.8.30",
     "ava": "^0.16.0",
     "babel-eslint": "^6.1.2",
+    "babel-jest": "^20.0.3",
     "babel-plugin-import": "^1.1.1",
     "babel-plugin-transform-remove-console": "^6.8.1",
     "babel-preset-es2015": "^6.14.0",
@@ -72,10 +74,25 @@
     "nyc": "^8.1.0",
     "react-dom": "^15.3.1",
     "react-native-mock": "^0.2.6",
+    "redux-saga-test-plan": "^3.0.2",
     "remote-redux-devtools": "^0.5.7",
     "remote-redux-devtools-on-debugger": "^0.7.0",
+    "ts-jest": "^20.0.4",
     "tslint": "^5.2.0",
     "tslint-react": "^3.0.0"
+  },
+  "jest": {
+    "preset": "react-native",
+    "transform": {
+      "^.+\\.js$": "<rootDir>/node_modules/babel-jest",
+      ".(ts|tsx)": "<rootDir>/node_modules/ts-jest/preprocessor.js"
+    },
+    "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(ts|tsx|js)$",
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js"
+    ]
   },
   "ava": {
     "files": [
