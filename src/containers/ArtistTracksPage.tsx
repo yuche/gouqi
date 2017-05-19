@@ -22,7 +22,7 @@ interface IProps {
 class ArtistTracks extends React.Component<IProps, any> {
   private scrollComponent: any
 
-  constructor(props) {
+  constructor (props) {
     super(props)
   }
 
@@ -81,7 +81,7 @@ function mapStateToProps ({
 export default connect(
   mapStateToProps,
   (dispatch, ownProps: IProps) => ({
-    sync() {
+    sync () {
       return dispatch(syncArtistTracks(ownProps.id))
     }
   }),

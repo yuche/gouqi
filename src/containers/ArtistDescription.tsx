@@ -12,6 +12,7 @@ import {
   ActivityIndicator,
   Animated
 } from 'react-native'
+import { isEmpty } from 'lodash'
 
 interface IProps {
   id: number,
@@ -49,7 +50,10 @@ class Description extends React.Component<IProps, any> {
     this.props.sync()
   }
 
-  renderBrief (name: string, brief: string) {
+  renderBrief (name: string, brief = '') {
+    if (isEmpty(brief)) {
+      return null
+    }
     return (
       <View>
         <View style={styles.header}>
@@ -63,15 +67,18 @@ class Description extends React.Component<IProps, any> {
   }
 
   renderIntroduction (introduction: IIntroduction[]) {
+    if (isEmpty(introduction)) {
+      return null
+    }
     return introduction.map((i, index) => {
       return (
         <View key={index}>
           {i.ti && <View style={styles.header}>
             <Text style={styles.title}>{i.ti}</Text>
           </View>}
-          <View style={{ marginHorizontal: 10 }}>
-            <Text style={{lineHeight: 20}}>{i.txt}</Text>
-          </View>
+          {i.txt && <View style={{ marginHorizontal: 10 }}>
+            <Text style={{ lineHeight: 20 }}>{i.txt}</Text>
+          </View>}
         </View>
       )
     })
@@ -81,7 +88,7 @@ class Description extends React.Component<IProps, any> {
     const {
       isLoading,
       description: {
-        brief = '',
+        brief,
         introduction = []
       },
       name

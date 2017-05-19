@@ -51,8 +51,6 @@ class PlayList extends React.Component<IProps, any> {
 
   private scrollY: Animated.Value
 
-  private navOpacity: any
-
   private headerOpacity: any
 
   private blurTransform: any
@@ -67,12 +65,6 @@ class PlayList extends React.Component<IProps, any> {
   componentDidMount () {
     this.props.sync()
     this.scrollY = this.scrollComponent.state.scrollY
-    this.navOpacity = {
-      opacity: this.scrollY.interpolate({
-        inputRange: [0, 100, HEADER_HEIGHT],
-        outputRange: [0, 0, 1]
-      })
-    }
     this.headerOpacity = {
       opacity: this.scrollY.interpolate({
         inputRange: [0, 50, HEADER_HEIGHT],
@@ -126,7 +118,12 @@ class PlayList extends React.Component<IProps, any> {
       <Navbar
         title={playlist.name}
         style={styles.navbar}
-        titleStyle={this.navOpacity}
+        titleStyle={{
+          opacity: this.scrollY.interpolate({
+            inputRange: [0, 100, HEADER_HEIGHT],
+            outputRange: [0, 0, 1]
+          })
+        }}
       />
     )
   }

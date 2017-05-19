@@ -114,7 +114,7 @@ const styles = {
     right: 0,
     top: 0,
     bottom: 0,
-    zIndex: 1,
+    zIndex: 999999,
     ...centering
   } as ViewStyle,
   ball: {

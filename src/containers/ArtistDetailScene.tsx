@@ -152,7 +152,7 @@ class Artist extends React.PureComponent<IProps, IState> {
     }
     return (
       <Animated.View style={[styles.scroll, transform]}>
-        <View style={{ height: height - Navbar.HEIGHT - 40, backgroundColor: 'white'}}>
+        <View style={{ height: height - Navbar.HEIGHT, backgroundColor: 'white'}}>
           <ScrollableTabView
             renderTabBar={this.renderTabBar}
             onChangeTab={this.onChangeTab}

@@ -6,6 +6,7 @@ import TabBar from '../components/HomeTabBar'
 import ScrollableTabView from 'react-native-scrollable-tab-view'
 import UserPage from '../containers/UserPage'
 import Toplist from '../containers/ToplistPage'
+import { isEmpty } from 'lodash'
 
 class Home extends React.Component<any, any> {
   private tabbar: any
@@ -21,7 +22,7 @@ class Home extends React.Component<any, any> {
   render () {
     return (
       <ScrollableTabView
-        style={{marginTop: 20}}
+        style={{marginTop: 20, paddingBottom: this.props.isPlayerVisable ? 60 : 0}}
         renderTabBar={this.renderTabBar}
       >
         <Recommend tabLabel='推荐' gotoPlaylist={this.goToPlaylist}/>
@@ -43,7 +44,15 @@ class Home extends React.Component<any, any> {
 }
 
 export default connect(
-  () => ({}),
+  (
+    {
+      player: {
+        playlist
+      }
+    }
+  ) => ({
+    isPlayerVisable: !isEmpty(playlist)
+  }),
   (dispatch: any) => ({
     init () {
       return dispatch({type: 'app/init'})

@@ -156,7 +156,7 @@ function* playTrack ({ payload: { playing, prev, saveOnly } }: any) {
   }
   if (playlist.length) {
     let uri = get(track, 'mp3Url', '')
-    if (uri.startsWith('http') || !uri) {
+    if (isEmpty(uri) || uri.startsWith('http')) {
       const response = yield* ajaxCall(api.batchSongDetailsNew, [track.id])
       if (response.code === 200) {
         uri = response.data[0].url || uri

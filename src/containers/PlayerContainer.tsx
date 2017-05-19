@@ -64,6 +64,8 @@ class PlayerContainer extends React.Component<IProps, any> {
 
   private Player: any
 
+  private backdropAnimation: any
+
   private translateY: Animated.Value
 
   constructor (props: IProps) {
@@ -107,6 +109,14 @@ class PlayerContainer extends React.Component<IProps, any> {
         extrapolateRight: 'clamp'
       })
     }
+    this.backdropAnimation = {
+      opacity: this.deltaY.interpolate({
+        inputRange: [-VIEW_POSITION_Y, -VIEW_POSITION_Y + 50, 0, 0],
+        outputRange: [.5, .5, 0, 0],
+        extrapolateLeft: 'clamp',
+        extrapolateRight: 'clamp'
+      })
+    }
   }
 
   componentWillReceiveProps (nextProps: IProps) {
@@ -130,49 +140,6 @@ class PlayerContainer extends React.Component<IProps, any> {
   shrink = () => (this.Interactable.snapTo({ index: 0 }))
 
   mapPlayer = (component) => (this.Player = component)
-
-  render () {
-    const {
-      track,
-      status,
-      mode,
-      duration,
-      slideTime
-    } = this.props
-    const picUrl = get(track, 'album.picUrl', '')
-    const trackName = get(track, 'name', '')
-    const artistName = track
-      && track.artists
-      && track.artists.reduce((str, acc, index) => str + (index !== 0 ? ' & ' : '') + acc.name, '')
-    return (
-      <Animated.View style={[styles.container, {transform: [{translateY: this.translateY}]}]}>
-        <Player {...this.props} ref={this.mapPlayer}/>
-        <Interactable.View
-          ref={this.mapInteractable}
-          verticalOnly={true}
-          snapPoints={[{ y: 0 }, { y: -VIEW_POSITION_Y }]}
-          boundaries={{ bottom: 0, top: -VIEW_POSITION_Y, bounce: .5, haptics: true }}
-          animatedValueY={this.deltaY}
-        >
-          <View style={styles.wrapper}>
-            <TouchableWithoutFeedback onPress={this.expand}>
-              <View style={styles.tabbar}>
-                {this.renderImage(picUrl)}
-                {this.renderTabbarText(trackName, artistName)}
-                {this.renderTabbarBtns(status)}
-              </View>
-            </TouchableWithoutFeedback>
-            <Animated.View style={[styles.body, this.bodyAnimation]}>
-              {this.renderBodyText(trackName, artistName)}
-              {this.renderTrackActions()}
-              {this.renderSlider(duration, slideTime)}
-              {this.renderPlayerActions(status, mode)}
-            </Animated.View>
-          </View>
-        </Interactable.View>
-      </Animated.View>
-    )
-  }
 
   renderImage = (uri) => {
     return (
@@ -336,9 +303,64 @@ class PlayerContainer extends React.Component<IProps, any> {
     this.props.next()
   }
 
+  render () {
+    const {
+      track,
+      status,
+      mode,
+      duration,
+      slideTime
+    } = this.props
+    const picUrl = get(track, 'album.picUrl', '')
+    const trackName = get(track, 'name', '')
+    const artistName = track
+      && track.artists
+      && track.artists.reduce((str, acc, index) => str + (index !== 0 ? ' & ' : '') + acc.name, '')
+    return (
+      <View style={styles.frame} pointerEvents='box-none'>
+        <Animated.View pointerEvents='box-none' style={[styles.backdrop, this.backdropAnimation]}/>
+        <Animated.View style={[styles.container, { transform: [{ translateY: this.translateY }] }]}>
+          <Player {...this.props} ref={this.mapPlayer} />
+          <Interactable.View
+            ref={this.mapInteractable}
+            verticalOnly={true}
+            snapPoints={[{ y: 0 }, { y: -VIEW_POSITION_Y }]}
+            boundaries={{ bottom: 0, top: -VIEW_POSITION_Y, bounce: .5, haptics: true }}
+            animatedValueY={this.deltaY}
+          >
+            <View style={styles.wrapper}>
+              <TouchableWithoutFeedback onPress={this.expand}>
+                <View style={styles.tabbar}>
+                  {this.renderImage(picUrl)}
+                  {this.renderTabbarText(trackName, artistName)}
+                  {this.renderTabbarBtns(status)}
+                </View>
+              </TouchableWithoutFeedback>
+              <Animated.View style={[styles.body, this.bodyAnimation]}>
+                {this.renderBodyText(trackName, artistName)}
+                {this.renderTrackActions()}
+                {this.renderSlider(duration, slideTime)}
+                {this.renderPlayerActions(status, mode)}
+              </Animated.View>
+            </View>
+          </Interactable.View>
+        </Animated.View>
+      </View>
+    )
+  }
+
 }
 
 const styles = {
+  frame: {
+    flex: 1,
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
+    zIndex: 1
+  } as ViewStyle,
   container: {
     position: 'absolute',
     left: 0,
@@ -442,6 +464,15 @@ const styles = {
     marginHorizontal: 20,
     flexDirection: 'row',
     justifyContent: 'space-between'
+  } as ViewStyle,
+  backdrop: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
+    backgroundColor: 'black',
+    width
   } as ViewStyle
 }
 
