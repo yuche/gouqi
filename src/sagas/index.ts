@@ -80,7 +80,7 @@ function* setCookiesSaga () {
   const Cookies: string = yield AsyncStorage.getItem('Cookies')
 
   if (Cookies && Cookies.includes(';')) {
-    const expires = Cookies.split(';').find(c => c.includes('Expires'))
+    const expires = Cookies.split(';').find((c) => c.includes('Expires'))
     if (expires) {
       if (new Date(expires) > new Date()) {
         setCookies(Cookies)
@@ -117,7 +117,7 @@ function* getHistory () {
   })
 }
 
-export function* init() {
+export function* init () {
   while (true) {
     yield take('app/init')
 

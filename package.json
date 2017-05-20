@@ -8,7 +8,7 @@
     "link": "node node_modules/react-native/local-cli/cli.js link",
     "quickbuild": "tsc",
     "dev": "node_modules/.bin/tsc  -w",
-    "test": "jest",
+    "test": "jest --verbose",
     "test:watch": "ava --watch --verbose",
     "coverage": "nyc ava --verbose && nyc report --reporter=html",
     "coverage:check": "open coverage/index.html",
@@ -69,6 +69,7 @@
     "eslint-plugin-react": "^6.2.0",
     "eslint-plugin-standard": "^2.0.0",
     "isomorphic-fetch": "^2.2.1",
+    "jest": "^20.0.3",
     "mockery": "^1.7.0",
     "mockjs": "^1.0.1-beta3",
     "nyc": "^8.1.0",
@@ -83,6 +84,9 @@
   },
   "jest": {
     "preset": "react-native",
+    "setupFiles": [
+      "<rootDir>/jest/setup.js"
+    ],
     "transform": {
       "^.+\\.js$": "<rootDir>/node_modules/babel-jest",
       ".(ts|tsx)": "<rootDir>/node_modules/ts-jest/preprocessor.js"

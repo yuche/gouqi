@@ -51,8 +51,8 @@ function* deletePlaylist () {
 
     let {collect, created} = yield select((state: any) => state.personal.playlist)
 
-    collect = collect.filter(t => t.id !== payload)
-    created = created.filter(t => t.id !== payload)
+    collect = collect.filter((t) => t.id !== payload)
+    created = created.filter((t) => t.id !== payload)
 
     yield put({
       type: 'personal/playlist/save',
@@ -70,7 +70,7 @@ function* deletePlaylist () {
   }
 }
 
-export function* syncPersonnalPlaylist() {
+export function* syncPersonnalPlaylist () {
   while (true) {
     yield take('personal/playlist')
 
@@ -80,9 +80,9 @@ export function* syncPersonnalPlaylist() {
       const res = yield call(api.userPlayList)
       if (res.code === 200) {
         const playlists: api.IPlaylist[] = res.playlist
-        let collect: api.IPlaylist[] = []
-        let created: api.IPlaylist[] = []
-        playlists.forEach(playlist => {
+        const collect: api.IPlaylist[] = []
+        const created: api.IPlaylist[] = []
+        playlists.forEach((playlist) => {
           if (playlist.creator.userId.toString() === userId) {
             created.push(playlist)
           } else {

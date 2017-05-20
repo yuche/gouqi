@@ -89,7 +89,7 @@ function* syncMoreComments () {
   }
 }
 
-export default function* rootSaga() {
+export default function* rootSaga () {
   yield fork(syncComments)
   yield fork(syncMoreComments)
 }

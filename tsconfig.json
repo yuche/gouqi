@@ -24,7 +24,9 @@
     "node_modules",
     "dist",
     "tests",
-    "lib"
+    "lib",
+    "__tests__",
+    "**/*.test.ts"
   ],
     "compileOnSave": false
 }

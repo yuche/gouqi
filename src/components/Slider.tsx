@@ -13,8 +13,6 @@ import {
   Easing
 } from "react-native";
 
-import PropTypes from 'prop-types';
-
 var TRACK_SIZE = 4;
 var THUMB_SIZE = 20;
 

@@ -1,4 +1,4 @@
-import { put, fork, select } from 'redux-saga/effects'
+import { put, fork, select, call } from 'redux-saga/effects'
 import { IPlayerState } from '../reducers/player'
 import { random, get, findIndex, isEmpty } from 'lodash'
 import { playTrackAction } from '../actions'
@@ -23,16 +23,23 @@ import MusicControl from 'react-native-music-control/index.ios.js'
 import { parseLyrics } from '../utils'
 import { Action } from 'redux-actions'
 
-function* nextTrack () {
-  const playerState: IPlayerState = yield select((state: any) => state.player)
+export const playerStateSelector = (state: any) => state.player
+
+function randomNumber (total: number, except: number) {
+  const num = random(total)
+  return num === except || total === 1 ? num : randomNumber(total, except)
+}
+
+export function* nextTrack () {
+  const playerState: IPlayerState = yield select(playerStateSelector)
 
   const { mode, playing, playlist, seconds } = playerState
 
   const length = playlist.length
+  let index = Number(playing.index)
 
   if (length) {
     if (mode === 'SEQUE') {
-      const index = Number(playing.index)
       if (playing.pid === 'fm' && playlist.length - 1 === index) {
         const response = yield* ajaxCall(api.personalFM)
         if (response.code === 200) {
@@ -50,7 +57,7 @@ function* nextTrack () {
     }
 
     if (mode === 'RANDOM') {
-      const index = random(length - 1)
+      index = yield call(randomNumber, length - 1, index)
       yield put(playTrackAction({
         playing: {
           index
@@ -64,7 +71,7 @@ function* nextTrack () {
 }
 
 function* prevTrack () {
-  const playerState: IPlayerState = yield select((state: any) => state.player)
+  const playerState: IPlayerState = yield select(playerStateSelector)
 
   const { history, playlist, playing, seconds } = playerState
 
@@ -94,7 +101,7 @@ function* prevTrack () {
 }
 
 function* getLyrcis () {
-  const playerState: IPlayerState = yield select((state: any) => state.player)
+  const playerState: IPlayerState = yield select(playerStateSelector)
   const { playlist, lyrics, playing } = playerState
   const id = (playlist[playing.index] && playlist[playing.index].id) || 0
   if (id && isEmpty(lyrics[id])) {
@@ -146,7 +153,7 @@ function* playTrack ({ payload: { playing, prev, saveOnly } }: any) {
     return false
   }
   yield put(changeStatusAction('PAUSED'))
-  const playerState: IPlayerState = yield select((state: any) => state.player)
+  const playerState: IPlayerState = yield select(playerStateSelector)
   const { playlist, lyricsVisable } = playerState
   const track = playlist[playing.index]
   if (lyricsVisable) {
@@ -197,7 +204,7 @@ function* delelteHistory ({ payload }: any) {
 
 function* removePlaylist ({ payload }: any) {
   const index = Number(payload)
-  const playerState: IPlayerState = yield select((state: any) => state.player)
+  const playerState: IPlayerState = yield select(playerStateSelector)
   const { playlist, playing } = playerState
   if (playlist.length <= 1) {
     yield put(clearPlaylist())
