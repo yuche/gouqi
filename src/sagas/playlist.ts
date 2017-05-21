@@ -1,5 +1,4 @@
-import { take, put, fork, select, call } from 'redux-saga/effects'
-import { takeLatest } from 'redux-saga'
+import { take, put, fork, select, call, takeLatest, all } from 'redux-saga/effects'
 import {
   toastAction,
   hideBatchOpsModal
@@ -190,7 +189,7 @@ function* toCreatePlaylistPage () {
 }
 
 export default function* watchPlaylist () {
-  yield [
+  yield all([
     fork(syncPlaylistDetail),
     fork(subscribePlaylist),
     fork(popupTrackActionSheet),
@@ -200,5 +199,5 @@ export default function* watchPlaylist () {
     fork(toCreatePlaylistPage),
     takeLatest('playlists/refresh', refreshPlaylist),
     takeLatest('playlists/sync', syncPlaylists)
-  ]
+  ])
 }

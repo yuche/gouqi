@@ -1,8 +1,7 @@
-import { put, fork, select, call } from 'redux-saga/effects'
+import { put, fork, select, call, takeLatest, takeEvery, all } from 'redux-saga/effects'
 import { IPlayerState } from '../reducers/player'
 import { random, get, findIndex, isEmpty } from 'lodash'
 import { playTrackAction } from '../actions'
-import { takeLatest, takeEvery } from 'redux-saga'
 import {
   changeStatusAction,
   currentTimeAction,
@@ -25,9 +24,9 @@ import { Action } from 'redux-actions'
 
 export const playerStateSelector = (state: any) => state.player
 
-function randomNumber (total: number, except: number) {
+export function randomNumber (total: number, except: number) {
   const num = random(total)
-  return num === except || total === 1 ? num : randomNumber(total, except)
+  return num !== except || total === 0 ? num : randomNumber(total, except)
 }
 
 export function* nextTrack () {
@@ -262,7 +261,7 @@ function* watchCurrentTime () {
 }
 
 export default function* watchPlayer () {
-  yield [
+  yield all([
     takeLatest('player/track/next', nextTrack),
     takeLatest('player/track/prev', prevTrack),
     takeEvery('player/status', watchStatus),
@@ -276,5 +275,5 @@ export default function* watchPlayer () {
     takeLatest('player/playlist/remove', removePlaylist),
     takeLatest('player/playlist/clear', clearPlaylistSaga),
     takeLatest('player/lyric/show', watchLyricShow)
-  ]
+  ])
 }

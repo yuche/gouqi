@@ -13,4 +13,6 @@ jest.mock('react-native-video', () => 'Video')
 jest.mock('react-native-interactable', () => 'Interactable')
 jest.mock('react-native-music-control', () => 'MusicControl')
 jest.mock('react-native-vector-icons', () => 'Icons')
-jest.mock('react-native-fs', () => 'fs')
+jest.mock('react-native-fs', () => ({
+  DocumentDirectoryPath: ''
+}))

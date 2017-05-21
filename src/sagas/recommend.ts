@@ -1,9 +1,8 @@
-import { put, select } from 'redux-saga/effects'
+import { put, select, takeLatest, all } from 'redux-saga/effects'
 import * as api from '../services/api'
 import {
   toastAction
 } from '../actions'
-import { takeLatest } from 'redux-saga'
 import { ajaxCall } from './common'
 import { sampleSize } from 'lodash'
 import { changeCoverImgUrl } from '../utils'
@@ -124,9 +123,9 @@ function* syncMoreArtists () {
 }
 
 export default function* watchRecommend () {
-  yield [
+  yield all([
     takeLatest('home/recommend', recommendSaga),
     takeLatest('home/albums', syncMoreAlbums),
     takeLatest('home/artists', syncMoreArtists)
-  ]
+  ])
 }

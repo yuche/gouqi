@@ -2,7 +2,7 @@ import {
     AsyncStorage
 } from 'react-native'
 import { ITrack } from '../services/api'
-import RNFS from 'react-native-fs'
+import * as RNFS from 'react-native-fs'
 import { ILyric } from '../interfaces'
 
 export const DOWNLOADED_TRACKS = 'DOWNLOADED_TRACKS'

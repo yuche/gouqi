@@ -1,4 +1,4 @@
-import { take, put, call, fork } from 'redux-saga/effects'
+import { take, put, call, fork, all } from 'redux-saga/effects'
 import {
   AsyncStorage,
   InteractionManager
@@ -138,7 +138,7 @@ export function* init () {
 }
 
 export default function* root () {
-  yield [
+  yield all([
     fork(init),
     fork(loginFlow),
     fork(watchPlaylist),
@@ -150,5 +150,5 @@ export default function* root () {
     fork(watchRecommend),
     fork(watchAlbums),
     fork(watchArtist)
-  ]
+  ])
 }

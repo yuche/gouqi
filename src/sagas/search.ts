@@ -43,7 +43,7 @@ function* syncSearchSongs () {
     yield *syncSearchResource(
       api.SearchType.song,
       'song',
-      '',
+      ''
     )
   }
 }

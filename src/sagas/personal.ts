@@ -1,11 +1,10 @@
-import { take, put, fork, select, call } from 'redux-saga/effects'
+import { take, put, fork, select, call, takeLatest } from 'redux-saga/effects'
 import {
   toastAction
 } from '../actions'
 import {
   InteractionManager
 } from 'react-native'
-import { takeLatest } from 'redux-saga'
 import * as api from '../services/api'
 import Router from '../routers'
 import {

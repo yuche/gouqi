@@ -1,5 +1,5 @@
-import { take, put, fork, select, call } from 'redux-saga/effects'
-import { takeLatest, delay } from 'redux-saga'
+import { take, put, fork, select, call, takeLatest, all } from 'redux-saga/effects'
+import { delay } from 'redux-saga'
 import * as api from '../services/api'
 import {
   InteractionManager
@@ -153,7 +153,7 @@ function* favorites () {
 }
 
 export default function* watchArtists () {
-  yield [
+  yield all([
     takeLatest('artists/refresh', refreshArtists),
     takeLatest('artists/sync', syncMoreArtists),
     takeLatest('artists/detail/follow', toggleSubscribeArtist),
@@ -161,5 +161,5 @@ export default function* watchArtists () {
     fork(syncArtistTracks),
     fork(syncArtistAlbums),
     fork(syncArtistDescription)
-  ]
+  ])
 }

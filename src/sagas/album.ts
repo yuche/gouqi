@@ -1,5 +1,4 @@
-import { put, select, call } from 'redux-saga/effects'
-import { takeLatest, takeEvery } from 'redux-saga'
+import { put, select, call, takeLatest, takeEvery, all } from 'redux-saga/effects'
 import {
   toastAction
 } from '../actions'
@@ -57,9 +56,9 @@ function* syncAlbum ( { payload }: any ) {
 }
 
 export default function* watchAlbums () {
-  yield [
+  yield all([
     takeLatest('albums/refresh', refreshAlbums),
     takeLatest('albums/sync', syncMoreAlbums),
     takeEvery('albums/detail', syncAlbum)
-  ]
+  ])
 }

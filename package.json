@@ -7,10 +7,10 @@
     "ios": "node node_modules/react-native/local-cli/cli.js run-ios",
     "link": "node node_modules/react-native/local-cli/cli.js link",
     "quickbuild": "tsc",
-    "dev": "node_modules/.bin/tsc  -w",
+    "watch": "tsc  -w",
     "test": "jest --verbose",
-    "test:watch": "ava --watch --verbose",
-    "coverage": "nyc ava --verbose && nyc report --reporter=html",
+    "test:watch": "jest --watch --verbose",
+    "coverage": "jest --coverage",
     "coverage:check": "open coverage/index.html",
     "remotedev": "remotedev-debugger --hostname localhost --port 5678 --injectserver",
     "postinstall": "npm run link && npm run quickbuild"
@@ -54,7 +54,6 @@
     "@types/react-native": "^0.43.11",
     "@types/react-redux": "4.4.32",
     "@types/redux-actions": "0.8.30",
-    "ava": "^0.16.0",
     "babel-eslint": "^6.1.2",
     "babel-jest": "^20.0.3",
     "babel-plugin-import": "^1.1.1",
@@ -70,20 +69,48 @@
     "eslint-plugin-standard": "^2.0.0",
     "isomorphic-fetch": "^2.2.1",
     "jest": "^20.0.3",
-    "mockery": "^1.7.0",
-    "mockjs": "^1.0.1-beta3",
-    "nyc": "^8.1.0",
     "react-dom": "^15.3.1",
-    "react-native-mock": "^0.2.6",
     "redux-saga-test-plan": "^3.0.2",
-    "remote-redux-devtools": "^0.5.7",
-    "remote-redux-devtools-on-debugger": "^0.7.0",
-    "ts-jest": "^20.0.4",
+    "remote-redux-devtools": "^0.5.11",
+    "remote-redux-devtools-on-debugger": "^0.7.1",
+    "ts-jest": "20.0.3",
     "tslint": "^5.2.0",
     "tslint-react": "^3.0.0"
   },
   "jest": {
     "preset": "react-native",
+    "mapCoverage": true,
+    "globals": {
+      "__TS_CONFIG__": {
+        "compilerOptions": {
+          "target": "es2017",
+          "jsx": "react-native",
+          "removeComments": true,
+          "preserveConstEnums": true,
+          "moduleResolution": "node",
+          "experimentalDecorators": true,
+          "noImplicitAny": false,
+          "allowSyntheticDefaultImports": true,
+          "strictNullChecks": true,
+          "noImplicitThis": true,
+          "inlineSourceMap": true
+        },
+        "filesGlob": [
+          "src/**/*.ts",
+          "src/**/*.tsx"
+        ],
+        "exclude": [
+          "node_modules",
+          "dist",
+          "tests",
+          "jest",
+          "lib",
+          "__tests__",
+          "**/*.test.ts"
+        ],
+        "compileOnSave": false
+      }
+    },
     "setupFiles": [
       "<rootDir>/jest/setup.js"
     ],
@@ -91,32 +118,16 @@
       "^.+\\.js$": "<rootDir>/node_modules/babel-jest",
       ".(ts|tsx)": "<rootDir>/node_modules/ts-jest/preprocessor.js"
     },
-    "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(ts|tsx|js)$",
+    "coveragePathIgnorePatterns": [
+      "node_modules",
+      "\\.(js)$"
+    ],
+    "collectCoverage": true,
+    "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(ts|tsx)$",
     "moduleFileExtensions": [
       "ts",
       "tsx",
       "js"
-    ]
-  },
-  "ava": {
-    "files": [
-      "tests/**/*.js",
-      "!tests/setup.js"
-    ],
-    "require": [
-      "babel-register",
-      "babel-polyfill",
-      "react-native-mock/mock",
-      "./tests/setup"
-    ],
-    "babel": "inherit"
-  },
-  "nyc": {
-    "include": [
-      "lib/**/*.js"
-    ],
-    "exclude": [
-      "lib/**/*.js.map"
     ]
   }
 }

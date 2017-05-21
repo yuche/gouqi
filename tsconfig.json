@@ -2,19 +2,16 @@
     "compilerOptions": {
         "target": "es2017",
         "jsx": "react-native",
-        // "declaration": true,
-        // "module": "commonjs",
         "removeComments": true,
         "preserveConstEnums": true,
         "moduleResolution": "node",
         "experimentalDecorators": true,
         "noImplicitAny": false,
         "allowSyntheticDefaultImports":true,
-        // "noEmitOnError": true,
         "outDir": "lib",
         "strictNullChecks": true,
         "noImplicitThis": true,
-        "inlineSourceMap": true
+        "sourceMap": true
     },
     "filesGlob": [
         "src/**/*.ts",
@@ -24,6 +21,7 @@
     "node_modules",
     "dist",
     "tests",
+    "jest",
     "lib",
     "__tests__",
     "**/*.test.ts"

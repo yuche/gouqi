@@ -1,8 +1,8 @@
 import {
   AsyncStorage
 } from 'react-native'
-import RNFS from 'react-native-fs'
-import { put, call, select, fork, take } from 'redux-saga/effects'
+import * as RNFS from 'react-native-fs'
+import { put, call, select, fork, take, takeEvery, takeLatest, all } from 'redux-saga/effects'
 import { ITrack, batchSongDetailsNew, getUserId } from '../services/api'
 import {
   toastAction,
@@ -15,8 +15,8 @@ import {
   deleteDownloadTrack
 } from '../actions'
 import { FILES_FOLDER, DOWNLOADED_TRACKS } from '../utils'
-import { takeEvery, takeLatest, eventChannel, END } from 'redux-saga'
-const IS_LOGIN = !!getUserId()
+import { eventChannel, END } from 'redux-saga'
+const IS_LOGIN = () => !!getUserId()
 
 function streamLength (length: number) {
   return (length / 10e5).toFixed(1)
@@ -67,7 +67,7 @@ function downloadTrackChannel (track: ITrack) {
 function* downloadSingleTrack (track: ITrack) {
   const downloading: ITrack[] = yield select((state: any) => state.download.downloading)
   const isExist = downloading.some((t) => t.id === track.id)
-  if (!isExist) {
+  if (!isExist && !track.mp3Url) {
     return false
   }
   const channel = yield call(downloadTrackChannel, track)
@@ -86,12 +86,14 @@ function* downloadTracksSaga ({ payload }: any) {
   yield put(hideTrackActionSheet())
   const downloadedTracks: number[] = yield select((state: any) => state.download.tracks.map((t) => t.id))
   let tasks = payload.filter((t) => downloadedTracks.indexOf(t.id) === -1)
-
   if (tasks.length > 0) {
-    if (IS_LOGIN) {
+    if (IS_LOGIN()) {
       const response = yield call(batchSongDetailsNew, tasks.map((t) => t.id.toString()))
       if (response.code === 200) {
-        tasks = response.data.map((data) => ({...data, mp3Url: data.url}))
+        tasks = tasks.map((task) => {
+          const { url } = response.data.find((data) => Number(data.id) === Number(task.id))
+          return url ? {...task, mp3Url: url} : task
+        })
       }
     }
 
@@ -150,12 +152,12 @@ function* deleteDownloadTrackSaga ({ payload }: any) {
 }
 
 export default function* watchDownload () {
-  yield [
+  yield all([
     takeEvery('download/tracks', downloadTracksSaga),
     takeEvery('download/tracks/merge', mergeTracksSaga),
     takeEvery('download/tracks/set', setTracksSaga),
     takeLatest('download/stop', stopCurrentDownloadSaga),
     takeLatest('download/clear', clearAllDownload),
     takeEvery('download/tracks/delete', deleteDownloadTrackSaga)
-  ]
+  ])
 }

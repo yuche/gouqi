@@ -1,10 +1,10 @@
 import { Actions } from 'react-native-router-flux'
 
 interface IRouterPassProps {
-  route?: Object | undefined
+  route?: {} | undefined
 }
 
-let navigator = Actions
+const navigator = Actions
 
 function toHome (passProps?: IRouterPassProps) {
   navigator['home'](passProps)
@@ -76,7 +76,6 @@ function toDownloading (passProps?: IRouterPassProps) {
 function pop (passProps?: IRouterPassProps) {
   navigator.pop(passProps)
 }
-
 
 const Router = {
   toHome,
