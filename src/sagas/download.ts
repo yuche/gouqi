@@ -14,19 +14,22 @@ import {
   downloadSuccess,
   deleteDownloadTrack
 } from '../actions'
+import { ajaxCall } from './common'
 import { FILES_FOLDER, DOWNLOADED_TRACKS } from '../utils'
 import { eventChannel, END } from 'redux-saga'
-const IS_LOGIN = () => !!getUserId()
+import { get } from 'lodash'
 
 function streamLength (length: number) {
   return (length / 10e5).toFixed(1)
 }
 
+export const downloadSelector = (state: any) => state.download
+
 interface ITracksPayload { payload: ITrack[] }
 
 let currentDownloadJob = Object.create(null)
 
-function downloadTrackChannel (track: ITrack) {
+export function downloadTrackChannel (track) {
   return eventChannel((emit) => {
     const toFile = `${FILES_FOLDER}/${track.id}.mp3`
     RNFS.downloadFile({
@@ -64,37 +67,33 @@ function downloadTrackChannel (track: ITrack) {
   })
 }
 
-function* downloadSingleTrack (track: ITrack) {
-  const downloading: ITrack[] = yield select((state: any) => state.download.downloading)
+export function* downloadSingleTrack (track: ITrack) {
+  const { downloading } = yield select(downloadSelector)
   const isExist = downloading.some((t) => t.id === track.id)
-  if (!isExist && !track.mp3Url) {
+  if (isExist || !track.mp3Url) {
     return false
   }
   const channel = yield call(downloadTrackChannel, track)
+  /* istanbul ignore next  */
   while (true) {
     const action = yield take(channel)
     yield put(action)
   }
 }
 
-export async function MergeDownloadedTracks (original, tracks) {
-  const merged = original.concat(tracks)
-  return await AsyncStorage.setItem(DOWNLOADED_TRACKS, JSON.stringify(merged))
-}
-
-function* downloadTracksSaga ({ payload }: any) {
+export function* downloadTracksSaga ({ payload }: any) {
   yield put(hideTrackActionSheet())
-  const downloadedTracks: number[] = yield select((state: any) => state.download.tracks.map((t) => t.id))
-  let tasks = payload.filter((t) => downloadedTracks.indexOf(t.id) === -1)
+  let { tracks } = yield select(downloadSelector)
+  tracks = tracks.map((t) => t.id)
+  let tasks = payload.filter((t) => !tracks.includes(t.id))
   if (tasks.length > 0) {
-    if (IS_LOGIN()) {
-      const response = yield call(batchSongDetailsNew, tasks.map((t) => t.id.toString()))
-      if (response.code === 200) {
-        tasks = tasks.map((task) => {
-          const { url } = response.data.find((data) => Number(data.id) === Number(task.id))
-          return url ? {...task, mp3Url: url} : task
-        })
-      }
+
+    const response = yield* ajaxCall(batchSongDetailsNew, tasks.map((t) => t.id.toString()))
+    if (response.code === 200) {
+      tasks = tasks.map((task) => {
+        const { url } = response.data.find((data) => Number(data.id) === Number(task.id))
+        return url ? {...task, mp3Url: url} : task
+      })
     }
 
     yield put(setDownloading(tasks))
@@ -108,25 +107,26 @@ function* downloadTracksSaga ({ payload }: any) {
   }
 }
 
-function* mergeTracksSaga ({ payload }: any) {
-  const downloadedTracks: ITrack[] = yield select((state: any) => state.download.tracks)
+export function* mergeTracksSaga ({ payload }: any) {
+  const { tracks } = yield select(downloadSelector)
 
-  yield call(MergeDownloadedTracks, downloadedTracks, payload)
+  yield fork(AsyncStorage.setItem, DOWNLOADED_TRACKS, JSON.stringify(tracks.concat(payload)))
 }
 
-function* stopCurrentDownloadSaga () {
-  if (currentDownloadJob) {
-    RNFS.stopDownload(currentDownloadJob.jobId)
+export function* stopCurrentDownloadSaga () {
+  const jobId = yield call(get, currentDownloadJob, 'jobId')
+  if (jobId) {
+    yield call(RNFS.stopDownload, jobId)
     yield put(removeDownloadingItem(currentDownloadJob.trackId))
     yield put(deleteDownloadTrack(currentDownloadJob.trackId))
   }
 }
 
-function* setTracksSaga ({ payload }: any) {
+export function* setTracksSaga ({ payload }: any) {
   yield call(AsyncStorage.setItem, DOWNLOADED_TRACKS, JSON.stringify(payload))
 }
 
-function* clearAllDownload () {
+export function* clearAllDownload () {
   const downloads: any[] = yield call(RNFS.readDir, FILES_FOLDER)
   yield call(Promise.all, downloads.map((d) => RNFS.unlink(d.path)))
 
@@ -138,8 +138,10 @@ function* clearAllDownload () {
   yield put(toastAction('success', '所有下载项目都清除成功'))
 }
 
-function* deleteDownloadTrackSaga ({ payload }: any) {
-  const tracks: ITrack[] = yield select((state: any) => state.download.tracks.filter((t) => t.id !== payload))
+export function* deleteDownloadTrackSaga ({ payload }: any) {
+  let { tracks } = yield select(downloadSelector)
+
+  tracks = tracks.filter((t) => t.id !== payload)
 
   yield put({
     type: 'download/tracks/set',

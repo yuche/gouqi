@@ -18,7 +18,7 @@ import {
 } from 'react-native'
 import * as api from '../services/api'
 import { ajaxCall } from './common'
-import MusicControl from 'react-native-music-control/index.ios.js'
+import * as MusicControl from 'react-native-music-control/index.ios.js'
 import { parseLyrics } from '../utils'
 import { Action } from 'redux-actions'
 
@@ -37,69 +37,66 @@ export function* nextTrack () {
   const length = playlist.length
   let index = Number(playing.index)
 
-  if (length) {
-    if (mode === 'SEQUE') {
-      if (playing.pid === 'fm' && playlist.length - 1 === index) {
-        const response = yield* ajaxCall(api.personalFM)
-        if (response.code === 200) {
-          yield put({
-            type: 'player/playlist/merge',
-            payload: response.data
-          })
-        }
+  if (mode === 'SEQUE') {
+    if (playing.pid === 'fm' && playlist.length - 1 === index) {
+      const response = yield* ajaxCall(api.personalFM)
+      if (response.code === 200) {
+        yield put({
+          type: 'player/playlist/merge',
+          payload: response.data
+        })
       }
-      yield put(playTrackAction({
-        playing: {
-          index: index + 1 === length ? 0 : index + 1
-        }
-      }))
     }
+    yield put(playTrackAction({
+      playing: {
+        index: index + 1 === length ? 0 : index + 1
+      }
+    }))
+  }
 
-    if (mode === 'RANDOM') {
-      index = yield call(randomNumber, length - 1, index)
-      yield put(playTrackAction({
-        playing: {
-          index
-        }
-      }))
-    }
+  if (mode === 'RANDOM') {
+    index = yield call(randomNumber, length - 1, index)
+    yield put(playTrackAction({
+      playing: {
+        index
+      }
+    }))
   }
 
   yield fork(AsyncStorage.setItem, 'SECONDS', seconds.toString())
 
 }
 
-function* prevTrack () {
+export function* prevTrack () {
   const playerState: IPlayerState = yield select(playerStateSelector)
 
   const { history, playlist, playing, seconds } = playerState
 
+  const historyLength = history.length
+  const historyTrack = history[historyLength - 2]
+  const index = historyTrack && findIndex(playlist, (t) => t.id === historyTrack.id)
+  if (index) {
+    yield put(playTrackAction({
+      playing: {
+        index
+      },
+      prev: true
+    }))
+  } else {
+    const i = playing.index
+    yield put(playTrackAction({
+      playing: {
+        index: i === 0 ? playlist.length - 1 : i - 1
+      },
+      prev: true
+    }))
+  }
+
   yield fork(AsyncStorage.setItem, 'SECONDS', seconds.toString())
 
-  if (playlist.length) {
-    const historyLength = history.length
-    const historyTrack = history[historyLength - 2]
-    const index = historyTrack && findIndex(playlist, (t) => t.id === historyTrack.id)
-    if (index) {
-      yield put(playTrackAction({
-        playing: {
-          index
-        },
-        prev: true
-      }))
-    } else {
-      const i = playing.index
-      yield put(playTrackAction({
-        playing: {
-          index: i === 0 ? playlist.length - 1 : i - 1
-        },
-        prev: true
-      }))
-    }
-  }
 }
 
-function* getLyrcis () {
+export function* getLyrcis () {
   const playerState: IPlayerState = yield select(playerStateSelector)
   const { playlist, lyrics, playing } = playerState
   const id = (playlist[playing.index] && playlist[playing.index].id) || 0
@@ -120,7 +117,7 @@ function* getLyrcis () {
   }
 }
 
-function* playPersonalFM () {
+export function* playPersonalFM () {
   yield put(playTrackAction({
     playing: {
       index: 0,
@@ -143,11 +140,11 @@ function* playPersonalFM () {
   }
 }
 
-function* watchLyricShow () {
+export function* watchLyricShow () {
   yield fork(getLyrcis)
 }
 
-function* playTrack ({ payload: { playing, prev, saveOnly } }: any) {
+export function* playTrack ({ payload: { playing, prev, saveOnly } }: any) {
   if (saveOnly) {
     return false
   }
@@ -160,48 +157,46 @@ function* playTrack ({ payload: { playing, prev, saveOnly } }: any) {
       type: 'player/lyric'
     })
   }
-  if (playlist.length) {
-    let uri = get(track, 'mp3Url', '')
-    if (isEmpty(uri) || uri.startsWith('http')) {
-      const response = yield* ajaxCall(api.batchSongDetailsNew, [track.id])
-      if (response.code === 200) {
-        uri = response.data[0].url || uri
-      }
+  let uri = get(track, 'mp3Url', '')
+  if (isEmpty(uri) || uri.startsWith('http')) {
+    const response = yield* ajaxCall(api.batchSongDetailsNew, [track.id])
+    if (response.code === 200) {
+      uri = response.data[0].url || uri
     }
-    if (!uri) {
-      yield put(toastAction('error', '播放出现错误'))
-      return false
-    }
+  }
+  if (!uri) {
+    yield put(toastAction('error', '播放出现错误'))
+    return false
+  }
+  yield put({
+    type: 'player/track/play',
+    payload: uri
+  })
+  yield put(changeStatusAction('PLAYING'))
+  if (!prev) {
     yield put({
-      type: 'player/track/play',
-      payload: uri
+      type: 'player/history/merge',
+      payload: track
     })
-    yield put(changeStatusAction('PLAYING'))
-    if (!prev) {
-      yield put({
-        type: 'player/history/merge',
-        payload: track
-      })
-    }
   }
 }
 
-function* setHisotrySaga () {
-  const history = yield select((state: any) => state.player.history)
+export function* setHisotrySaga () {
+  const { history } = yield select(playerStateSelector)
 
   yield fork(AsyncStorage.setItem, 'HISTORY', JSON.stringify(history))
 }
 
-function* delelteHistory ({ payload }: any) {
-  const history = yield select((state: any) => state.player.history.filter((_, index) => index !== payload))
+export function* delelteHistory ({ payload }: any) {
+  const { history } = yield select(playerStateSelector)
 
   yield put({
     type: 'player/history/save',
-    payload: history
+    payload: history.filter((_, index) => index !== payload)
   })
 }
 
-function* removePlaylist ({ payload }: any) {
+export function* removePlaylist ({ payload }: any) {
   const index = Number(payload)
   const playerState: IPlayerState = yield select(playerStateSelector)
   const { playlist, playing } = playerState
@@ -228,7 +223,7 @@ function* removePlaylist ({ payload }: any) {
   }
 }
 
-function* clearPlaylistSaga () {
+export function* clearPlaylistSaga () {
   yield put(shrinkPlayer())
   yield put(setPlaylistTracks([]))
   yield put(hidePlaylistPopup())
@@ -240,23 +235,23 @@ function* clearPlaylistSaga () {
   }))
 }
 
-function* watchStatus ({ payload: {status} }: any) {
-  const currentTime = yield select((state: any) => state.player.currentTime)
+export function* watchStatus ({ payload: {status} }: any) {
+  const { currentTime } = yield select(playerStateSelector)
   if (status === 'PLAYING') {
-    MusicControl.updatePlayback({
+    yield fork(MusicControl.updatePlayback, {
       state: MusicControl.STATE_PLAYING,
       elapsedTime: currentTime
     })
   }
   if (status === 'PAUSED') {
-    MusicControl.updatePlayback({
+    yield fork(MusicControl.updatePlayback, {
       state: MusicControl.STATE_PAUSED,
       elapsedTime: currentTime
     })
   }
 }
 
-function* watchCurrentTime () {
+export function* watchCurrentTime () {
   yield put(addSecondsAction())
 }
 
