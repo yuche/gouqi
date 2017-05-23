@@ -12,20 +12,23 @@ import {
   syncMoreResource
 } from './common'
 
-const refreshAlbums = refreshResource(
+export const refreshAlbums = refreshResource(
   'albums',
   api.newAlbums
 )
 
-const syncMoreAlbums = syncMoreResource(
+export const syncMoreAlbums = syncMoreResource(
   'albums',
   'album',
   api.newAlbums
 )
 
-function* syncAlbum ( { payload }: any ) {
+export const albumSelector = (state) => state.details.albums
+
+export function* syncAlbum ( { payload }: any ) {
   yield call(InteractionManager.runAfterInteractions)
-  const album: api.IAlbum = yield select((state: any) => state.details.albums[payload])
+  const albums: api.IAlbum = yield select(albumSelector)
+  const album = albums[payload]
 
   if (!album) {
     yield put({

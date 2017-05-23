@@ -1,4 +1,4 @@
-import { take, put, fork, select, call, takeLatest } from 'redux-saga/effects'
+import { put, fork, select, call, takeLatest, takeEvery, all } from 'redux-saga/effects'
 import {
   toastAction
 } from '../actions'
@@ -11,96 +11,86 @@ import {
   ajaxCall
 } from './common'
 
-function* createPlaylist () {
-  while (true) {
-    const { payload } = yield take('personal/playlist/create')
+export function* createPlaylist ({ payload }: any) {
+  const { trackId, name } = payload
 
-    const { trackId, name } = payload
+  if (name) {
+    yield fork(Router.pop)
 
-    if (name) {
-      yield Router.pop()
+    const response = yield* ajaxCall(api.createPlaylist, name)
 
-      const response = yield* ajaxCall(api.createPlaylist, name)
-
-      if (response.code === 200) {
-        if (trackId) {
-          const pid = response.id
-          yield put({
-            type: 'playlists/collect',
-            payload: {
-              pid,
-              trackIds: trackId
-            }
-          })
-        } else {
-          yield put(toastAction('success', '成功创建歌单'))
-        }
-        yield put({type: 'personal/playlist'})
+    if (response.code === 200) {
+      if (trackId) {
+        const pid = response.id
+        yield put({
+          type: 'playlists/collect',
+          payload: {
+            pid,
+            trackIds: trackId
+          }
+        })
+      } else {
+        yield put(toastAction('success', '成功创建歌单'))
       }
-
-    } else {
-      yield put(toastAction('warning', '歌单名称不能为空'))
+      yield put({type: 'personal/playlist'})
     }
+
+  } else {
+    yield put(toastAction('warning', '歌单名称不能为空'))
   }
 }
 
-function* deletePlaylist () {
-  while (true) {
-    const { payload } = yield take('personal/playlist/delete')
+export const playlistSelector = (state: any) => state.personal.playlist
 
-    let {collect, created} = yield select((state: any) => state.personal.playlist)
+export function* deletePlaylist ({ payload }: any) {
+  let {collect, created} = yield select(playlistSelector)
 
-    collect = collect.filter((t) => t.id !== payload)
-    created = created.filter((t) => t.id !== payload)
+  collect = collect.filter((t) => t.id !== payload)
+  created = created.filter((t) => t.id !== payload)
 
-    yield put({
-      type: 'personal/playlist/save',
-      payload: {
-        created,
-        collect
-      }
-    })
-
-    const response = yield* ajaxCall(api.deletePlaylist, payload.toString())
-
-    if (response.code === 200) {
-      yield put(toastAction('success', '成功删除歌单'))
+  yield put({
+    type: 'personal/playlist/save',
+    payload: {
+      created,
+      collect
     }
+  })
+
+  const response = yield* ajaxCall(api.deletePlaylist, payload.toString())
+
+  if (response.code === 200) {
+    yield put(toastAction('success', '成功删除歌单'))
   }
 }
 
 export function* syncPersonnalPlaylist () {
-  while (true) {
-    yield take('personal/playlist')
+  const userId = yield call(api.getUserId)
 
-    const userId = api.getUserId()
-
-    if (userId) {
-      const res = yield call(api.userPlayList)
-      if (res.code === 200) {
-        const playlists: api.IPlaylist[] = res.playlist
-        const collect: api.IPlaylist[] = []
-        const created: api.IPlaylist[] = []
-        playlists.forEach((playlist) => {
-          if (playlist.creator.userId.toString() === userId) {
-            created.push(playlist)
-          } else {
-            collect.push(playlist)
-          }
-        })
-        yield put({
-          type: 'personal/playlist/save',
-          payload: {
-            created,
-            collect
-          }
-        })
-      }
+  if (userId) {
+    const res = yield call(api.userPlayList)
+    if (res.code === 200) {
+      const playlists: api.IPlaylist[] = res.playlist
+      const collect: api.IPlaylist[] = []
+      const created: api.IPlaylist[] = []
+      playlists.forEach((playlist) => {
+        if (playlist.creator.userId.toString() === userId) {
+          created.push(playlist)
+        } else {
+          collect.push(playlist)
+        }
+      })
+      yield put({
+        type: 'personal/playlist/save',
+        payload: {
+          created,
+          collect
+        }
+      })
     }
   }
 }
 
-function* syncDailyRecommend () {
+export function* syncDailyRecommend () {
   yield put({
     type: 'personal/daily/start'
   })
@@ -122,8 +112,10 @@ function* syncDailyRecommend () {
 }
 
 export default function* watchPersonal () {
-  yield fork(createPlaylist)
-  yield fork(deletePlaylist)
-  yield fork(syncPersonnalPlaylist)
-  yield takeLatest('personal/daily', syncDailyRecommend)
+  yield all([
+    takeLatest('personal/daily', syncDailyRecommend),
+    takeEvery('personal/playlist/create', createPlaylist),
+    takeEvery('personal/playlist/delete', deletePlaylist),
+    takeEvery('personal/playlist', syncPersonnalPlaylist)
+  ])
 }

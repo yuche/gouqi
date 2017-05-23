@@ -1,4 +1,4 @@
-import { take, put, fork, select, call, takeLatest, all } from 'redux-saga/effects'
+import { take, put, fork, select, call, takeLatest, all, takeEvery } from 'redux-saga/effects'
 import { delay } from 'redux-saga'
 import * as api from '../services/api'
 import {
@@ -10,108 +10,99 @@ import {
   syncMoreResource
 } from './common'
 
-const refreshArtists = refreshResource(
+export const refreshArtists = refreshResource(
   'artists',
   api.topArtists,
   100
 )
 
-const syncMoreArtists = syncMoreResource(
+export const syncMoreArtists = syncMoreResource(
   'artists',
   'artist',
   api.topArtists,
   100
 )
 
-function* syncArtistTracks () {
-  while (true) {
-    const { payload } = yield take('artists/detail/track')
+export function* syncArtistTracks ({ payload }: any) {
+  yield call(delay, 100) // delay 100ms for scrollable tab view layout
 
-    yield delay(100) // delay 100ms for scrollable tab view layout
+  yield put({
+    type: 'artists/detail/track/start'
+  })
 
+  const response = yield* ajaxCall(api.artistInfo, payload.toString())
+
+  yield call(InteractionManager.runAfterInteractions)
+
+  if (response.code === 200) {
     yield put({
-      type: 'artists/detail/track/start'
-    })
-
-    const response = yield* ajaxCall(api.artistInfo, payload.toString())
-
-    yield call(InteractionManager.runAfterInteractions)
-
-    if (response.code === 200) {
-      yield put({
-        type: 'artists/detail/track/save',
-        payload: {
-          tracks: response.hotSongs,
-          artist: response.artist
-        },
-        meta: payload
-      })
-    }
-
-    yield put({
-      type: 'artists/detail/track/end'
+      type: 'artists/detail/track/save',
+      payload: {
+        tracks: response.hotSongs,
+        artist: response.artist
+      },
+      meta: payload
     })
   }
+
+  yield put({
+    type: 'artists/detail/track/end'
+  })
 }
 
-function* syncArtistAlbums () {
-  while (true) {
-    const { payload } = yield take('artists/detail/album')
+export function* syncArtistAlbums ({ payload }: any) {
+  yield put({
+    type: 'artists/detail/album/start'
+  })
 
+  const response = yield* ajaxCall(api.getAlbumsByArtistId, payload.toString(), '50')
+
+  yield call(InteractionManager.runAfterInteractions)
+
+  if (response.code === 200) {
     yield put({
-      type: 'artists/detail/album/start'
-    })
-
-    const response = yield* ajaxCall(api.getAlbumsByArtistId, payload.toString(), '50')
-
-    yield call(InteractionManager.runAfterInteractions)
-
-    if (response.code === 200) {
-      yield put({
-        type: 'artists/detail/album/save',
-        payload: response.hotAlbums,
-        meta: payload
-      })
-    }
-
-    yield put({
-      type: 'artists/detail/album/end'
+      type: 'artists/detail/album/save',
+      payload: response.hotAlbums,
+      meta: payload
     })
   }
+
+  yield put({
+    type: 'artists/detail/album/end'
+  })
 }
 
-function* syncArtistDescription () {
-  while (true) {
-    const { payload } = yield take('artists/detail/description')
+export function* syncArtistDescription ({ payload }: any) {
+  yield put({
+    type: 'artists/detail/description/start'
+  })
 
+  const response = yield* ajaxCall(api.artistDescription, payload.toString())
+
+  yield call(InteractionManager.runAfterInteractions)
+
+  if (response.code === 200) {
     yield put({
-      type: 'artists/detail/description/start'
-    })
-
-    const response = yield* ajaxCall(api.artistDescription, payload.toString())
-
-    yield call(InteractionManager.runAfterInteractions)
-
-    if (response.code === 200) {
-      yield put({
-        type: 'artists/detail/description/save',
-        payload: {
-          brief: response.briefDesc,
-          introduction: response.introduction
-        },
-        meta: payload
-      })
-    }
-
-    yield put({
-      type: 'artists/detail/description/end'
+      type: 'artists/detail/description/save',
+      payload: {
+        brief: response.briefDesc,
+        introduction: response.introduction
+      },
+      meta: payload
     })
   }
+
+  yield put({
+    type: 'artists/detail/description/end'
+  })
 }
 
-function* toggleSubscribeArtist ({ payload }: any) {
+export const detailSelector = (state) => state.artist.detail
+
+export function* toggleSubscribeArtist ({ payload }: any) {
   const id = payload.toString()
-  const { followed } = yield select((state: any) => state.artist.detail[payload].artist)
+  const detail = yield select(detailSelector)
+  const { followed } = detail[id].artist
   yield put({
     type: 'artists/detail/follow/start'
   })
@@ -133,14 +124,14 @@ function* toggleSubscribeArtist ({ payload }: any) {
   })
 }
 
-function* favorites () {
+export function* favorites () {
   yield put({
     type: 'artists/favo/start'
   })
 
   const response = yield call(api.favoriteArtists)
 
-  if (response.code) {
+  if (response.code === 200) {
     yield put({
       type: 'artists/favo/save',
       payload: response.data
@@ -158,8 +149,8 @@ export default function* watchArtists () {
     takeLatest('artists/sync', syncMoreArtists),
     takeLatest('artists/detail/follow', toggleSubscribeArtist),
     takeLatest('artists/favo', favorites),
-    fork(syncArtistTracks),
-    fork(syncArtistAlbums),
-    fork(syncArtistDescription)
+    takeEvery('artists/detail/track', syncArtistTracks),
+    takeEvery('artists/detail/album', syncArtistAlbums),
+    takeEvery('artists/detail/description', syncArtistDescription)
   ])
 }

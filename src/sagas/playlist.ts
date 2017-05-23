@@ -14,22 +14,24 @@ import {
 } from './common'
 import Router from '../routers'
 
-const syncPlaylists = syncMoreResource(
+export const syncPlaylists = syncMoreResource(
   'playlists',
   'playlist',
   api.topPlayList
 )
 
-const refreshPlaylist = refreshResource(
+export const refreshPlaylist = refreshResource(
   'playlists',
   api.topPlayList
 )
 
-function* syncPlaylistDetail () {
-  while (true) {
+export const playlistSelector = (state) => state.details.playlist
+
+export function* syncPlaylistDetail () {
+  while (true /* istanbul ignore next  */) {
     const { payload }: { payload: number } = yield take('details/playlist')
 
-    const playlist: api.IPlaylist = yield select((state: any) => state.details.playlist[payload])
+    const { [payload]: playlist } = yield select(playlistSelector)
 
     if ( !playlist ) {
       yield put({
@@ -58,11 +60,11 @@ function* syncPlaylistDetail () {
   }
 }
 
-function* subscribePlaylist () {
-  while (true) {
+export function* subscribePlaylist () {
+  while (true /* istanbul ignore next  */) {
     const { payload }: { payload: number } = yield take('details/playlist/subscribe')
 
-    const playlist: api.IPlaylist = yield select((state: any) => state.details.playlist[payload])
+    const { [payload]: playlist } = yield select(playlistSelector)
 
     const { subscribed, subscribedCount } = playlist
 
@@ -92,8 +94,8 @@ function* subscribePlaylist () {
   }
 }
 
-function* popupTrackActionSheet () {
-  while (true) {
+export function* popupTrackActionSheet () {
+  while (true /* istanbul ignore next  */) {
     const { payload }: { payload: api.ITrack } = yield take('playlists/track/popup')
 
     yield put({
@@ -107,8 +109,8 @@ function* popupTrackActionSheet () {
   }
 }
 
-function* popupCollectActionSheet () {
-  while (true) {
+export function* popupCollectActionSheet () {
+  while (true /* istanbul ignore next  */) {
     yield take('playlists/collect/popup')
 
     yield put({
@@ -124,10 +126,12 @@ function* popupCollectActionSheet () {
   }
 }
 
-function* collectTrackToPlayliast () {
-  while (true) {
+export const batchOpsVisableSelector = (state: any) => state.ui.modal.playlist.visible
+
+export function* collectTrackToPlayliast () {
+  while (true /* istanbul ignore next  */) {
     const { payload } = yield take('playlists/collect')
-    const batchOpsVisable = yield select((state: any) => state.ui.modal.playlist.visible)
+    const batchOpsVisable = yield select(batchOpsVisableSelector)
 
     yield put({
       type: 'ui/popup/collect/hide'
@@ -156,8 +160,8 @@ function* collectTrackToPlayliast () {
   }
 }
 
-function* toCommentPage () {
-  while (true) {
+export function* toCommentPage () {
+  while (true /* istanbul ignore next  */) {
     yield take('playlists/router/comment')
 
     yield put({
@@ -172,8 +176,8 @@ function* toCommentPage () {
   }
 }
 
-function* toCreatePlaylistPage () {
-  while (true) {
+export function* toCreatePlaylistPage () {
+  while (true /* istanbul ignore next  */) {
     const { payload } = yield take('playlists/router/create')
 
     if (payload) {

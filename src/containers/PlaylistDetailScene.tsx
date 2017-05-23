@@ -169,7 +169,7 @@ class PlayList extends React.Component<IProps, any> {
           <Text style={{ color: 'white' }}>{subscribedCount}</Text>
         </View>
         <View style={styles.btnContainer}>
-          {this.renderBtn('comment-o', Router.toComment({ route: { id: commentThreadId, playlist } }))}
+          {this.renderBtn('comment-o', () => Router.toComment({ route: { id: commentThreadId, playlist } }))}
           <Text style={{ color: 'white' }}>{commentCount}</Text>
         </View>
         <View style={styles.btnContainer}>

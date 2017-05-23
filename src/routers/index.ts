@@ -23,7 +23,7 @@ function toPlayList (passProps?: IRouterPassProps) {
 }
 
 function toComment (passProps?: IRouterPassProps) {
-  return () => navigator['comment'](passProps)
+  navigator['comment'](passProps)
 }
 
 function toPlaylistDetail (passProps?: IRouterPassProps) {

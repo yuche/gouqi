@@ -74,8 +74,7 @@ export function* downloadSingleTrack (track: ITrack) {
     return false
   }
   const channel = yield call(downloadTrackChannel, track)
-  /* istanbul ignore next  */
-  while (true) {
+  while (true   /* istanbul ignore next  */) {
     const action = yield take(channel)
     yield put(action)
   }

@@ -26,7 +26,7 @@ export function getCookies () {
 export function setCookies (cookie: string): void {
   if (typeof cookie === 'string')  {
     if (cookie.includes(';')) {
-      cookie.split(';').forEach(c => {
+      cookie.split(';').forEach((c) => {
         cookieJar.setCookieSync(c, API_BASE_URL)
       })
     } else {
@@ -44,7 +44,7 @@ function checkStatusFilter (response: any) {
   if (response.status >= 200 && response.status < 300) {
     return response
   } else {
-    let error = new Error(response.statusText)
+    const error = new Error(response.statusText)
     error.name = 'http'
     return {
       error
@@ -54,7 +54,7 @@ function checkStatusFilter (response: any) {
 
 function parseJSONFilter (response) {
   return response.text()
-    .then(text => text.startsWith('<!DOCTYPE html>') ?
+    .then((text) => text.startsWith('<!DOCTYPE html>') ?
       text :
       JSON.parse(text)
     )
@@ -86,7 +86,7 @@ function get (
   .then(checkStatusFilter)
   .then(setCookiesFilter)
   .then(parseJSONFilter)
-  .catch(error => ({error}))
+  .catch((error) => ({error}))
 }
 
 function post (
@@ -104,7 +104,7 @@ function post (
   .then(setCookiesFilter)
   .then(parseJSONFilter)
   .then(addUserIdToCookies)
-  .catch(error => ({error}))
+  .catch((error) => ({error}))
 }
 
 export const request = {

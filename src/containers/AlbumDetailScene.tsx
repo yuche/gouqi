@@ -163,7 +163,7 @@ class Album extends React.Component<IProps, IState> {
           {this.renderBtn('calendar-plus-o', this.collectTracks)}
         </View>
         <View style={styles.btnContainer}>
-          {this.renderBtn('comment-o', Router.toComment({ route: { id: commentThreadId, album } }))}
+          {this.renderBtn('comment-o', () => Router.toComment({ route: { id: commentThreadId, album } }))}
           <Text style={{ color: 'white' }}>{commentCount}</Text>
         </View>
         <View style={styles.btnContainer}>

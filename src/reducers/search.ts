@@ -31,8 +31,8 @@ function deepperMerge (state: any, key: string, mergedObj: {}) {
 function reducerGennerator (): Reducer<any, ISearchState> {
   const reducers: any  = {}
 
-  reducerTypes.forEach(reducer => {
-    actionTypes.forEach(action => {
+  reducerTypes.forEach((reducer) => {
+    actionTypes.forEach((action) => {
       const key = `search/${reducer}/${action}`
       reducers[key] = (state: any, { payload, meta }: Action<any>) => {
         let stateToBeChanged = {}

@@ -9,7 +9,7 @@
     "quickbuild": "tsc",
     "watch": "tsc  -w",
     "test": "jest",
-    "test:watch": "jest --watch --verbose",
+    "test:watch": "jest --watch",
     "coverage": "jest --coverage",
     "coverage:check": "open coverage/index.html",
     "remotedev": "remotedev-debugger --hostname localhost --port 5678 --injectserver",
