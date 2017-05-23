@@ -1,11 +1,11 @@
-import { take, put, fork, select } from 'redux-saga/effects'
-import { syncSearchResource } from './common'
+import { take, put, fork, select, takeEvery, all } from 'redux-saga/effects'
+import { searchSelector, syncSearchResource } from './common'
 import * as api from '../services/api'
 
 const searchPageOrder = ['song', 'playlist', 'artist', 'album']
 
-function* requestSearch () {
-  const prevState = yield select((state: any) => state.search)
+export function* requestSearch () {
+  const prevState = yield select(searchSelector)
 
   const key = searchPageOrder[prevState.activeTab]
 
@@ -13,76 +13,42 @@ function* requestSearch () {
     type: `search/${key}/query`
   })
 
-  const { [key]: { query } }  = yield select((state: any) => state.search)
+  const { [key]: { query } } = yield select(searchSelector)
 
   if (query && query !== prevState[key].query) {
     yield put({
-      type: `search/${searchPageOrder[prevState.activeTab]}`
+      type: `search/${key}`
     })
   }
 }
 
-function* searchQuerying () {
-  while (true) {
-    yield take('search/query')
+export const syncSearchSongs = syncSearchResource(
+  api.SearchType.song,
+  'song'
+)
 
-    yield *requestSearch()
-  }
-}
+export const syncSearchPlaylists = syncSearchResource(
+  api.SearchType.playList,
+  'playlist'
+)
 
-function* changeSearchActiveTab () {
-  while (true) {
-    yield take('search/activeTab')
+export const syncSearchArtist = syncSearchResource(
+  api.SearchType.artist,
+  'artist'
+)
 
-    yield *requestSearch()
-  }
-}
-
-function* syncSearchSongs () {
-  while (true) {
-    yield *syncSearchResource(
-      api.SearchType.song,
-      'song',
-      ''
-    )
-  }
-}
-
-function* syncSearchPlaylists () {
-  while (true) {
-    yield *syncSearchResource(
-      api.SearchType.playList,
-      'playlist',
-      'coverImgUrl'
-    )
-  }
-}
-
-function* syncSearchArtist () {
-  while (true) {
-    yield *syncSearchResource(
-      api.SearchType.artist,
-      'artist',
-      'img1v1Url'
-    )
-  }
-}
-
-function* syncSearchAlbums () {
-  while (true) {
-    yield *syncSearchResource(
-      api.SearchType.album,
-      'album',
-      'picUrl'
-    )
-  }
-}
+export const syncSearchAlbums = syncSearchResource(
+  api.SearchType.album,
+  'album'
+)
 
 export default function* rootSaga () {
-  yield fork(searchQuerying)
-  yield fork(changeSearchActiveTab)
-  yield fork(syncSearchSongs)
-  yield fork(syncSearchPlaylists)
-  yield fork(syncSearchArtist)
-  yield fork(syncSearchAlbums)
+  yield all([
+    takeEvery('search/query', requestSearch),
+    takeEvery('search/activeTab', requestSearch),
+    fork(syncSearchSongs),
+    fork(syncSearchPlaylists),
+    fork(syncSearchArtist),
+    fork(syncSearchAlbums)
+  ])
 }

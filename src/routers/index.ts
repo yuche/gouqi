@@ -22,7 +22,7 @@ function toPlayList (passProps?: IRouterPassProps) {
   return () => navigator['playlist'](passProps)
 }
 
-function toComment (passProps?: IRouterPassProps) {
+function toComment (passProps?: any) {
   navigator['comment'](passProps)
 }
 
@@ -30,7 +30,7 @@ function toPlaylistDetail (passProps?: IRouterPassProps) {
   return () => navigator['playlistDetail'](passProps)
 }
 
-function toCreatePlaylist (passProps?: IRouterPassProps) {
+function toCreatePlaylist (passProps?: any) {
   navigator['createPlaylist'](passProps)
 }
 

@@ -14,67 +14,64 @@ interface IMoreResult {
   [propName: string]: any
 }
 
-export function* syncSearchResource (
+export const searchSelector = (state: any) => state.search
+
+export function syncSearchResource (
   type: number,
   reducerType: string,
-  picUrlKey: string,
-  picSize = '100y100'
+  picSize = 100
 ) {
-  yield take(`search/${reducerType}`)
+  return function* () {
+    while (true /* istanbul ignore next  */) {
+      yield take(`search/${reducerType}`)
 
-  const resourceKey = reducerType + 's'
+      const resourceKey = reducerType + 's'
 
-  const searchState = yield select((state: any) => state.search)
+      const searchState = yield select(searchSelector)
 
-  const { query = '' } = searchState
+      const { query = '' } = searchState
 
-  const state = searchState[reducerType]
+      const state = searchState[reducerType]
 
-  const counterKey = `${reducerType}Count`
+      const counterKey = `${reducerType}Count`
 
-  if (state && state.more && query) {
-    yield put({
-      type: `search/${reducerType}/start`
-    })
-
-    const offsetState = state.offset + 30
-
-    const response = yield* ajaxCall(
-      api.search, query, type.toString(), '30',
-      state.offset
-    )
-
-    if (response.code === 200) {
-      const result = response.result
-      const resource: any[] = result[resourceKey]
-
-      if (resource) {
+      if (state && state.more && query) {
         yield put({
-          type: `search/${reducerType}/save`,
-          payload: picUrlKey ? state[resourceKey].concat(resource.map((p) => {
-            return Object.assign({}, p, {
-              [picUrlKey]: p[picUrlKey] === null ?
-              // TODO:
-              // placeholder image. maybe use local image instead
-              PLACEHOLDER_IMAGE :
-              p[picUrlKey] + `?param=${picSize}`
-            })
-          })) : state[resourceKey].concat(resource),
-          meta: {
-            more: result[counterKey] > offsetState ? true : false,
-            offset: offsetState
-          }
+          type: `search/${reducerType}/start`
         })
-      } else {
-        yield put(toastAction('info', '什么也找不到'))
+
+        const offsetState = state.offset + 30
+
+        const response = yield* ajaxCall(
+          api.search, query, type.toString(), '30',
+          state.offset
+        )
+
+        if (response.code === 200) {
+          const result = response.result
+          const resource: any[] = result[resourceKey]
+
+          if (resource) {
+            yield put({
+              type: `search/${reducerType}/save`,
+              payload: state[resourceKey].concat(changeCoverImgUrl(resource, picSize)),
+              meta: {
+                more: result[counterKey] > offsetState ? true : false,
+                offset: offsetState
+              }
+            })
+          } else {
+            yield put(toastAction('info', '什么也找不到'))
+          }
+        }
+
       }
+
+      yield put({
+        type: `search/${reducerType}/end`
+      })
     }
-
   }
-
-  yield put({
-    type: `search/${reducerType}/end`
-  })
 }
 
 export function* ajaxCall (fn: (...args: any[]) => Promise<any>, ...args: any[]) {
@@ -97,9 +94,9 @@ export function syncMoreResource (
   picSize = 300,
   limit = 30
 ) {
-  // tslint:disable-next-line:only-arrow-functions
   return function* () {
-    const selectedState: IMoreResult = yield select((state: any) => state[stateKey])
+    const state = yield select() // just for test convient
+    const selectedState: IMoreResult = state[stateKey]
 
     if (selectedState.more) {
       yield put({

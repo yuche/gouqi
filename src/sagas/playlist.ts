@@ -160,6 +160,8 @@ export function* collectTrackToPlayliast () {
   }
 }
 
+export const trackSelector = (state: any) => state.playlist.track
+
 export function* toCommentPage () {
   while (true /* istanbul ignore next  */) {
     yield take('playlists/router/comment')
@@ -168,11 +170,13 @@ export function* toCommentPage () {
       type: 'ui/popup/track/hide'
     })
 
-    const track: api.ITrack = yield select(((state: any) => state.playlist.track))
+    const track: api.ITrack = yield select(trackSelector)
 
     yield call(InteractionManager.runAfterInteractions)
 
-    yield Router.toComment({ route: { track, id: track.commentThreadId } })()
+    yield call(Router.toComment, { route: { track, id: track.commentThreadId } })
+
+    // yield Router.toComment({ route: { track, id: track.commentThreadId } })
   }
 }
 
@@ -188,7 +192,9 @@ export function* toCreatePlaylistPage () {
       yield call(InteractionManager.runAfterInteractions)
     }
 
-    yield Router.toCreatePlaylist({ route: { trackId: payload } })
+    yield fork(Router.toCreatePlaylist, { route: { trackId: payload } })
+
+    // yield Router.toCreatePlaylist({ route: { trackId: payload } })
   }
 }
 

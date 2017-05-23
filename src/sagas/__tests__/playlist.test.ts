@@ -13,10 +13,12 @@ import {
   collectTrackToPlayliast,
   toCommentPage,
   toCreatePlaylistPage,
-  batchOpsVisableSelector
+  batchOpsVisableSelector,
+  trackSelector
  } from '../playlist'
 import mainSaga from '../playlist'
 import { InteractionManager } from 'react-native'
+import Router from '../../routers'
 
 test('playlistSelector', () => {
   expect(playlistSelector({ details: { playlist: [] } })).toEqual([])
@@ -254,4 +256,58 @@ describe('collectTrackToPlayliast', () => {
       .next()
       .isDone()
   })
+})
+
+describe('toCommentPage', () => {
+  const state = { playlist: { track: { commentThreadId: 110 } } }
+  const track = trackSelector(state)
+  test('selector', () => {
+    expect(track).toEqual({ commentThreadId: 110 })
+  })
+
+  test('toCommentPage', () => {
+    testSaga(toCommentPage)
+      .next()
+      .take('playlists/router/comment')
+      .next()
+      .put({
+        type: 'ui/popup/track/hide'
+      })
+      .next()
+      .select(trackSelector)
+      .next(track)
+      .call(InteractionManager.runAfterInteractions)
+      .next()
+      .call(Router.toComment, {
+        route: {
+          track,
+          id: track.commentThreadId
+        }
+      })
+      .next()
+      .finish()
+      .isDone()
+  })
+})
+
+test('toCreatePlaylistPage', () => {
+  const payload = 1
+  testSaga(toCreatePlaylistPage)
+    .next()
+    .take('playlists/router/create')
+    .save('take')
+    .next({ payload })
+    .put({
+      type: 'ui/popup/collect/hide'
+    })
+    .next()
+    .call(InteractionManager.runAfterInteractions)
+    .next()
+    .restore('take')
+    .next({ payload: undefined })
+    .fork(Router.toCreatePlaylist, { route: { trackId: undefined } })
+    .next()
+    .finish()
+    .next()
+    .isDone()
 })

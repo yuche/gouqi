@@ -25,7 +25,7 @@ export function changeCoverImgUrl (arr, width = 300) {
     ...item,
     coverImgUrl: item.coverImgUrl && `${item.coverImgUrl}?param=${width}y${width}`,
     picUrl: item.picUrl && `${item.picUrl}?param=${width}y${width}`,
-    img1v1Url: item.img1v1Url && `${item.img1v1Url}?param=${width}y${width}`
+    img1v1Url: (item.img1v1Url && `${item.img1v1Url}?param=${width}y${width}`) || PLACEHOLDER_IMAGE
   }))
 }
 

@@ -1,4 +1,4 @@
-import { put, select, takeLatest, all } from 'redux-saga/effects'
+import { put, select, takeLatest, all, call } from 'redux-saga/effects'
 import * as api from '../services/api'
 import {
   toastAction
@@ -7,8 +7,8 @@ import { ajaxCall } from './common'
 import { sampleSize } from 'lodash'
 import { changeCoverImgUrl } from '../utils'
 
-function* recommendSaga () {
-  const isLogin = !!api.getUserId()
+export function* recommendSaga () {
+  const isLogin = yield call(api.getUserId)
   const promises = [
     api.topPlayList('30'),
     api.newAlbums('30'),
@@ -28,7 +28,7 @@ function* recommendSaga () {
       albums,
       artists,
       songs
-    ] =  yield Promise.all(promises)
+    ] =  yield call(Promise.all, promises)
 
     if (playlists.code === 200) {
       yield put({
@@ -51,7 +51,7 @@ function* recommendSaga () {
       })
     }
 
-    if (songs.code === 200) {
+    if (songs && songs.code === 200) {
       yield put({
         type: 'personal/daily/save',
         payload: songs.recommend.slice(0, 6)
@@ -66,8 +66,10 @@ function* recommendSaga () {
   })
 }
 
-function* syncMoreAlbums () {
-  const albumsOffset = yield select((state: any) => state.home.albumsOffset)
+export const albumsOffsetSelector = (state: any) => state.home.albumsOffset
+
+export function* syncMoreAlbums () {
+  const albumsOffset = yield select(albumsOffsetSelector)
 
   yield put({
     type: 'home/recommend/start'
@@ -94,8 +96,10 @@ function* syncMoreAlbums () {
   })
 }
 
-function* syncMoreArtists () {
-  const artistsOffset = yield select((state: any) => state.home.artistsOffset)
+export const artistsOffsetSelector = (state: any) => state.home.artistsOffset
+
+export function* syncMoreArtists () {
+  const artistsOffset = yield select(artistsOffsetSelector)
 
   yield put({
     type: 'home/recommend/start'
