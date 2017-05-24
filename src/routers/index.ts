@@ -10,8 +10,8 @@ function toHome (passProps?: IRouterPassProps) {
   navigator['home'](passProps)
 }
 
-function toLogin (passProps?: IRouterPassProps) {
-  return () => navigator['login'](passProps)
+function toLogin (passProps?: any) {
+  navigator['login'](passProps)
 }
 
 function toSearch (passProps?: IRouterPassProps) {

@@ -2,7 +2,7 @@ import { take, put, fork, select, takeEvery, all } from 'redux-saga/effects'
 import { searchSelector, syncSearchResource } from './common'
 import * as api from '../services/api'
 
-const searchPageOrder = ['song', 'playlist', 'artist', 'album']
+export const searchPageOrder = ['song', 'playlist', 'artist', 'album']
 
 export function* requestSearch () {
   const prevState = yield select(searchSelector)

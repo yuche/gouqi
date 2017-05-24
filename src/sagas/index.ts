@@ -1,4 +1,4 @@
-import { take, put, call, fork, all } from 'redux-saga/effects'
+import { take, put, call, fork, all, takeLatest } from 'redux-saga/effects'
 import {
   AsyncStorage,
   InteractionManager
@@ -23,19 +23,21 @@ import watchAlbums from './album'
 import Router from '../routers'
 import watchRecommend from './recommend'
 import watchArtist from './artist'
-import RNFS from 'react-native-fs'
+import * as RNFS from 'react-native-fs'
 import { getDownloadedTracks, FILES_FOLDER } from '../utils'
 
-function* setProfile (profile) {
-  yield AsyncStorage.setItem('PROFILE', JSON.stringify(profile))
-  yield AsyncStorage.setItem('Cookies', getCookies())
+export const COOKIES = 'Cookies'
+
+export function* setProfile (profile) {
+  yield call(AsyncStorage.setItem, 'PROFILE', JSON.stringify(profile))
+  yield call(AsyncStorage.setItem, COOKIES, getCookies())
   yield put({
     type: 'personal/profile',
     payload: profile
   })
 }
 
-function* getProfile () {
+export function* getProfile () {
   const profile = yield call(AsyncStorage.getItem, 'PROFILE')
   yield put({
     type: 'personal/profile',
@@ -43,43 +45,37 @@ function* getProfile () {
   })
 }
 
-export function* loginFlow () {
-  while (true) {
-    const { payload = {
-      username: '',
-      password: ''
-    } }: Action<IUserInfo> = yield take('user/login')
-    const { username, password } = payload
+export function* loginFlow ({ payload }: any) {
+  const { username, password } = payload
 
-    if (username && password) {
-      yield put({
-        type: 'user/login/start'
-      })
+  if (username && password) {
+    yield put({
+      type: 'user/login/start'
+    })
 
-      const userInfo = yield call(api.login, username.trim(), password.trim())
+    const userInfo = yield call(api.login, username.trim(), password.trim())
 
-      yield put({
-        type: 'user/login/end'
-      })
+    yield put({
+      type: 'user/login/end'
+    })
 
-      if (userInfo.code === 200) {
-        yield Router.pop()
-        yield call(InteractionManager.runAfterInteractions)
-        yield put(toastAction('success', '你已成功登录'))
-        yield fork(setProfile, userInfo.profile)
-      } else {
-        yield put(toastAction('warning', '帐号或密码错误'))
-      }
+    if (userInfo.code === 200) {
+      yield call(Router.pop)
+      yield call(InteractionManager.runAfterInteractions)
+      yield put(toastAction('success', '你已成功登录'))
+      yield fork(setProfile, userInfo.profile)
     } else {
-      yield put(toastAction('warning', '帐号或密码不能为空'))
+      yield put(toastAction('warning', '帐号或密码错误'))
     }
+  } else {
+    yield put(toastAction('warning', '帐号或密码不能为空'))
   }
 }
 
-function* setCookiesSaga () {
-  const Cookies: string = yield AsyncStorage.getItem('Cookies')
+export function* setCookiesSaga () {
+  const Cookies: string = yield call(AsyncStorage.getItem, COOKIES)
 
-  if (Cookies && Cookies.includes(';')) {
+  if (Cookies && typeof Cookies === 'string' && Cookies.includes(';')) {
     const expires = Cookies.split(';').find((c) => c.includes('Expires'))
     if (expires) {
       if (new Date(expires) > new Date()) {
@@ -89,13 +85,13 @@ function* setCookiesSaga () {
         })
       } else {
         yield put(toastAction('info', '登录凭证已过期'))
-        yield Router.toLogin()()
+        yield call(Router.toLogin)
       }
     }
   }
 }
 
-function* setDownloadTracksSaga () {
+export function* setDownloadTracksSaga () {
   const tracks = yield call(getDownloadedTracks)
   yield put({
     type: 'download/tracks/set',
@@ -104,43 +100,43 @@ function* setDownloadTracksSaga () {
   yield call(RNFS.mkdir, FILES_FOLDER)
 }
 
-function* setSecondsSaga () {
+export function* setSecondsSaga () {
   const seconds = yield call(AsyncStorage.getItem, 'SECONDS')
   yield put(addSecondsAction(Number(seconds)))
 }
 
-function* getHistory () {
-  const history = yield call(AsyncStorage.getItem, 'HISTORY')
+export function* getHistory () {
+  const historys = yield call(AsyncStorage.getItem, 'HISTORY')
   yield put({
     type: 'player/history/save',
-    payload: history ? JSON.parse(history) : []
+    payload: historys ? JSON.parse(historys) : []
   })
 }
 
 export function* init () {
-  while (true) {
+  // while (true) {
     yield take('app/init')
 
-    yield* setCookiesSaga()
+    yield call(setCookiesSaga)
 
-    yield* setDownloadTracksSaga()
+    yield call(setDownloadTracksSaga)
 
-    yield* setSecondsSaga()
+    yield call(setSecondsSaga)
 
-    yield* getProfile()
+    yield call(getProfile)
 
-    yield* getHistory()
+    yield call(getHistory)
 
     yield put({
       type: 'home/recommend'
     })
-  }
+  // }
 }
 
 export default function* root () {
   yield all([
     fork(init),
-    fork(loginFlow),
+    takeLatest('user/login', loginFlow),
     fork(watchPlaylist),
     fork(watchSearch),
     fork(watchComment),

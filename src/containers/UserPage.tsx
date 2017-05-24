@@ -96,6 +96,10 @@ class UserPage extends React.Component<IProps, any> {
     this.props.playFM()
   }
 
+  toLogin = () => {
+    Router.toLogin()
+  }
+
   render () {
     const {
       profile,
@@ -110,7 +114,7 @@ class UserPage extends React.Component<IProps, any> {
     return (
       <View style={{flex: 1}}>
         <View style={styles.header}>
-        <TouchableWithoutFeedback onPress={Router.toLogin()}>
+        <TouchableWithoutFeedback onPress={this.toLogin}>
             <Image source={{ uri }} style={styles.headImg} />
         </TouchableWithoutFeedback>
           {nickname && <Text>{nickname}</Text>}

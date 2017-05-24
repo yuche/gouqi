@@ -22,6 +22,9 @@ jest.mock('react-native-music-control', () => ({
 }))
 jest.mock('react-native-fs', () => ({
   DocumentDirectoryPath: '',
+  mkdir () {
+    return ''
+  },
   stopDownload () {
     return ''
   },
