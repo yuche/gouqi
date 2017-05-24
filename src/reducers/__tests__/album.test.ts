@@ -58,3 +58,21 @@ test('albums/sync/save', () => {
     offset: 0
   })
 })
+
+test('albums/sync/save meta', () => {
+  expect(
+    reducer(initialState, {
+      type: 'albums/sync/save',
+      payload: [],
+      meta: {
+        more: false,
+        offset: 250
+      }
+    })
+  ).toEqual({
+    ...initialState,
+    albums: [],
+    more: false,
+    offset: 250
+  })
+})

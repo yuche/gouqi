@@ -120,6 +120,7 @@
     },
     "coveragePathIgnorePatterns": [
       "node_modules",
+      "routers/index.ts",
       "\\.(js)$"
     ],
     "collectCoverage": true,

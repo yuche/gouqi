@@ -15,7 +15,7 @@ interface IDownloadState {
   downloading: ITrack[]
 }
 
-const initialState: IDownloadState = {
+export const initialState: IDownloadState = {
   tracks: [],
   progress: {},
   failed: [],
@@ -64,9 +64,7 @@ export default handleActions({
   'download/failed/remove' (state, { payload }: any) {
     return {
       ...state,
-      failed: isEmpty(state.failed)
-        ? []
-        : state.failed.filter((t) => t.id !== payload)
+      failed: state.failed.filter((t) => t.id !== payload)
     }
   },
   'download/progress' (state, { payload: { id, total, receive } }: any) {

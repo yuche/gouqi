@@ -3,7 +3,7 @@ import {
   IToastPayload
 } from '../interfaces'
 
-const initState = {
+export const initState = {
   toast: { kind: 'success', text: ''},
   popup: {
     track: {
@@ -41,11 +41,8 @@ const modalId = next()
 
 export default handleActions({
   'ui/toast' (state: any, {
-    payload = {
-      kind: 'error',
-      text: '错误传参'
-    }
-  }: Action<IToastPayload> ) {
+    payload
+  }: any) {
     return Object.assign({}, state, {
       toast: {
         kind: payload.kind,

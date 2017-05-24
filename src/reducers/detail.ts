@@ -16,7 +16,7 @@ export interface IAlbums {
   [props: number]: api.IAlbum
 }
 
-const initialState: IinitialState = {
+export const initialState: IinitialState = {
   playlist: {},
   albums: {},
   subscribing: false,

@@ -11,7 +11,7 @@ export interface ICommentObj {
   [props: string]: IComments
 }
 
-const initialState = {
+export const initialState = {
   comments: {},
   isLoading: false,
   isLoadingMore: false

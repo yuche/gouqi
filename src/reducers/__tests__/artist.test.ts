@@ -129,6 +129,15 @@ test('artists/sync/save', () => {
   })
 })
 
+test('artists/sync/save default meta', () => {
+  expect(
+    reducer(initialState, {
+      type: 'artists/sync/save',
+      payload: []
+    })
+  ).toEqual(initialState)
+})
+
 test('artists/detail/description/start', () => {
   expect(
     reducer(initialState, {
@@ -225,7 +234,7 @@ test('artists/detail/album/save', () => {
 test('artists/detail/description/save', () => {
   expect(
     reducer(initialState, {
-      type: 'artists/detail/album/save',
+      type: 'artists/detail/description/save',
       meta: 110,
       payload: 'hong kong reporter fast'
     })

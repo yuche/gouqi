@@ -1,7 +1,7 @@
 import { handleActions } from 'redux-actions'
 import { assign } from '../utils'
 
-const initialState = {
+export const initialState = {
   isLoading: false
 }
 

@@ -42,7 +42,7 @@ export interface IPlayPayload {
   }
 }
 
-const initialState: IPlayerState = {
+export const initialState: IPlayerState = {
   playing: {
     pid: 0,
     index: 0
@@ -148,10 +148,10 @@ export default handleActions({
       history: payload
     }
   },
-  'player/status' (state, { payload }: any) {
+  'player/status' (state, { payload: { status } }: any) {
     return {
       ...state,
-      status: payload.status
+      status
     }
   },
   'player/mode' (state, { payload }: Action<IPlayerMode>) {

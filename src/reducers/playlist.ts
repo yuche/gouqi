@@ -1,7 +1,7 @@
 import { handleActions } from 'redux-actions'
 import { assign } from '../utils'
 
-const initialState = {
+export const initialState = {
   isLoading: false,
   playlists: [],
   offset: 0,
@@ -42,7 +42,6 @@ export default handleActions({
       more: meta.more
     })
   },
-
   'playlists/track/save' (state, { payload } ) {
     return {
       ...state,
