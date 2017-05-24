@@ -70,7 +70,7 @@ export function downloadTrackChannel (track) {
 export function* downloadSingleTrack (track: ITrack) {
   const { downloading } = yield select(downloadSelector)
   const isExist = downloading.some((t) => t.id === track.id)
-  if (isExist || !track.mp3Url) {
+  if (!isExist || !track.mp3Url) {
     return false
   }
   const channel = yield call(downloadTrackChannel, track)

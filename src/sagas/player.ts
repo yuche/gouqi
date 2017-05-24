@@ -118,12 +118,6 @@ export function* getLyrcis () {
 }
 
 export function* playPersonalFM () {
-  yield put(playTrackAction({
-    playing: {
-      index: 0,
-      pid: 'fm'
-    }
-  }))
   const response = yield* ajaxCall(api.personalFM)
   if (response.code === 200) {
     yield put({

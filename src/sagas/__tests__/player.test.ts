@@ -232,13 +232,13 @@ describe('playPersonalFM', () => {
   test('playPersonalFM', () => {
     testSaga(playPersonalFM)
       .next()
-      .put(actions.playTrackAction({
-        playing: {
-          index: 0,
-          pid: 'fm'
-        }
-      }))
-      .next()
+      // .put(actions.playTrackAction({
+      //   playing: {
+      //     index: 0,
+      //     pid: 'fm'
+      //   }
+      // }))
+      // .next()
       .save('ajax')
       .next({ ...AJAX_RESPONSE_SUCCESS, data})
       .put({

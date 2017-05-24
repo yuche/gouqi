@@ -88,17 +88,20 @@ describe('downloadSingleTrack', () => {
       .select(downloadSelector)
       .next({
         ...state,
-        downloading: [{ id: 1 }]
+        downloading: [{ id: 2 }]
       })
       .returns(false)
   })
 
   test('should call the download channel', () => {
-    const track = { id: 2, mp3Url: '+1s' }
+    const track = { id: 1, mp3Url: '+1s' }
     testSaga(downloadSingleTrack, track)
       .next()
       .select(downloadSelector)
-      .next(state)
+      .next({
+        ...state,
+        downloading: [{ id: 1 }]
+      })
       .call(downloadTrackChannel, track)
       .next('channel')
       .take('channel')
