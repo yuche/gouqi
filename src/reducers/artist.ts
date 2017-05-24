@@ -1,7 +1,7 @@
 import { handleActions } from 'redux-actions'
 import * as api from '../services/api'
 
-const initialState = {
+export const initialState = {
   artists: [],
   more: true,
   isLoading: false,
@@ -100,7 +100,7 @@ export default handleActions({
     }
   },
   'artists/detail/follow/toggle' (state, { payload, meta }: any) {
-    const detail = state.detail[meta]
+    const { [meta]: detail = {} } = state.detail
     return {
       ...state,
       detail: {

@@ -82,6 +82,7 @@ class Comments extends React.Component<IProps, any> {
           textColor='#333'
         />
         <ListView
+          style={{ paddingBottom: 70 }}
           dataSource={this.ds}
           enableEmptySections={true}
           scrollRenderAheadDistance={90}

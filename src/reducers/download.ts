@@ -44,7 +44,7 @@ export default handleActions({
   'download/downloading/remove' (state, { payload }: any) {
     return {
       ...state,
-      downloading: state.downloading.filter(t => t.id !== payload)
+      downloading: state.downloading.filter((t) => t.id !== payload)
     }
   },
   'download/downloading/merge' (state, { payload }: any) {
@@ -66,10 +66,10 @@ export default handleActions({
       ...state,
       failed: isEmpty(state.failed)
         ? []
-        : state.failed.filter(t => t.id !== payload)
+        : state.failed.filter((t) => t.id !== payload)
     }
   },
-  'download/progress'(state, { payload: { id, total, receive } }: any) {
+  'download/progress' (state, { payload: { id, total, receive } }: any) {
     return {
       ...state,
       progress: {

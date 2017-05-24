@@ -1,6 +1,6 @@
 import { handleActions } from 'redux-actions'
 
-const initialState = {
+export const initialState = {
   albums: [],
   more: true,
   isLoading: false,

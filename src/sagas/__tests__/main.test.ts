@@ -256,14 +256,6 @@ describe('setCookiesSaga', () => {
       .isDone()
   })
 
-  test('cookies not includes *Expires* key', () => {
-    testSaga(setCookiesSaga)
-      .next()
-      .call(AsyncStorage.getItem, COOKIES)
-      .next('reporter=fast;wallace=tall')
-      .isDone()
-  })
-
   test('can set cookies', () => {
     const date = '2048-10-24'
     testSaga(setCookiesSaga)
@@ -274,6 +266,14 @@ describe('setCookiesSaga', () => {
         type: 'personal/playlist'
       })
       .next()
+      .isDone()
+  })
+
+  test('cookies not includes *Expires* key', () => {
+    testSaga(setCookiesSaga)
+      .next()
+      .call(AsyncStorage.getItem, COOKIES)
+      .next('reporter=fast;wallace=tall')
       .isDone()
   })
 

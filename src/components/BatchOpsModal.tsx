@@ -9,7 +9,9 @@ import {
   ScrollView,
   TouchableWithoutFeedback,
   StyleSheet,
-  TextStyle
+  TextStyle,
+  ListView,
+  ListViewDataSource
 } from 'react-native'
 import { connect } from 'react-redux'
 import { ITrack } from '../services/api'
@@ -43,11 +45,14 @@ class BatchOps extends React.Component<IProps, IState> {
 
   private translateY = new Animated.Value(height)
 
+  private ds: ListViewDataSource
+
   constructor (props) {
     super(props)
     this.state = {
       selected: []
     }
+    this.ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1.id !== r2.id })
   }
 
   componentWillReceiveProps ({ visible }: IProps) {
@@ -55,6 +60,12 @@ class BatchOps extends React.Component<IProps, IState> {
       this.setState({
         selected: this.props.tracks.map((t) => t.id)
       })
+    }
+  }
+
+  componentWillUpdate (nextProps, nextState) {
+    if (nextState.selected !== this.state.selected) {
+      this.ds = this.ds.cloneWithRows([])
     }
   }
 
@@ -149,6 +160,7 @@ class BatchOps extends React.Component<IProps, IState> {
     if (!visible) {
       return null
     }
+    this.ds = this.ds.cloneWithRows(tracks)
     return (
       <Modal
         visible={visible}
@@ -157,9 +169,20 @@ class BatchOps extends React.Component<IProps, IState> {
         <CollectPopup />
         <View style={{ flex: 1 }}>
           {this.renderNavbar(tracks.length, selected.length)}
-          <ScrollView style={{ flex: 1 }}>
+          <ListView
+            style={{ flex: 1 }}
+            enableEmptySections={true}
+            removeClippedSubviews={true}
+            scrollRenderAheadDistance={120}
+            initialListSize={15}
+            dataSource={this.ds}
+            renderRow={this.renderItem}
+            showsVerticalScrollIndicator={true}
+          />
+          {/*<ScrollView style={{ flex: 1 }}>
+
             {tracks.map(this.renderItem)}
-          </ScrollView>
+          </ScrollView>*/}
         </View>
         <View style={styles.footer}>
           {kind === 'collect' && <TouchableWithoutFeedback onPress={selected.length ? this.collect : undefined}>
