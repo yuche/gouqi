@@ -28,7 +28,7 @@ class Artist extends React.Component<IProps, IState> {
     }
   }
 
-  componentWillReceiveProps({ artists }: IProps) {
+  componentWillReceiveProps ({ artists }: IProps) {
     if (artists !== this.props.artists) {
       this.setState({
         ds: this.state.ds.cloneWithRows(artists)
@@ -46,7 +46,7 @@ class Artist extends React.Component<IProps, IState> {
         title={artist.name}
         picURI={artist.img1v1Url}
         key={artist.id}
-        roundPic
+        roundPic={true}
         onPress={this.itemOnPress(artist)}
       />
     )
@@ -54,7 +54,7 @@ class Artist extends React.Component<IProps, IState> {
 
   renderFooter = () => {
     return this.props.isLoading ?
-      <ActivityIndicator animating style={{marginTop: 10}}/> :
+      <ActivityIndicator animating={true} style={{marginTop: 10}}/> :
       <View />
   }
 
@@ -64,11 +64,11 @@ class Artist extends React.Component<IProps, IState> {
     }
   }
 
-  render() {
+  render () {
     return (
       <ListView
-        showsVerticalScrollIndicator
-        enableEmptySections
+        showsVerticalScrollIndicator={true}
+        enableEmptySections={true}
         dataSource={this.state.ds}
         initialListSize={15}
         pagingEnabled={false}
@@ -94,7 +94,7 @@ export default connect(
     isLoading, artists
   }),
   (dispatch: Dispatch<Redux.Action>) => ({
-    sync() {
+    sync () {
       return dispatch(actions.searchArtists())
     }
   })
