@@ -383,17 +383,6 @@ export const enum ChannelsType {
   recent = 30
 }
 
-export async function djChannels (
-  type: ChannelsType | string,
-  offset = '0',
-  limit = '10'
-): Promise<string[]> {
-  const body = await request
-    .get(`/discover/djradio?type=${type}&offset=${offset}&limit=${limit}`)
-  const matchChannels = [...body.match(/program\?id=\d+/g)]
-  return [...new Set(matchChannels)].map((c) => c.slice(11))
-}
-
 export async function channelDetails (channelId: string) {
   return await request.get(`/api/dj/program/detail?id=${channelId}`)
 }
@@ -418,15 +407,12 @@ export async function batchSongDetailsNew (
   bitrate = '320000'
 ) {
   const csrf = getCsrfFromCookies()
-  if (!csrf) {
-    return null
-  }
-  return await request
+  return (needLogin() || await request
     .post(`/weapi/song/enhance/player/url?csrf_token=${csrf}`, encryptedRequest({
       br: bitrate,
       ids: songIds,
       'csrf_token': csrf
-    }))
+    })))
 }
 
 export async function opMuiscToPlaylist (
@@ -434,8 +420,8 @@ export async function opMuiscToPlaylist (
   pid: string,
   op: 'add' | 'del'
 ) {
-  // 甩锅甩锅甩锅请注意
-  // 写成也不怪我，是网易 API 接受的参数太奇葩了
+  // 甩锅:
+  // 写成这样也不怪我，是网易 API 接受的参数太奇葩了
   const trackIds = `[${(Array.isArray(tracks) ? tracks : [tracks.toString()]).toString()}]`
   return await (needLogin() || request
     .post(`/api/playlist/manipulate/tracks`, {

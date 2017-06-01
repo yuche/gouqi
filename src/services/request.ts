@@ -41,7 +41,7 @@ export function getCsrfFromCookies (): string | null {
 }
 
 function checkStatusFilter (response: any) {
-  if (response.status >= 200 && response.status < 300) {
+  if (response.ok) {
     return response
   } else {
     const error = new Error(response.statusText)
@@ -53,11 +53,7 @@ function checkStatusFilter (response: any) {
 }
 
 function parseJSONFilter (response) {
-  return response.text()
-    .then((text) => text.startsWith('<!DOCTYPE html>') ?
-      text :
-      JSON.parse(text)
-    )
+  return response.json()
 }
 
 function addUserIdToCookies (response) {
@@ -69,8 +65,15 @@ function addUserIdToCookies (response) {
 
 function setCookiesFilter (response) {
   const cookies = response.headers.getAll('set-cookie')
-  if (cookies.length && cookies[0]) {
-    setCookies(cookies[0])
+  // console.log(cookies)
+  if (Array.isArray(cookies) && cookies.length) {
+    setCookies(
+      cookies.join(';')
+        .split(';')
+        .map((c) => c.trim())
+        .filter((c) => c.includes('='))
+        .join(';')
+    )
   }
   return response
 }
