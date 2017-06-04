@@ -21,18 +21,18 @@ interface IProps {
 
 export default class BlurImage extends React.Component<IProps, any> {
 
-  constructor(props) {
+  constructor (props) {
     super(props)
   }
 
-  shouldComponentUpdate(nextProps: IProps) {
+  shouldComponentUpdate (nextProps: IProps) {
     if (this.props.uri !== nextProps.uri || this.props.blurRadius !== nextProps.blurRadius) {
       return true
     }
     return false
   }
 
-  render() {
+  render () {
     const {
       uri,
       blurRadius

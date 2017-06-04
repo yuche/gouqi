@@ -6,7 +6,6 @@ const bigInt = require('big-integer')
 const md5 = require('blueimp-md5')
 const CryptoJS = require("crypto-js")
 const { Buffer } = require('buffer')
-const qs = require('qs')
 
 function addPadding (s: string, size: number) {
     while (s.length < size) s = '0' + s;

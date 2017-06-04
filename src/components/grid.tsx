@@ -72,7 +72,7 @@ const styles = {
   metaText: {
     color: 'white',
     fontSize: 13,
-    marginLeft: 5,
+    marginLeft: 5
   } as TextStyle,
   title: {
     marginLeft: 5,

@@ -9,6 +9,8 @@
         "noImplicitAny": false,
         "allowSyntheticDefaultImports":true,
         "outDir": "lib",
+        "noUnusedParameters": true,
+        "noUnusedLocals": true,
         "strictNullChecks": true,
         "noImplicitThis": true,
         "sourceMap": true

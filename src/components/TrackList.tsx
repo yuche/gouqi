@@ -56,7 +56,7 @@ class TrackList extends React.Component<IProps, any> {
   }
 
   renderTrack = (playing, isPlaylist: boolean, showIndex: boolean) => {
-    return (track: ITrack, sectionId, rowId) => {
+    return (track: ITrack, _sectionId, rowId) => {
       const index = Number(rowId)
       const isPlaying = playing.index === index && isPlaylist
       const artistName = get(track, 'artists[0].name', null)

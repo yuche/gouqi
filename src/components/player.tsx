@@ -4,11 +4,6 @@ import { IPlayerProps as IProps } from '../interfaces'
 import Video from 'react-native-video'
 import MusicControl from 'react-native-music-control/index.ios.js'
 
-interface IState {
-  duration: number
-  currentTime: number
-}
-
 class Player extends React.Component<IProps, any> {
 
   private audio: any
@@ -90,7 +85,7 @@ class Player extends React.Component<IProps, any> {
     // this.props.changeStatus('BUFFERING')
   }
 
-  onError = (e: any) => {
+  onError = () => {
     this.props.changeStatus('PAUSED')
   }
 

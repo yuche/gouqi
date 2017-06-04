@@ -57,7 +57,7 @@ class Toast extends React.Component<IProps, IState> {
     this.clearTimer()
   }
 
-  componentWillReceiveProps (nextProps: IProps) {
+  componentWillReceiveProps () {
     this.show()
   }
 

@@ -28,7 +28,7 @@ class PlayList extends React.Component<
     }
   }
 
-  componentWillReceiveProps({ playlists }: IProps) {
+  componentWillReceiveProps ({ playlists }: IProps) {
     if (playlists !== this.props.playlists) {
       this.setState({
         ds: this.state.ds.cloneWithRows(playlists)
@@ -61,7 +61,7 @@ class PlayList extends React.Component<
     }
   }
 
-  render() {
+  render () {
     return (
       <ListView
         showsVerticalScrollIndicator
@@ -91,7 +91,7 @@ export default connect(
     isLoading, playlists
   }),
   (dispatch: Dispatch<Redux.Action>) => ({
-    sync() {
+    sync () {
       return dispatch(actions.searchPlaylists())
     }
   })

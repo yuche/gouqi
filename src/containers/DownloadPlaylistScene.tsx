@@ -42,7 +42,7 @@ class Playlist extends React.Component<IProps, any> {
   }
 
   renderTrack = (playing, isPlaylist: boolean) => {
-    return (track: ITrack, sectionId, rowId) => {
+    return (track: ITrack, _sectionId, rowId) => {
       const index = Number(rowId)
       const isPlaying = playing.index === index && isPlaylist
       const artistName = get(track, 'artists[0].name', null)
@@ -52,7 +52,7 @@ class Playlist extends React.Component<IProps, any> {
         albumName
       const colorStyle = isPlaying && { color: Color.main }
       return <SwipeAction
-        autoClose
+        autoClose={true}
         style={{ backgroundColor: 'white' }}
         right={[{
           text: '删除',

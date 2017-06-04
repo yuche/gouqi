@@ -1,13 +1,9 @@
 import { put, select, call, takeLatest, takeEvery, all } from 'redux-saga/effects'
-import {
-  toastAction
-} from '../actions'
 import * as api from '../services/api'
 import {
   InteractionManager
 } from 'react-native'
 import {
-  ajaxCall,
   refreshResource,
   syncMoreResource
 } from './common'

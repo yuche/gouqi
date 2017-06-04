@@ -17,7 +17,7 @@ interface IProps {
 
 class CreatePlaylistScene extends React.Component<IProps, { value: string }> {
 
-  constructor(props: IProps) {
+  constructor (props: IProps) {
     super(props)
     this.state = {
       value: ''
@@ -72,7 +72,7 @@ class CreatePlaylistScene extends React.Component<IProps, { value: string }> {
 export default connect(
   () => ({}),
   (dispatch, ownProps: IProps) => ({
-    createPlaylist(name: string) {
+    createPlaylist (name: string) {
       const trackId = ownProps && ownProps.route && ownProps.route.trackId
       return dispatch(createPlayliastAction({
         name,

@@ -1,4 +1,4 @@
-import { put, fork, select, call, all, takeEvery } from 'redux-saga/effects'
+import { put, select, call, all, takeEvery } from 'redux-saga/effects'
 import {
   toastAction
 } from '../actions'

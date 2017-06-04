@@ -29,7 +29,7 @@ class Song extends React.Component<IProps, IState> {
     }
   }
 
-  componentWillReceiveProps({ songs }: IProps) {
+  componentWillReceiveProps ({ songs }: IProps) {
     if (songs !== this.props.songs) {
       this.setState({
         ds: this.state.ds.cloneWithRows(songs)
@@ -59,7 +59,7 @@ class Song extends React.Component<IProps, IState> {
     }
   }
 
-  render() {
+  render () {
     const {
       songs,
       isLoading,
@@ -89,7 +89,7 @@ export default connect(
       isLoading, songs, query
   }),
   (dispatch: Dispatch<Redux.Action>) => ({
-    sync() {
+    sync () {
       return dispatch(actions.searchSongs())
     }
   })

@@ -1,4 +1,4 @@
-import { take, put, fork, select, call, takeLatest, all, takeEvery } from 'redux-saga/effects'
+import { put, select, call, takeLatest, all, takeEvery } from 'redux-saga/effects'
 import { delay } from 'redux-saga'
 import * as api from '../services/api'
 import {

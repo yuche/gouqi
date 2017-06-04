@@ -28,7 +28,7 @@ class Album extends React.Component<IProps, IState> {
     }
   }
 
-  componentWillReceiveProps({ albums }: IProps) {
+  componentWillReceiveProps ({ albums }: IProps) {
     if (albums !== this.props.albums) {
       this.setState({
         ds: this.state.ds.cloneWithRows(albums)
@@ -54,7 +54,7 @@ class Album extends React.Component<IProps, IState> {
 
   renderFooter = () => {
     return this.props.isLoading ?
-      <ActivityIndicator animating style={{marginTop: 10}}/> :
+      <ActivityIndicator animating={true} style={{marginTop: 10}}/> :
       <View />
   }
 
@@ -64,11 +64,11 @@ class Album extends React.Component<IProps, IState> {
     }
   }
 
-  render() {
+  render () {
     return (
       <ListView
-        showsVerticalScrollIndicator
-        enableEmptySections
+        showsVerticalScrollIndicator={true}
+        enableEmptySections={true}
         dataSource={this.state.ds}
         initialListSize={15}
         pagingEnabled={false}
@@ -94,7 +94,7 @@ export default connect(
     isLoading, albums
   }),
   (dispatch: Dispatch<Redux.Action>) => ({
-    sync() {
+    sync () {
       return dispatch(actions.searchAlbums())
     }
   })

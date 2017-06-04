@@ -45,7 +45,7 @@ export default class Lyrics extends React.PureComponent<IProps, IState> {
     }
   }
 
-  componentWillReceiveProps ({ currentTime, lyrics, lineHeight, refreshing }: IProps) {
+  componentWillReceiveProps ({ currentTime, refreshing }: IProps) {
     const {
       currentIndex
     } = this.state
@@ -116,7 +116,7 @@ export default class Lyrics extends React.PureComponent<IProps, IState> {
       null
   }
 
-  getItemLayout = (data, index) => {
+  getItemLayout = (_, index) => {
     const LINE_HEIGHT = Number(this.props.lineHeight)
     return {
       length: LINE_HEIGHT,
@@ -125,7 +125,7 @@ export default class Lyrics extends React.PureComponent<IProps, IState> {
     }
   }
 
-  keyExtractor = (data, index) => index
+  keyExtractor = (_, index) => index
 
   mapFlatlist = (component) => ( this.Flatlist = component )
 

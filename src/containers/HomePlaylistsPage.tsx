@@ -28,7 +28,7 @@ class PlayList extends React.Component<IProps, {}> {
     this.ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1.id !== r2.id})
   }
 
-  componentDidMount() {
+  componentDidMount () {
     this.props.refresh()
   }
 
@@ -52,7 +52,7 @@ class PlayList extends React.Component<IProps, {}> {
 
   renderFooter = () => {
     return this.props.isLoading ?
-      <ActivityIndicator animating style={{marginTop: 10}}/> :
+      <ActivityIndicator animating={true} style={{marginTop: 10}}/> :
       <View />
   }
 
@@ -60,15 +60,15 @@ class PlayList extends React.Component<IProps, {}> {
     this.props.refresh()
   }
 
-  render() {
+  render () {
     const {
       isRefreshing
     } = this.props
     this.ds = this.ds.cloneWithRows(this.props.playlists)
     return (
       <ListView
-        showsVerticalScrollIndicator
-        enableEmptySections
+        showsVerticalScrollIndicator={true}
+        enableEmptySections={true}
         dataSource={this.ds}
         initialListSize={15}
         pagingEnabled={false}
@@ -79,8 +79,7 @@ class PlayList extends React.Component<IProps, {}> {
         renderRow={this.renderPlayList}
         renderFooter={this.renderFooter}
         refreshControl={
-          <RefreshControl refreshing={isRefreshing} onRefresh={this.refresh}/>
-        }
+          <RefreshControl refreshing={isRefreshing} onRefresh={this.refresh}/>}
       />
     )
   }
@@ -93,10 +92,10 @@ export default connect(
     isLoading, playlists, isRefreshing
   }),
   (dispatch) => ({
-    syncMore() {
+    syncMore () {
       return dispatch(Actions.syncPlaylists())
     },
-    refresh() {
+    refresh () {
       return dispatch({type: 'playlists/refresh'})
     }
   })

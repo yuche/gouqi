@@ -179,7 +179,7 @@ class TabBar extends React.Component<ITabBarProps, IState> {
     const textComp: NativeComponent = this.refs[`text_${page}`]
 
     InteractionManager.runAfterInteractions(() => {
-      textComp.measure((ox, oy, width, height, pageX) => {
+      textComp.measure((_, __, width, ___, pageX) => {
         this.tabMeasurements[page] = { width, left: pageX }
         this.updateView({ value: this.props.scrollValue._value })
       })

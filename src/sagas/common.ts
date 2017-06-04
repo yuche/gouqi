@@ -1,8 +1,7 @@
 import { take, put, call, select } from 'redux-saga/effects'
-import { END } from 'redux-saga'
 import * as api from '../services/api'
 import Router from '../routers'
-import { PLACEHOLDER_IMAGE, changeCoverImgUrl } from '../utils'
+import { changeCoverImgUrl } from '../utils'
 import {
   toastAction
 } from '../actions'
@@ -82,7 +81,7 @@ export function* ajaxCall (fn: (...args: any[]) => Promise<any>, ...args: any[])
     } else {
       yield put(toastAction('error', '网络出现错误...'))
     }
-    yield put(END)
+    // yield put(END)
   }
   return res
 }

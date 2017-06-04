@@ -28,7 +28,7 @@ interface IProgress {
 
 export default class DownloadingItem extends React.Component<IProps, any> {
 
-  constructor(props) {
+  constructor (props) {
     super(props)
   }
 
@@ -47,11 +47,11 @@ export default class DownloadingItem extends React.Component<IProps, any> {
           color={Color.main}
         />
       </View>
-      <Text style={{ fontSize: 12, color: '#bbb' }}>{ `${receive}M / ${total}M` }</Text>
+      <Text style={{ fontSize: 12, color: '#bbb' }}>{`${receive}M / ${total}M`}</Text>
     </View>
   }
 
-  render() {
+  render () {
     const {
       track,
       progress,
@@ -69,12 +69,11 @@ export default class DownloadingItem extends React.Component<IProps, any> {
               ? <Icon size={22} name='times' color={Color.main} />
               : <CustomIcon size={22} name='album' color='#777' />
             }
-          </View>
-        }
+          </View>}
         renderRight={
           <TouchableWithoutFeedback
             // tslint:disable-next-line:jsx-no-lambda
-            onPress={() => !progress ? remove(track.id) : stop() }
+            onPress={() => !progress ? remove(track.id) : stop()}
           >
             <View style={{ flexDirection: 'row', paddingRight: 10 }}>
               <View style={{ justifyContent: 'center' }}>

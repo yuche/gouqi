@@ -1,4 +1,4 @@
-import { take, put, fork, select, takeEvery, all } from 'redux-saga/effects'
+import { put, fork, select, takeEvery, all } from 'redux-saga/effects'
 import { searchSelector, syncSearchResource } from './common'
 import * as api from '../services/api'
 

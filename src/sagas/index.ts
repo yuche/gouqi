@@ -5,10 +5,6 @@ import {
 } from 'react-native'
 import * as api from '../services/api'
 import { getCookies, setCookies } from '../services/request'
-import { Action } from 'redux-actions'
-import {
-  IUserInfo
-} from '../interfaces'
 import {
   toastAction,
   addSecondsAction

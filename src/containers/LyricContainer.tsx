@@ -3,7 +3,6 @@ import {
   View,
   ViewStyle,
   Animated,
-  TouchableWithoutFeedback,
   Dimensions,
   Text,
   TextStyle
@@ -13,7 +12,7 @@ import { IPlayerState } from '../reducers/player'
 import { ITrack } from '../services/api'
 import { connect } from 'react-redux'
 import { centering } from '../styles'
-import { get, isEmpty } from 'lodash'
+import { get } from 'lodash'
 import Icon from 'react-native-vector-icons/Ionicons'
 
 const { height, width } = Dimensions.get('window')
@@ -126,8 +125,7 @@ function mapStateToProps (
       lyrics,
       lyricsVisable,
       slideTime,
-      loadingLyric,
-      status
+      loadingLyric
     }
   }: { player: IPlayerState }
 ) {

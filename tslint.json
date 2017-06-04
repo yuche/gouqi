@@ -10,11 +10,16 @@
     "jsx-alignment": true,
     "jsx-self-close": true,
     "jsx-no-multiline-js": false,
-    "no-unused-variable": true,
     "quotemark": [true, "single", "avoid-escape"],
     "semicolon": [true, "never"],
     "no-string-literal": false,
+    "jsx-boolean-value": false,
     "jsx-wrap-multiline": false,
+    "variable-name": [
+      true,
+      "allow-leading-underscore",
+      "ban-keywords"
+    ],
     "space-before-function-paren": true,
     "object-literal-key-quotes": [false, "as-needed"],
     "trailing-comma": [true, {"multiline": "never", "singleline": "never"}]

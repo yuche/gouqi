@@ -7,7 +7,6 @@
 import * as api from '../api'
 import { setCookies, getCookies } from '../request'
 import * as fetch from 'node-fetch'
-import { isNumber, isNull } from 'lodash'
 
 declare const global: any
 declare const __dirname: boolean

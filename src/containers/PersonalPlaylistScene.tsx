@@ -23,7 +23,7 @@ interface IProps {
 class CollectPlaylist extends React.Component<IProps, any> {
   private ds: ListViewDataSource
 
-  constructor(props: IProps) {
+  constructor (props: IProps) {
     super(props)
     this.ds = new ListView.DataSource({
       rowHasChanged: (r1, r2) => r1 !== r2,

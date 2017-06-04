@@ -1,7 +1,6 @@
 import { handleActions } from 'redux-actions'
 import { ITrack } from '../services/api'
 import { Action } from 'redux-actions'
-import { isEmpty } from 'lodash'
 
 interface IDownloadState {
   tracks: ITrack[],

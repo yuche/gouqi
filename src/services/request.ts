@@ -82,9 +82,10 @@ function get (
   uri: string
 ): Promise<any> {
   return fetch(API_BASE_URL + uri, {
-    headers: Object.assign({}, defaultHeaders, {
+    headers: {
+      ...defaultHeaders,
       'Cookie': getCookies()
-    })
+    }
   })
   .then(checkStatusFilter)
   .then(setCookiesFilter)
@@ -98,9 +99,10 @@ function post (
 ): Promise<any>  {
   return fetch(API_BASE_URL + uri, {
     body: qs.stringify(body),
-    headers: Object.assign({}, defaultHeaders, {
+    headers: {
+      ...defaultHeaders,
       'Cookie': getCookies()
-    }),
+    },
     method: 'POST'
   })
   .then(checkStatusFilter)

@@ -99,16 +99,14 @@ class PlayList extends React.Component<IProps, any> {
   render () {
     const {
       isLoading,
-      playlist,
-      playing,
-      isPlaylist
+      playlist
     } = this.props
     return (
       <View style={{flex: 1, backgroundColor: 'white'}}>
         {this.renderBlur(playlist)}
         {this.renderNavbar(playlist)}
         {this.renderHeader(playlist)}
-        {this.renderPlayList(isLoading, playlist.tracks || [], playing, isPlaylist)}
+        {this.renderPlayList(isLoading, playlist.tracks || [])}
       </View>
     )
   }
@@ -229,12 +227,7 @@ class PlayList extends React.Component<IProps, any> {
     )
   }
 
-  renderPlayList = (
-    isLoading: boolean,
-    tracks: ITrack[],
-    playing: IPlaying,
-    isPlaylist: boolean
-  ) => {
+  renderPlayList = (isLoading: boolean, tracks: ITrack[]) => {
     return (
       <Animated.View style={[styles.playlistContainer, this.playlistTransform]}>
         <View style={{ height: height - Navbar.HEIGHT, backgroundColor: 'white'}}>

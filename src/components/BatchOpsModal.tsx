@@ -3,10 +3,8 @@ import {
   Modal,
   View,
   Text,
-  Animated,
   ViewStyle,
   Dimensions,
-  ScrollView,
   TouchableWithoutFeedback,
   StyleSheet,
   TextStyle,
@@ -17,8 +15,6 @@ import { connect } from 'react-redux'
 import { ITrack } from '../services/api'
 import Navbar from '../components/navbar'
 import Checkbox from 'antd-mobile/lib/checkbox'
-import Popup from './PopupContainer'
-import List from 'antd-mobile/lib/list'
 import { Color, centering } from '../styles'
 import Icon from 'react-native-vector-icons/FontAwesome'
 import { downloadTracksAction, hideBatchOpsModal } from '../actions'
@@ -43,8 +39,6 @@ const { height } = Dimensions.get('window')
 
 class BatchOps extends React.Component<IProps, IState> {
 
-  private translateY = new Animated.Value(height)
-
   private ds: ListViewDataSource
 
   constructor (props) {
@@ -63,7 +57,7 @@ class BatchOps extends React.Component<IProps, IState> {
     }
   }
 
-  componentWillUpdate (nextProps, nextState) {
+  componentWillUpdate (_, nextState) {
     if (nextState.selected !== this.state.selected) {
       this.ds = this.ds.cloneWithRows([])
     }

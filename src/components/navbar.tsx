@@ -12,8 +12,6 @@ import * as React from 'react'
 import Icon from 'react-native-vector-icons/FontAwesome'
 import { Actions } from 'react-native-router-flux'
 
-type Ianimation = 'fade' | 'slide' | 'none'
-
 interface IProps {
   title: string,
   style?: ViewStyle,

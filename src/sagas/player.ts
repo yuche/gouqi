@@ -4,10 +4,8 @@ import { random, get, findIndex, isEmpty } from 'lodash'
 import { playTrackAction } from '../actions'
 import {
   changeStatusAction,
-  currentTimeAction,
   addSecondsAction,
   toastAction,
-  slideTimeAction,
   setPlaylistTracks,
   shrinkPlayer,
   hidePlaylistPopup,
@@ -20,7 +18,6 @@ import * as api from '../services/api'
 import { ajaxCall } from './common'
 import * as MusicControl from 'react-native-music-control/index.ios.js'
 import { parseLyrics } from '../utils'
-import { Action } from 'redux-actions'
 
 export const playerStateSelector = (state: any) => state.player
 
@@ -198,7 +195,7 @@ export function* removePlaylist ({ payload }: any) {
     yield put(clearPlaylist())
   } else {
     yield put(setPlaylistTracks(
-      playlist.filter((t, i) => i !== index)
+      playlist.filter((_, i) => i !== index)
     ))
     if (playing.index === index) {
       yield put(playTrackAction({

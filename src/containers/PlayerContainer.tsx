@@ -184,7 +184,7 @@ class PlayerContainer extends React.Component<IProps, any> {
     this.props.setSlideTime(time)
   }
 
-  onSlidingStart = (value) => {
+  onSlidingStart = () => {
     this.props.toggleSlide(true)
   }
 
@@ -511,7 +511,7 @@ function mapStateToProps (
 
 export default connect(
   mapStateToProps,
-  (dispatch, ownProps: any) => ({
+  (dispatch) => ({
     prev () {
       return dispatch(prevTrackAction())
     },

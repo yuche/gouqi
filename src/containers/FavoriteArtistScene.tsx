@@ -19,7 +19,7 @@ interface IProps extends IInfiList {
 class Artists extends React.Component<IProps, any> {
   private ds: ListViewDataSource
 
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1.id !== r2.id})
   }
@@ -29,7 +29,7 @@ class Artists extends React.Component<IProps, any> {
       <ListItem
         title={artist.name}
         picURI={artist.img1v1Url + '?param=300y300'}
-        roundPic
+        roundPic={true}
         key={artist.id}
         // tslint:disable-next-line:jsx-no-lambda
         onPress={() => Router.toArtistsDetail({ route: artist })}
@@ -47,7 +47,7 @@ class Artists extends React.Component<IProps, any> {
     this.props.refresh()
   }
 
-  render() {
+  render () {
     const {
       isRefreshing
     } = this.props
@@ -60,8 +60,8 @@ class Artists extends React.Component<IProps, any> {
           hideBorder={false}
         />
         <ListView
-          showsVerticalScrollIndicator
-          enableEmptySections
+          showsVerticalScrollIndicator={true}
+          enableEmptySections={true}
           dataSource={this.ds}
           initialListSize={15}
           pagingEnabled={false}
@@ -70,8 +70,7 @@ class Artists extends React.Component<IProps, any> {
           scrollRenderAheadDistance={90}
           renderRow={this.renderAlbum}
           refreshControl={
-            <RefreshControl refreshing={isRefreshing} onRefresh={this.refresh}/>
-          }
+            <RefreshControl refreshing={isRefreshing} onRefresh={this.refresh}/>}
         />
       </View>
     )
@@ -93,7 +92,7 @@ function mapStateToProps ({
 export default connect(
   mapStateToProps,
   (dispatch) => ({
-    refresh() {
+    refresh () {
       return dispatch( {type: 'artists/favo' })
     }
   })

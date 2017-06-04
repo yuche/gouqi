@@ -19,9 +19,7 @@ import {
 import NavBar from '../components/navbar'
 import { Color } from '../styles'
 
-export interface IattemptLogin {
-  (userInfo: IUserInfo): Redux.Action
-}
+type IattemptLogin = (userInfo: IUserInfo) => Redux.Action
 
 export interface IProps {
   isLoading: boolean,
@@ -31,7 +29,7 @@ export interface IProps {
 
 class Login extends React.Component<IProps, IUserInfo> {
   private passwordInput: TextInputStatic
-  constructor(props: IProps) {
+  constructor (props: IProps) {
     super(props)
     this.state = {
       username: '',
@@ -67,7 +65,7 @@ class Login extends React.Component<IProps, IUserInfo> {
     this.passwordInput = ref
   }
 
-  render() {
+  render () {
     const { username, password } = this.state
     const {
       isLoading
@@ -136,7 +134,7 @@ const styles = {
 export default connect(
   (state: any) => ({ isLoading: state.login.isLoading}),
   (dispatch: Dispatch<Redux.Action>) => ({
-    attemptLogin(userInfo: IUserInfo) {
+    attemptLogin (userInfo: IUserInfo) {
       return dispatch(Actions.userLogin(userInfo))
     }
   })

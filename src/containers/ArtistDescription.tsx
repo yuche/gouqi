@@ -26,10 +26,6 @@ interface IProps {
   }
 }
 
-interface IState {
-  scrollY: Animated.Value
-}
-
 interface IIntroduction {
   ti: string,
   txt: string

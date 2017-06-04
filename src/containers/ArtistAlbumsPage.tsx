@@ -25,7 +25,7 @@ class Albums extends React.Component<IProps, any> {
   private ds: ListViewDataSource
   private scrollComponent: any
 
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1.id !== r2.id})
   }
@@ -72,7 +72,7 @@ class Albums extends React.Component<IProps, any> {
       <View />
   }
 
-  render() {
+  render () {
     this.ds = this.ds.cloneWithRows(this.props.albums)
     return (
       <ListView
@@ -112,7 +112,7 @@ function mapStateToProps (
 export default connect(
   mapStateToProps,
   (dispatch, ownProps: IProps) => ({
-    sync() {
+    sync () {
       return dispatch(syncArtistAlbums(ownProps.id))
     }
   }),

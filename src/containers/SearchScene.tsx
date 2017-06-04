@@ -112,10 +112,10 @@ const styles = StyleSheet.create({
 export default connect(
   () => ({}),
   (dispatch: Dispatch<Redux.Action>) => ({
-    startSearch(query: string) {
+    startSearch (query: string) {
       return dispatch(startSearch(query))
     },
-    changeActiveTabs(index: number) {
+    changeActiveTabs (index: number) {
       return dispatch(changeSearchActiveTab(index))
     }
   })

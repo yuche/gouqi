@@ -30,7 +30,7 @@ interface IProps extends IPlaylistProps {
 class Playlist extends React.Component<IProps, any> {
   private ds: ListViewDataSource
 
-  constructor(props: IProps) {
+  constructor (props: IProps) {
     super(props)
     this.ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1.id !== r2.id})
   }
@@ -42,7 +42,7 @@ class Playlist extends React.Component<IProps, any> {
   }
 
   renderTrack = (playing, isPlaylist: boolean) => {
-    return (track: ITrack, sectionId, rowId) => {
+    return (track: ITrack, _, rowId) => {
       const index = Number(rowId)
       const isPlaying = playing.index === index && isPlaylist
       const artistName = get(track, 'artists[0].name', null)
@@ -52,7 +52,7 @@ class Playlist extends React.Component<IProps, any> {
         albumName
       const colorStyle = isPlaying && { color: Color.main }
       return <SwipeAction
-        autoClose
+        autoClose={true}
         style={{ backgroundColor: 'white' }}
         right={[{
           text: '删除',
@@ -115,7 +115,7 @@ class Playlist extends React.Component<IProps, any> {
     )
   }
 
-  render() {
+  render () {
     const {
       tracks,
       playing,
@@ -141,7 +141,7 @@ class Playlist extends React.Component<IProps, any> {
           rightConfig={rightConfig}
         />
         <ListView
-          enableEmptySections
+          enableEmptySections={true}
           removeClippedSubviews={true}
           scrollRenderAheadDistance={120}
           initialListSize={20}
@@ -173,16 +173,16 @@ function mapStateToProps (
 export default connect(
   mapStateToProps,
   (dispatch) => ({
-    clear() {
+    clear () {
       return dispatch(setHistoryAction([]))
     },
-    delete(id: number) {
+    delete (id: number) {
       return dispatch(deleteHistoryAction(id))
     },
-    popup(track: ITrack) {
+    popup (track: ITrack) {
       return dispatch(popupTrackActionSheet(track))
     },
-    play(index: number, tracks: ITrack[]) {
+    play (index: number, tracks: ITrack[]) {
       return dispatch(playTrackAction({
         playing: {
           index,

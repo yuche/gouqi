@@ -1,11 +1,12 @@
 {
   "name": "gouqi",
-  "version": "0.2.3",
+  "version": "0.9.0",
   "private": true,
   "scripts": {
     "start": "node node_modules/react-native/local-cli/cli.js start",
     "ios": "node node_modules/react-native/local-cli/cli.js run-ios",
     "link": "node node_modules/react-native/local-cli/cli.js link",
+    "lint": "tslint -c tslint.json -p tsconfig.json",
     "quickbuild": "tsc",
     "watch": "tsc  -w",
     "test": "jest",

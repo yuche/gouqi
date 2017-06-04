@@ -84,9 +84,7 @@ class Album extends React.Component<IProps, IState> {
   render () {
     const {
       isLoading,
-      album,
-      playing,
-      isPlaylist
+      album
     } = this.props
     const {
       scrollY
@@ -96,7 +94,7 @@ class Album extends React.Component<IProps, IState> {
         {this.renderBlur(album, scrollY)}
         {this.renderNavbar(album, scrollY)}
         {this.renderHeader(album, scrollY)}
-        {this.renderPlayList(isLoading, scrollY, album.songs || [], playing, isPlaylist)}
+        {this.renderPlayList(isLoading, scrollY, album.songs || [])}
       </View>
     )
   }
@@ -226,9 +224,7 @@ class Album extends React.Component<IProps, IState> {
   renderPlayList = (
     isLoading: boolean,
     scrollY: Animated.Value,
-    tracks: ITrack[],
-    playing: IPlaying,
-    isPlaylist: boolean
+    tracks: ITrack[]
   ) => {
     const containerY = scrollY.interpolate({
       inputRange: [0 , HEADER_HEIGHT, HEADER_HEIGHT],

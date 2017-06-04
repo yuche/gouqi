@@ -1,7 +1,4 @@
-import { handleActions, Action } from 'redux-actions'
-import {
-  IToastPayload
-} from '../interfaces'
+import { handleActions } from 'redux-actions'
 
 export const initState = {
   toast: { kind: 'success', text: ''},
@@ -43,13 +40,13 @@ export default handleActions({
   'ui/toast' (state: any, {
     payload
   }: any) {
-    return Object.assign({}, state, {
+    return {
+      ...state,
       toast: {
         kind: payload.kind,
         text: payload.text,
         id: toastId()
-      }
-    })
+      }}
   },
   'ui/modal/playlist/show' (state, { payload }) {
     return {

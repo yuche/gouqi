@@ -40,7 +40,7 @@ interface IProps extends IPlaylistProps {
 class RecommendScene extends React.Component<IProps, any> {
   private ds: ListViewDataSource
 
-  constructor(props: any) {
+  constructor (props: any) {
     super(props)
     this.ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1.id !== r2.id})
   }
@@ -52,7 +52,7 @@ class RecommendScene extends React.Component<IProps, any> {
   }
 
   renderTrack = (playing, isPlaylist: boolean) => {
-    return (track: ITrack, sectionId, rowId) => {
+    return (track: ITrack, _, rowId) => {
       const index = Number(rowId)
       const isPlaying = playing.index === index && isPlaylist
       const artistName = get(track, 'artists[0].name', null)
@@ -148,8 +148,7 @@ class RecommendScene extends React.Component<IProps, any> {
       <ScrollView
         style={{ flex: 1 }}
         refreshControl={
-          <RefreshControl refreshing={isLoading} onRefresh={sync}/>
-        }
+          <RefreshControl refreshing={isLoading} onRefresh={sync}/>}
       >
         {!isEmpty(playlists) && this.renderHeader('推荐歌单', gotoPlaylist)}
         <Grid data={playlists} onPress={this.toPlaylistDetail}/>
@@ -159,7 +158,7 @@ class RecommendScene extends React.Component<IProps, any> {
         <Grid data={artists} onPress={this.toArtistDetail}/>
         {!isEmpty(tracks) && this.renderHeader('每日推荐', Router.toDailyRecommend())}
         <ListView
-          enableEmptySections
+          enableEmptySections={true}
           removeClippedSubviews={true}
           scrollRenderAheadDistance={120}
           initialListSize={10}
@@ -189,7 +188,7 @@ function mapStateToProps ({
   }
 }) {
   return {
-    playlists: playlists.slice(0, 6).map(p => ({
+    playlists: playlists.slice(0, 6).map((p) => ({
       ...p,
       meta: playCount(p.playCount)
     })),
@@ -204,13 +203,13 @@ function mapStateToProps ({
 
 export default connect(mapStateToProps,
   (dispatch) => ({
-    sync() {
+    sync () {
       return dispatch({type: 'home/recommend'})
     },
-    popup(track: ITrack) {
+    popup (track: ITrack) {
       return dispatch(popupTrackActionSheet(track))
     },
-    play(index: number, tracks: ITrack[]) {
+    play (index: number, tracks: ITrack[]) {
       return dispatch(playTrackAction({
         playing: {
           index,

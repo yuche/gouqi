@@ -3,7 +3,7 @@ import {
 } from 'react-native'
 import * as RNFS from 'react-native-fs'
 import { put, call, select, fork, take, takeEvery, takeLatest, all } from 'redux-saga/effects'
-import { ITrack, batchSongDetailsNew, getUserId } from '../services/api'
+import { ITrack, batchSongDetailsNew } from '../services/api'
 import {
   toastAction,
   hideTrackActionSheet,
@@ -24,8 +24,6 @@ function streamLength (length: number) {
 }
 
 export const downloadSelector = (state: any) => state.download
-
-interface ITracksPayload { payload: ITrack[] }
 
 let currentDownloadJob = Object.create(null)
 

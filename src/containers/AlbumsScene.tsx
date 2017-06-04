@@ -20,7 +20,7 @@ interface IProps extends IInfiList {
 class Albums extends React.Component<IProps, any> {
   private ds: ListViewDataSource
 
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1.id !== r2.id})
   }
@@ -55,7 +55,7 @@ class Albums extends React.Component<IProps, any> {
 
   renderFooter = () => {
     return this.props.isLoading ?
-      <ActivityIndicator animating style={{marginTop: 10}}/> :
+      <ActivityIndicator animating={true} style={{marginTop: 10}}/> :
       <View />
   }
 
@@ -63,7 +63,7 @@ class Albums extends React.Component<IProps, any> {
     this.props.refresh()
   }
 
-  render() {
+  render () {
     const {
       isRefreshing
     } = this.props
@@ -76,8 +76,8 @@ class Albums extends React.Component<IProps, any> {
           hideBorder={false}
         />
         <ListView
-          showsVerticalScrollIndicator
-          enableEmptySections
+          showsVerticalScrollIndicator={true}
+          enableEmptySections={true}
           dataSource={this.ds}
           initialListSize={15}
           pagingEnabled={false}
@@ -88,8 +88,7 @@ class Albums extends React.Component<IProps, any> {
           renderRow={this.renderAlbum}
           renderFooter={this.renderFooter}
           refreshControl={
-            <RefreshControl refreshing={isRefreshing} onRefresh={this.refresh}/>
-          }
+            <RefreshControl refreshing={isRefreshing} onRefresh={this.refresh}/>}
         />
       </View>
     )
@@ -113,10 +112,10 @@ function mapStateToProps ({
 export default connect(
   mapStateToProps,
   (dispatch) => ({
-    syncMore() {
+    syncMore () {
       return dispatch({ type: 'albums/sync' })
     },
-    refresh() {
+    refresh () {
       return dispatch( {type: 'albums/refresh' })
     }
   })

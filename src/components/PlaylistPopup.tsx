@@ -1,7 +1,6 @@
 import * as React from 'react'
 import Popup from './PopupContainer'
 import {
-  ScrollView,
   Dimensions,
   View,
   ViewStyle,
@@ -112,7 +111,7 @@ class PlaylistPopup extends React.Component<IProps, any> {
   collect = () => (this.props.batchOps('collect'))
 
   renderRow = (index) => {
-    return (track: ITrack, sectionId, rowId) => {
+    return (track: ITrack, _sectionId, rowId) => {
       const isPlaying = index === Number(rowId)
       const { name = '' } = track
       const artistName = track
