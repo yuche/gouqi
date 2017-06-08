@@ -9,12 +9,21 @@
   <tr>
     <th>主要功能</th>
     <th>歌单</th>
-    <th>歌词</th>
+    <th></th>
   </tr>
   <tr>
-<td>![主要功能](https://ooo.0o0.ooo/2017/06/08/5938c0d26bb00.gif)</td>
-<td> ![歌单](https://ooo.0o0.ooo/2017/06/08/5938c0de05c00.gif)</td>
-<td> ![下载](https://ooo.0o0.ooo/2017/06/08/5938c0d5139f9.gif)</td>
+<td>
+<a href="https://ooo.0o0.ooo/2017/06/08/5938c0de05c00.gif"><img src="https://ooo.0o0.ooo/2017/06/08/5938c0de05c00.gif" alt=""></a>
+</td>
+<td>
+  <a href="https://ooo.0o0.ooo/2017/06/08/5938c0de05c00.gif
+"><img src="https://ooo.0o0.ooo/2017/06/08/5938c0de05c00.gif
+" alt=""></a>
+</td>
+<td>
+  <a href="https://ooo.0o0.ooo/2017/06/08/5938c0d5139f9.gif
+"><img src="https://ooo.0o0.ooo/2017/06/08/5938c0d5139f9.gif
+" alt=""></a> </td>
   </tr>
 </table>
 
