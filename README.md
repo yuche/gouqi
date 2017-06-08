@@ -57,22 +57,30 @@ yarn run remotedev // 打开调试器
 ## FAQ
 <details>
   <summary>为什么叫「枸杞」？</summary>
+
 因为我打飞机太多了，需要多吃点枸杞补补身子。
+
 </details>
 
 <details>
   <summary>开门，快递/查水表/社区送温暖/清华大学录取通知书！</summary>
+
 没有网购，家里长期停水没有水表，天气太热了不需要社区送温暖，考不上清华没有录取通知书。
+
 </details>
 
 <details>
   <summary>我不懂这方面的开发，有没有直接可以下载安装试用的渠道？</summary>
+
 没有，你得自己编译。如果我提供了这个渠道就会有 bad guys 发律师信给我。
+
 </details>
 
 <details>
   <summary>楼主是气象专家吗？</summary>
+
 不是，我对天气预报没有任何研究。
+
 </details>
 
 ## License
