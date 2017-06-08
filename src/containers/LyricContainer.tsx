@@ -98,7 +98,7 @@ const styles = {
     zIndex: 99999
   } as ViewStyle,
   container: {
-    marginTop: 24,
+    paddingTop: 24,
     height: height - 160 - 24,
     width,
     backgroundColor: 'rgba(255, 255, 255, 0.95)'

@@ -117,8 +117,8 @@ class UserPage extends React.Component<IProps, any> {
         <TouchableWithoutFeedback onPress={this.toLogin}>
             <Image source={{ uri }} style={styles.headImg} />
         </TouchableWithoutFeedback>
-          {nickname && <Text>{nickname}</Text>}
-          <Text>{seconds}</Text>
+          {nickname && <Text style={styles.text}>{nickname}</Text>}
+          <Text style={styles.text}>{seconds}</Text>
         </View>
         <ListItem
           title='我的私人电台'
@@ -164,7 +164,8 @@ const styles = {
   headImg: {
     width: 60,
     height: 60,
-    borderRadius: 30
+    borderRadius: 30,
+    marginBottom: 5
   } as ViewStyle,
   list: {
     padding: 20,
@@ -174,6 +175,9 @@ const styles = {
   title: {
     fontSize: 16,
     marginLeft: 20
+  } as TextStyle,
+  text: {
+    marginVertical: 5
   } as TextStyle
 }
 

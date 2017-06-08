@@ -1,3 +1,11 @@
+/**
+ * VERY BAD PRATICE
+ * 千万不要像这样写，当时我贪图一时便利鬼迷心窍几个这样的路由，
+ * 后来越来越多重构也不好做了……
+ * 另外路由也不推荐 react-native-router-flux，可以去试一下 react-navigation，
+ * 或者如果是新版本的 React Native 可以自己写
+ */
+
 import { Actions } from 'react-native-router-flux'
 
 interface IRouterPassProps {

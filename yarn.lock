@@ -18,9 +18,9 @@
   version "6.2.31"
   resolved "https://registry.npmjs.org/@types/qs/-/qs-6.2.31.tgz#7d929bd877f9cd3ece6415c602b7cf9b077133f1"
 
-"@types/react-native@^0.43.11":
-  version "0.43.11"
-  resolved "https://registry.npmjs.org/@types/react-native/-/react-native-0.43.11.tgz#cc39713dce3c7d147eb447c193c6132362682d25"
+"@types/react-native@^0.44.9":
+  version "0.44.9"
+  resolved "https://registry.npmjs.org/@types/react-native/-/react-native-0.44.9.tgz#e5a78680d5297ab02b55a3821ae13eb6a5cc8844"
   dependencies:
     "@types/react" "*"
 
@@ -3931,9 +3931,9 @@ negotiator@0.6.1:
   version "0.6.1"
   resolved "https://registry.npmjs.org/negotiator/-/negotiator-0.6.1.tgz#2b327184e8992101177b28563fb5e7102acd0ca9"
 
-node-fetch@^1.0.1, node-fetch@^1.3.3:
-  version "1.6.3"
-  resolved "https://registry.npmjs.org/node-fetch/-/node-fetch-1.6.3.tgz#dc234edd6489982d58e8f0db4f695029abcd8c04"
+node-fetch@^1.0.1, node-fetch@^1.3.3, "node-fetch@https://github.com/yuche/node-fetch/tarball/headers":
+  version "1.7.0"
+  resolved "https://github.com/yuche/node-fetch/tarball/headers#5558b6fa4ecbf661b5581331a1da83e81737fc4b"
   dependencies:
     encoding "^0.1.11"
     is-stream "^1.0.1"
@@ -4652,9 +4652,11 @@ react-native-music-control@^0.4.0:
   version "0.4.1"
   resolved "https://registry.npmjs.org/react-native-music-control/-/react-native-music-control-0.4.1.tgz#dfe8307b660e3380ccbc04fa827e781cfcb38bf9"
 
-react-native-progress@^3.2.0:
-  version "3.2.0"
-  resolved "https://registry.npmjs.org/react-native-progress/-/react-native-progress-3.2.0.tgz#86d756be5537c09936ac3d3c4e23710da590743c"
+react-native-progress@^3.2.1:
+  version "3.2.1"
+  resolved "https://registry.npmjs.org/react-native-progress/-/react-native-progress-3.2.1.tgz#9f2353045c49f06803ae04d86a2cd5baa83cd465"
+  dependencies:
+    prop-types "^15.5.8"
 
 react-native-root-siblings@^1.2.1:
   version "1.2.1"
