@@ -9,27 +9,37 @@
   <tr>
     <th>主要功能</th>
     <th>歌单</th>
-    <th></th>
+    <th>下载</th>
   </tr>
   <tr>
 <td>
-<a href="https://ooo.0o0.ooo/2017/06/08/5938c0de05c00.gif"><img src="https://ooo.0o0.ooo/2017/06/08/5938c0de05c00.gif" alt=""></a>
+<a href="https://ooo.0o0.ooo/2017/06/08/5938c0d26bb00.gif"><img src="https://ooo.0o0.ooo/2017/06/08/5938c0d26bb00.gif" alt=""></a>
 </td>
 <td>
-  <a href="https://ooo.0o0.ooo/2017/06/08/5938c0de05c00.gif
-"><img src="https://ooo.0o0.ooo/2017/06/08/5938c0de05c00.gif
-" alt=""></a>
+  <a href="https://ooo.0o0.ooo/2017/06/08/5938c0de05c00.gif"><img src="https://ooo.0o0.ooo/2017/06/08/5938c0de05c00.gif" alt=""></a>
 </td>
 <td>
-  <a href="https://ooo.0o0.ooo/2017/06/08/5938c0d5139f9.gif
-"><img src="https://ooo.0o0.ooo/2017/06/08/5938c0d5139f9.gif
-" alt=""></a> </td>
+  <a href="https://ooo.0o0.ooo/2017/06/08/5938c0dd8c706.gif"><img src="https://ooo.0o0.ooo/2017/06/08/5938c0dd8c706.gif" alt=""></a> </td>
   </tr>
 </table>
 
-| 艺术家 | 播放 | 歌词 |
-| :———: | :———: | :———:|
-| ![艺术家](https://ooo.0o0.ooo/2017/06/08/5938c0d26bb00.gif) | ![歌单](https://ooo.0o0.ooo/2017/06/08/5938c0dd8c706.gif) | ![歌词](https://ooo.0o0.ooo/2017/06/08/5938c0dbcec2f.gif) |
+<table>
+  <tr>
+    <th>艺术家</th>
+    <th>播放</th>
+    <th>歌词</th>
+  </tr>
+  <tr>
+<td>
+<a href="https://ooo.0o0.ooo/2017/06/08/5938c0dbcec2f.gif"><img src="https://ooo.0o0.ooo/2017/06/08/5938c0dbcec2f.gif" alt=""></a>
+</td>
+<td>
+  <a href="https://ooo.0o0.ooo/2017/06/08/5938c0dc21160.gif"><img src="https://ooo.0o0.ooo/2017/06/08/5938c0dc21160.gif" alt=""></a>
+</td>
+<td>
+  <a href="https://ooo.0o0.ooo/2017/06/08/5938c0d5139f9.gif"><img src="https://ooo.0o0.ooo/2017/06/08/5938c0d5139f9.gif" alt=""></a> </td>
+  </tr>
+</table>
 
 
 ## 安装与调试
