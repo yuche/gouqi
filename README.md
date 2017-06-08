@@ -4,17 +4,23 @@
 枸杞在实现上使用了彻底分离的 MVC 架构，在 M 层和 C 层有 260 多个测试来保证数据和逻辑的正确，且测试覆盖率达到了 99%。更多关于枸杞的技术细节，可以查看 [枸杞的由来和技术栈](https://github.com/yuche/gouqi/issues/1) 和 [Roadmap without any promises](https://github.com/yuche/gouqi/issues/2)。
 
 ## 交互
-|  主要功能 | 歌单 | 下载 |
-| :———: | :———: | :———:|
-| ![主要功能](https://ooo.0o0.ooo/2017/06/08/5938c0d26bb00.gif) | ![歌单](https://ooo.0o0.ooo/2017/06/08/5938c0de05c00.gif
-) | ![下载](https://ooo.0o0.ooo/2017/06/08/5938c0d5139f9.gif
-) |
+
+<table>
+  <tr>
+    <th>主要功能</th>
+    <th>歌单</th>
+    <th>歌词</th>
+  </tr>
+  <tr>
+<td>![主要功能](https://ooo.0o0.ooo/2017/06/08/5938c0d26bb00.gif)</td>
+<td> ![歌单](https://ooo.0o0.ooo/2017/06/08/5938c0de05c00.gif)</td>
+<td> ![下载](https://ooo.0o0.ooo/2017/06/08/5938c0d5139f9.gif)</td>
+  </tr>
+</table>
 
 | 艺术家 | 播放 | 歌词 |
 | :———: | :———: | :———:|
-| ![艺术家](https://ooo.0o0.ooo/2017/06/08/5938c0d26bb00.gif
-) | ![歌单](https://ooo.0o0.ooo/2017/06/08/5938c0dd8c706.gif
-) | ![歌词](https://ooo.0o0.ooo/2017/06/08/5938c0dbcec2f.gif) |
+| ![艺术家](https://ooo.0o0.ooo/2017/06/08/5938c0d26bb00.gif) | ![歌单](https://ooo.0o0.ooo/2017/06/08/5938c0dd8c706.gif) | ![歌词](https://ooo.0o0.ooo/2017/06/08/5938c0dbcec2f.gif) |
 
 
 ## 安装与调试
