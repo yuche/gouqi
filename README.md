@@ -63,6 +63,13 @@ yarn run remotedev // 打开调试器
 </details>
 
 <details>
+  <summary>为什么我计时了几小时，显示单位还是秒？</summary>
+
+这是某种神秘力量导致的 bug，我修复不了。
+
+</details>
+
+<details>
   <summary>开门，快递/查水表/社区送温暖/清华大学录取通知书！</summary>
 
 没有网购，家里长期停水没有水表，天气太热了不需要社区送温暖，考不上清华没有录取通知书。
