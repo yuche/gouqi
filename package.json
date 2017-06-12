@@ -46,7 +46,7 @@
     "redux-saga": "^0.15.3",
     "timeago.js": "^2.0.5",
     "tough-cookie-no-native": "yuche/tough-cookie-no-native",
-    "typescript": "^2.3.2"
+    "typescript": "^2.3.4"
   },
   "devDependencies": {
     "@types/isomorphic-fetch": "^0.0.34",
