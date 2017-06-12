@@ -73,8 +73,9 @@ export function syncSearchResource (
   }
 }
 
-export function* ajaxCall (fn: (...args: any[]) => Promise<any>, ...args: any[]) {
-  const res = yield call(fn, ...args)
+export function* ajaxCall (fn: (...args) => Promise<any>, ...args: any[]) {
+  const ajaxcall: any = call // temp fix for redux-saga typings
+  const res = yield ajaxcall(fn, ...args)
   if (res && res.error) {
     if (res.error.message === '未登录') {
       yield call(Router.toLogin)

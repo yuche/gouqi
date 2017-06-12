@@ -123,7 +123,7 @@ export default class Slider extends PureComponent<any, any> {
       debugTouchArea,
       ...other
     } = this.props;
-    var { value, containerSize, trackSize, thumbSize, allMeasured } = this.state;
+    var { value, containerSize, thumbSize, allMeasured } = this.state;
     var mainStyles = styles || defaultStyles;
     var thumbLeft = value.interpolate({
       inputRange: [minimumValue, maximumValue],
@@ -210,7 +210,7 @@ export default class Slider extends PureComponent<any, any> {
     this._fireChangeEvent('onSlidingStart');
   };
 
-  _handlePanResponderMove = (e: Object, gestureState: Object) => {
+  _handlePanResponderMove = (_e: Object, gestureState: Object) => {
     if (this.props.disabled) {
       return;
     }
@@ -219,12 +219,12 @@ export default class Slider extends PureComponent<any, any> {
     this._fireChangeEvent('onValueChange');
   };
 
-  _handlePanResponderRequestEnd(e: Object, gestureState: Object) {
+  _handlePanResponderRequestEnd() {
     // Should we allow another component to take over this pan?
     return false;
   };
 
-  _handlePanResponderEnd = (e: Object, gestureState: Object) => {
+  _handlePanResponderEnd = (_e: Object, gestureState: Object) => {
     if (this.props.disabled) {
       return;
     }
