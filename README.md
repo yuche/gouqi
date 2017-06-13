@@ -43,7 +43,7 @@
 
 
 ## 安装与调试
-首先确保你已经安装了 Node.js 和 Xcode/Android 开发环境。
+首先确保你已经安装了 Node.js （7.6+） 和 Xcode/Android 开发环境。
 
 ```bash
 brew install yarn // Or npm install -g yarn

@@ -70,10 +70,10 @@ function parseLrcText (str: string) {
   const text = str
     .replace(/\[(\d{2}):(\d{2})\.(\d{2,3})]/g, '')
     .replace(/^\s+|\s+$/g, '')
-  if (!text) {
+  if (!text || !times) {
     return []
   }
-  return times ? parseMutipleTime(times).map((time) => ({ ...time, text })) : []
+  return parseMutipleTime(times).map((time) => ({ ...time, text }))
 }
 
 function parseMutipleTime (times: string[]) {
